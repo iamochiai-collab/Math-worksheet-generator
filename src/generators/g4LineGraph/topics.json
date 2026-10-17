@@ -1,0 +1,17 @@
+{"g4-02": [
+ {"label": "折れ線グラフを読む", "generator": "g4.lgRead", "kinds": ["figure", "test"]},
+ {"label": "変わり方を読む", "generator": "g4.lgChange", "kinds": ["figure", "test"]},
+ {"label": "目もりとじく", "generator": "g4.lgAxis", "kinds": ["figure", "test"]},
+ {"label": "線のかたむき", "generator": "g4.lgSlope", "kinds": ["figure", "test"]},
+ {"label": "はかっていない時の値", "generator": "g4.lgEstimate", "kinds": ["figure", "test"]},
+ {"label": "折れ線グラフをかく", "generator": "g4.lgDraw", "kinds": ["figure", "test"]},
+ {"label": "目もりを決めてかく", "generator": "g4.lgDrawScale", "kinds": ["figure", "test"]},
+ {"label": "2本の折れ線グラフ", "generator": "g4.lgTwo", "kinds": ["figure", "test"]},
+ {"label": "棒グラフと折れ線グラフ", "generator": "g4.lgCombo", "kinds": ["figure", "test"]},
+ {"label": "どちらのグラフを使うか", "generator": "g4.lgWhich", "kinds": ["figure", "test"]},
+ {"label": "変わり方とグラフの形", "generator": "g4.lgShape", "kinds": ["figure", "test"]},
+ {"label": "二次元表をうめる", "generator": "g4.crossFill", "kinds": ["figure", "test"]},
+ {"label": "二次元表を読む", "generator": "g4.crossRead", "kinds": ["figure", "test"]},
+ {"label": "○×の記録を表に整理する", "generator": "g4.crossTally", "kinds": ["figure", "test"]},
+ {"label": "記録を表に整理する", "generator": "g4.classifyMore", "kinds": ["figure", "test"]}
+]}

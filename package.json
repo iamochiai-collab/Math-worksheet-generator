@@ -1,0 +1,17 @@
+{
+  "name": "sansu-print",
+  "version": "1.0.0",
+  "private": true,
+  "author": "落合聡一",
+  "license": "MIT",
+  "description": "算数・数学プリントをつくる 1 ファイルの Web アプリ(ようじ〜中3)",
+  "scripts": {
+    "build": "python3 tools/build.py",
+    "test": "npm run build && node tools/test/generators.js build/test.html all 120",
+    "test:layout": "npm run build && node tools/test/layout.js docs/index.html",
+    "test:clip": "npm run build && node tools/test/clip.js build/test.html"
+  },
+  "devDependencies": {
+    "playwright": "^1.47.0"
+  }
+}
