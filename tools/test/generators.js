@@ -1,4 +1,4 @@
-// 問題をつくる部品の検査:答えが合うか、重複しないか、ふりがなのない漢字がないか など
+// 問題をつくる部品の検査:答えが合うか、重複しないか、ふりがなのない漢字がないか(高校はふりがななし) など
 // 使い方: node tools/test/generators.js [build/test.html] [単元ID,単元ID… または all] [1つあたりの数]
 const { chromium } = require('playwright');
 (async () => {
@@ -38,8 +38,8 @@ const { chromium } = require('playwright');
             for (const s of col) {
               if (s == null) continue;
               const raw = String(s).replace(/\{([^{}|]+)\|([^{}|]*)\}/g, (_, k, kana) => { if ([...kana].some(isKanji) && !KANJI_NUMERAL_OK.has(gen.id)) fails['kanji in kana: ' + k] = 1; return ''; });
-              for (const ch of raw) if (isKanji(ch) && !lowerSet.has(ch)) fails['raw kanji ' + ch] = (fails['raw kanji ' + ch] || 0) + 1;
-              if (/\{\{|\}\}|undefined|NaN|null/.test(String(s))) fails['bad text: ' + String(s).slice(0, 60)] = 1;
+              if (Number(g) < 10) for (const ch of raw) if (isKanji(ch) && !lowerSet.has(ch)) fails['raw kanji ' + ch] = (fails['raw kanji ' + ch] || 0) + 1;
+              if (/\{\{|\}\}|undefined|NaN|null/.test(String(s).replace(/√\{[^{}]*\}/g, "√").replace(/√\{[^{}]*\}/g, "√"))) fails['bad text: ' + String(s).slice(0, 60)] = 1;
             }
           }
           out.push({ unit: unit.id, topic: topic.label, gen: topic.generator, level, made, distinct: keys.size, themes: soft.size, fails, sample: strings.slice(0, 3) });

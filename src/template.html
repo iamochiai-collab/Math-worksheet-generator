@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="app-version" content="第1版(2026-10-17)">
+<meta name="app-version" content="第2版(2026-10-18)">
 <meta name="app-exclude" content="">
 <title>算数プリント</title>
 <style>
@@ -96,6 +96,7 @@ body[data-view="home"] .panel, body[data-view="home"] .preview { display: none; 
 body[data-view="print"] .home { display: none; }
 .g0 { --gc: #c9457f; } .g7 { --gc: #3d6f8f; } .g8 { --gc: #5a5f9e; } .g9 { --gc: #7a4f6e; } .g1 { --gc: #c8453b; } .g2 { --gc: #c9731e; } .g3 { --gc: #3b8a4c; }
 .g4 { --gc: #23837f; } .g5 { --gc: #2f67b1; } .g6 { --gc: #7150a6; }
+.g10 { --gc: #9a4a2c; } .g11 { --gc: #2d7a63; } .g12 { --gc: #8a3b5c; } .g13 { --gc: #44628c; } .g14 { --gc: #6b4a8f; } .g15 { --gc: #3f6d3a; }
 .home { max-width: 1100px; margin: 0 auto; padding: 26px 16px 18px; }
 /* キャラクター(画面だけ。プリントには出さない) */
 .chara { background: center bottom / contain no-repeat; flex: none; }
@@ -127,7 +128,10 @@ body[data-view="print"] .home { display: none; }
 .home-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 24px; margin-top: 18px; }
 .home-step { font-size: 13px; color: #444; font-weight: bold; margin: 0 0 6px; }
 .home-step .n { display: inline-flex; width: 20px; height: 20px; border-radius: 50%; background: #2b3a55; color: #fff; font-size: 12px; align-items: center; justify-content: center; margin-right: 6px; }
-.home-grades { display: flex; flex-wrap: wrap; gap: 8px; }
+.home-grades { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.hg-group { display: flex; flex-direction: column; gap: 3px; }
+.hg-cap { font-size: 11.5px; color: #777; letter-spacing: 1px; }
+.hg-btns { display: flex; flex-wrap: wrap; gap: 8px; }
 .home-grades .hg { width: 70px; }
 .hg .yj { font-size: 17px; letter-spacing: 1px; }
 .home-ages { font-size: 12px; color: #666; margin-top: 4px; min-height: 1em; }
@@ -165,6 +169,7 @@ body[data-view="print"] .home { display: none; }
   .bubble { margin-bottom: 30px; font-size: 14px; max-width: none; }
   .bubble::after { left: -9px; bottom: 14px; transform: rotate(135deg); }
   .home-grades { width: 100%; }
+  .hg-group { width: 100%; }
   .home-grades .hg { width: calc(25% - 6px); }
   .home-row > div { width: 100%; }
   .home-levels { display: flex; } .hl { flex: 1; }
@@ -331,6 +336,7 @@ table.data.dense th, table.data.dense td { padding: 3pt 4pt; min-width: 26pt; }
 .sheet.grade-1 .item-no { font-size: 13pt; width: 28pt; }
 .sheet.grade-1 .item-body { font-size: 22pt; letter-spacing: 1pt; white-space: nowrap; }
 .sheet.grade-7 .item-body, .sheet.grade-8 .item-body, .sheet.grade-9 .item-body { font-size: 14.5pt; letter-spacing: 0.3pt; }
+.sheet.grade-10 .item-body, .sheet.grade-11 .item-body, .sheet.grade-12 .item-body, .sheet.grade-13 .item-body, .sheet.grade-14 .item-body, .sheet.grade-15 .item-body { font-size: 13.5pt; letter-spacing: 0.2pt; }
 .sheet.grade-1 .item.has-figure .item-body { font-size: 17pt; letter-spacing: 1pt; line-height: 1.8; }
 .sheet.grade-1 .abox { width: 1.6em; height: 1.35em; border-width: 1.4pt; }
 .sheet.grade-1 .block.word .block-text { font-size: 17pt; line-height: 2.1; }
@@ -353,6 +359,20 @@ table.data.dense th, table.data.dense td { padding: 3pt 4pt; min-width: 26pt; }
 .calc.box { border: 0.8pt dashed #b9b9b9; border-radius: 2mm; position: relative; margin: 2mm 0 2mm 10pt; box-sizing: border-box; width: calc(100% - 10pt); flex-basis: calc(100% - 10pt); }
 .calc-label { position: absolute; top: 1mm; left: 2.5mm; font-size: 8.5pt; color: #8a8a8a; }
 .sqrt { white-space: nowrap; }
+sub.sb { font-size: 0.68em; vertical-align: -0.35em; line-height: 0; }
+.vec { position: relative; display: inline-block; padding-top: 0.32em; line-height: 1.05; }
+.vec::before { content: ""; position: absolute; left: 4%; right: 6%; top: 0.13em; border-top: 0.8pt solid currentColor; }
+.vec::after { content: ""; position: absolute; right: 3%; top: 0.035em; width: 0.2em; height: 0.2em; border: solid currentColor; border-width: 0.8pt 0.8pt 0 0; transform: rotate(45deg); }
+.rdot { position: relative; display: inline-block; }
+.rdot::after { content: ""; position: absolute; left: 50%; top: 0.02em; width: 0.17em; height: 0.17em; margin-left: -0.085em; border-radius: 50%; background: currentColor; }
+.ovl { display: inline-block; border-top: 0.8pt solid currentColor; padding-top: 0.5pt; line-height: 1.1; }
+.intg { display: inline-flex; align-items: center; vertical-align: middle; margin: 0 1pt; }
+.intg .ig { font-size: 1.7em; line-height: 1; font-family: "Times New Roman", Times, serif; font-style: italic; }
+.intg .lims { display: inline-flex; flex-direction: column; justify-content: space-between; height: 2.25em; font-size: 0.66em; line-height: 1; margin-left: -0.15em; }
+.sigma { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1; margin: 0 1.5pt; }
+.sigma .sg { font-size: 1.45em; line-height: 1; }
+.sigma .sl, .limt .sl { font-size: 0.64em; white-space: nowrap; }
+.limt { display: inline-flex; flex-direction: column; align-items: center; vertical-align: top; line-height: 1.1; margin: 0 2pt; }
 .sqrt .rad { display: inline-block; border-top: 1.1pt solid currentColor; padding: 0.5pt 1.5pt 0 1pt; margin-left: -0.5pt; line-height: 1.15; }
 .sys { display: inline-flex; align-items: center; vertical-align: middle; margin: 2pt 2pt; }
 .sys .brace { font-size: 2.5em; line-height: 1; transform: scaleX(0.55); margin-right: -2pt; font-weight: 300; }
@@ -404,7 +424,7 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
     <div class="home-main">
   <div class="home-hero">
     <h1>算数プリント<span class="version" id="versionHome"></span></h1>
-    <p>ようじ ・ 小学校1〜6年(東京書籍『新編 新しい算数』の単元順) ・ 中学(学習指導要領の内容の順)。学年をえらんで、単元のボタンをおすとプリントができます。</p>
+    <p>ようじ ・ 小学校1〜6年(東京書籍『新編 新しい算数』の単元順) ・ 中学・高校(学習指導要領の内容の順)。学年をえらんで、単元のボタンをおすとプリントができます。</p>
   </div>
   <div class="home-row">
     <div><div class="home-step"><span class="n">1</span>学年</div><div class="home-grades" id="homeGrades"></div></div>
@@ -423,7 +443,7 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
     <div class="chara chara-maru" aria-hidden="true"></div>
     <h1>算数プリント</h1>
     <span class="subtitle" id="subtitle">小学校1〜6年 ・ 東京書籍『新編 新しい算数』の単元順</span>
-    <span class="version" id="version">第1版(2026-10-17)</span>
+    <span class="version" id="version">第2版(2026-10-18)</span>
   </div>
   <label>学年<select id="grade"></select></label>
   <label>単元<select id="unit"></select></label>
@@ -478,15 +498,15 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
     <li><b>作り方</b> 学年 → 単元 → 種類 → 難易度 → 問題数を選んで「作成」。下に A4 の形で出ます。「印刷」で印刷の画面が開きます。</li>
     <li><b>作り直しとシード番号</b> 「作り直し」を押すと別の問題になります。プリント右下の「No.」がシード番号で、同じ番号・同じ設定なら同じプリントになります(先生用と児童用、やり直し用などに)。</li>
     <li><b>解答</b> 最後のページに付きます。「解答をつける」を外すと付きません。</li>
-    <li><b>習っていない漢字は使わない</b> 上の学年の漢字はもともとひらがなです。これをつけると、その学年で習う漢字もひらがなにします。まだ習っていない時期に使ってください。</li>
+    <li><b>習っていない漢字は使わない</b> 上の学年の漢字はもともとひらがなです。これをつけると、その学年で習う漢字もひらがなにします。まだ習っていない時期に使ってください(小学校のプリントだけ)。</li>
     <li><b>ヒントをつける</b> 単位のなおし方や公式など、思い出すとよいことを問題の下に出します(ヒントがある問題だけ)。</li>
-    <li><b>ふりがなをつける</b> プリントの漢字に、図や表の中もふくめて すべてふりがなをつけます。</li>
+    <li><b>ふりがなをつける</b> プリントの漢字に、図や表の中もふくめて すべてふりがなをつけます(高校の数学にはつきません)。</li>
     <li><b>印刷のコツ</b> 用紙は A4・縦、倍率は 100%(「ページに合わせる」にしない)、余白は「既定」のまま。「送信先」を「PDF に保存」にすると PDF になります(ファイル名はプリント名になります)。両面に印刷するときは「長辺とじ」。</li>
     <li><b>入っている単元</b><ul id="coverage"></ul>単元の一覧で「(準備中)」と出るものは、まだ選べません。</li>
   </ol>
 </details>
 <div class="preview" id="preview"></div>
-<footer class="site-footer">算数プリント <span id="versionFoot">第1版(2026-10-17)</span></footer>
+<footer class="site-footer">算数プリント <span id="versionFoot">第2版(2026-10-18)</span></footer>
 <script>
 (() => {
   // src/core/rng.js
@@ -32976,6 +32996,10 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
   }
 
   // src/core/coverage.js
+  // 学年の名前(10〜15 は高校の科目)
+  var KOU_NAMES = { 10: "数学Ⅰ", 11: "数学A", 12: "数学Ⅱ", 13: "数学B", 14: "数学Ⅲ", 15: "数学C" };
+  var KOU_SHORT = { 10: "Ⅰ", 11: "A", 12: "Ⅱ", 13: "B", 14: "Ⅲ", 15: "C" };
+  var gradeNameOf = (g3) => (g3 = Number(g3), g3 === 0 ? "ようじ" : g3 >= 10 ? KOU_NAMES[g3] : g3 >= 7 ? `中${g3 - 6}` : `${g3}年`);
   function coverageSummary(grades, exclude = /* @__PURE__ */ new Set()) {
     return Object.keys(grades).map(Number).sort((a, b) => a - b).map((grade) => {
       const units = grades[grade]?.units ?? [];
@@ -32983,7 +33007,7 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
     });
   }
   function coverageLabel({ grade, total, ready }) {
-    const g3 = grade === 0 ? "ようじ" : grade >= 7 ? `中${grade - 6}` : `${grade}年`;
+    const g3 = gradeNameOf(grade);
     if (ready === 0) return `${g3}: 準備中`;
     if (ready === total) return `${g3}: 全${total}単元`;
     return `${g3}: ${total}単元中${ready}単元(残りは準備中)`;
@@ -33662,10 +33686,32 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
 
   // src/render/html.js
   var esc2 = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-  function inlineMath(text) {
-    return esc2(text).replace(/\u0001([^\u0002]*)\u0002([^\u0003]*)\u0003/g, "<ruby>$1<rt>$2</rt></ruby>").replace(/\[\[sys:(.*?):sys\]\]/g, (_, body) => `<span class="sys"><span class="brace">{</span><span class="eqs">${body.split("||").map((e) => `<span>${e}</span>`).join("")}</span></span>`).replace(/\[\[br\]\]/g, "<br>").replace(/\[\[(a|p|t)box:([\d.]+)\]\]/g, (_, k, w2) => `<span class="abox ans${k === "t" ? " tall" : ""}" style="width:${w2}mm"></span>`).replace(/\[\[fbox(1?)\]\]/g, (_, one) => `<span class="fbox"><span class="fb-n${one ? " gray" : ""}">${one ? "1" : ""}</span><span class="fb-bar${one ? " gray" : ""}"></span><span class="fb-d"></span></span>`).replace(/\[\[mbox\]\]/g, '<span class="abox ans" style="width:12mm"></span><span class="fbox"><span class="fb-n"></span><span class="fb-bar"></span><span class="fb-d"></span></span>').replace(/\[\[aline\]\]/g, '<span class="aline"></span>').replace(/\[\[box\]\]/g, '<span class="abox"></span>').replace(/\[\[v:([a-zA-Z])\]\]/g, '<i class="var">$1</i>').replace(/\[\[m:(\d+):(\d+)\/(\d+)\]\]/g, (_, w2, n, d) => `<span class="mixed"><span class="whole">${w2}</span><span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span></span>`).replace(/\[\[f:([^\]\/]+)\/([^\]]+)\]\]/g, (_, n, d) => `<span class="frac"><span class="num">${italVars(n)}</span><span class="den">${italVars(d)}</span></span>`).replace(/\[\[\^([^\]]+)\]\]/g, "<sup>$1</sup>").replace(/√\{([^{}]*)\}/g, '<span class="sqrt">√<span class="rad">$1</span></span>');
+  // 添字・ベクトル・共役・指数・文字は、分数の中でも使えるように、いったん目印の字にしてから最後に HTML にする
+  var MK = { sub: ["\ue000", "\ue001"], sup: ["\ue002", "\ue003"], vec: ["\ue004", "\ue005"], bar: ["\ue006", "\ue007"], v: ["\ue00b", "\ue00c"] };
+  function mathMarks(s) {
+    // 添字・指数の中の分数は 1/2 の形で
+    s = s.replace(/\[\[([_^])\[\[f:([^\[\]]+)\]\]\]\]/g, "[[$1$2]]");
+    let prev;
+    do {
+      prev = s;
+      s = s.replace(/\[\[v:([a-zA-Z])\]\]/g, "\ue00b$1\ue00c").replace(/\[\[_([^\[\]]+)\]\]/g, "\ue000$1\ue001").replace(/\[\[\^([^\[\]]+)\]\]/g, "\ue002$1\ue003").replace(/\[\[vec:([^\[\]]+)\]\]/g, "\ue004$1\ue005").replace(/\[\[bar:([^\[\]]+)\]\]/g, "\ue006$1\ue007").replace(/\[\[dot:([^\[\]]+)\]\]/g, "\ue00d$1\ue00e");
+    } while (s !== prev);
+    return s.replace(/\[\[int:([^:\]]*):([^\]]*)\]\]/g, '<span class="intg"><span class="ig">∫</span><span class="lims"><span>$2</span><span>$1</span></span></span>').replace(/\[\[sum:([^:\]]*):([^\]]*)\]\]/g, '<span class="sigma"><span class="sl">$2</span><span class="sg">Σ</span><span class="sl">$1</span></span>').replace(/\[\[lim:([^\]]*)\]\]/g, '<span class="limt"><span>lim</span><span class="sl">$1</span></span>');
   }
-  var italVars = (s) => /^[\d.]+$/.test(s) ? s : s.replace(/(^|[^a-zA-Z<>\/"=])([a-zA-Z])(?![a-zA-Z])/g, '$1<i class="var">$2</i>');
+  var unMarks = (s) => s.replace(/\ue00b([^\ue00c]*)\ue00c/g, '<i class="var">$1</i>').replace(/\ue000/g, '<sub class="sb">').replace(/\ue001/g, "</sub>").replace(/\ue002/g, "<sup>").replace(/\ue003/g, "</sup>").replace(/\ue004/g, '<span class="vec">').replace(/\ue005/g, "</span>").replace(/\ue006/g, '<span class="ovl">').replace(/\ue007/g, "</span>").replace(/\ue00d/g, '<span class="rdot">').replace(/\ue00e/g, "</span>");
+  function inlineMath(text) {
+    return unMarks(sqrtHtml(mathMarks(esc2(text)).replace(/\u0001([^\u0002]*)\u0002([^\u0003]*)\u0003/g, "<ruby>$1<rt>$2</rt></ruby>").replace(/\[\[sys:(.*?):sys\]\]/g, (_, body) => `<span class="sys"><span class="brace">{</span><span class="eqs">${body.split("||").map((e) => `<span>${e}</span>`).join("")}</span></span>`).replace(/\[\[br\]\]/g, "<br>").replace(/\[\[(a|p|t)box:([\d.]+)\]\]/g, (_, k, w2) => `<span class="abox ans${k === "t" ? " tall" : ""}" style="width:${w2}mm"></span>`).replace(/\[\[fbox(1?)\]\]/g, (_, one) => `<span class="fbox"><span class="fb-n${one ? " gray" : ""}">${one ? "1" : ""}</span><span class="fb-bar${one ? " gray" : ""}"></span><span class="fb-d"></span></span>`).replace(/\[\[mbox\]\]/g, '<span class="abox ans" style="width:12mm"></span><span class="fbox"><span class="fb-n"></span><span class="fb-bar"></span><span class="fb-d"></span></span>').replace(/\[\[aline\]\]/g, '<span class="aline"></span>').replace(/\[\[box\]\]/g, '<span class="abox"></span>').replace(/\[\[v:([a-zA-Z])\]\]/g, '<i class="var">$1</i>').replace(/\[\[m:(\d+):(\d+)\/(\d+)\]\]/g, (_, w2, n, d) => `<span class="mixed"><span class="whole">${w2}</span><span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span></span>`).replace(/\[\[f:([^\]\/]+)\/([^\]]+)\]\]/g, (_, n, d) => `<span class="frac"><span class="num">${italVars(n)}</span><span class="den">${italVars(d)}</span></span>`)));
+  }
+  // √ の中に √ があってもよいように、内側から順に
+  var sqrtHtml = (s) => {
+    let prev;
+    do {
+      prev = s;
+      s = s.replace(/√\{([^{}]*)\}/g, '<span class="sqrt">√<span class="rad">$1</span></span>');
+    } while (s !== prev);
+    return s;
+  };
+  var italVars = (s) => /^[\d.]+$/.test(s) ? s : s.replace(/(^|[^a-zA-Z<>\/"=\ue000-\ue0ff])([a-zA-Z])(?![a-zA-Z\ue000-\ue0ff])/g, '$1<i class="var">$2</i>');
   var t = (template, policy) => inlineMath(renderText(template, policy));
   // 図は子どもがしるしをつけやすいように大きくする(種類ごとの倍率。横は紙の幅まで、たては 150mm まで)
   var FIG_K = { hissan: 1, words: 1, table: 1, multi: 1, barChart: 1.5, bar3: 1.5, band: 1.45, pie: 1.6, numberLine: 1.6, doubleNumberLine: 1.5, intLine: 1.6, ratioLine: 1.5, clocks: 1.35, scale: 1.4, tapeMeasure: 1.3, masu: 1.35, abacus: 1.3, dots: 1.3, shadedCells: 1.35, tapes: 1.3, fracTape: 1.3, timesTape: 1.3, pattern: 1.3, route: 1.35, circles: 1.35, tri: 1.35, shape: 1.35 };
@@ -33757,7 +33803,7 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
   }
   // ===== 答えを書くところ =====
   // 問題の文の □・（　　）・最後の「＝」を、1字 1cm 以上の四角にする。答えの欄がない問題には四角をつける。
-  var plainAns = (s) => stripRuby(String(s ?? "")).replace(/√\{([^{}]*)\}/g, "√$1").replace(/\[\[\^([^\]]+)\]\]/g, "$1").replace(/\{([^|}]*)\|[^}]*\}/g, "$1").replace(/\[\[sys:(.*?):sys\]\]/g, (_, b) => b.split("||")[0]).replace(/\[\[v:([a-zA-Z])\]\]/g, "$1").replace(/\[\[[fm]:[^\]]*\]\]/g, "00").replace(/\[\[br\]\]/g, "");
+  var plainAns = (s) => stripRuby(String(s ?? "")).replace(/√\{([^{}]*)\}/g, "√$1").replace(/√\{([^{}]*)\}/g, "√$1").replace(/\[\[(?:_|vec:|bar:|dot:)([^\[\]]+)\]\]/g, "$1").replace(/\[\[int:[^\]]*\]\]/g, "∫").replace(/\[\[sum:[^\]]*\]\]/g, "Σ").replace(/\[\[lim:[^\]]*\]\]/g, "lim").replace(/√\{([^{}]*)\}/g, "√$1").replace(/\[\[\^([^\]]+)\]\]/g, "$1").replace(/\{([^|}]*)\|[^}]*\}/g, "$1").replace(/\[\[sys:(.*?):sys\]\]/g, (_, b) => b.split("||")[0]).replace(/\[\[v:([a-zA-Z])\]\]/g, "$1").replace(/\[\[[fm]:[^\]]*\]\]/g, "00").replace(/\[\[br\]\]/g, "");
   var bw = (str) => Math.min(100, Math.max(13, [...String(str ?? "")].reduce((a, ch) => a + (ch.charCodeAt(0) < 8192 ? 8.5 : 10), 0) + 5));
   function boxFor(display, unitFrac) {
     const d = String(display ?? "").replace(/^\(\d+\)\s*/, "");
@@ -33786,7 +33832,8 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
     "c3.simRatio": 30, "c3.simLines": 28, "c3.areaVolRatio": 22, "c3.simProof": 0, "c3.inscribed": 22, "c3.inscribedCalc": 16, "c3.pythag": 32, "c3.specialTri": 32,
     "c3.pythagApply": 34, "c3.pythagCheck": 18, "c3.sampleTerms": 0, "c3.sampleEst": 45
   };
-  var workOf = (p) => /^c\d+\./.test(p.generator || "") ? CHU_WORK[p.generator] ?? 25 : 0;
+  var isChuGen = (id) => /^(c\d+|k[1-3A-C])\./.test(id || "");
+  var workOf = (p) => isChuGen(p.generator) ? p.work ?? CHU_WORK[p.generator] ?? 25 : 0;
   // 考えるスペースがあるときは、文章題の「式」の線を省く(答えの線は残す)
   var wsWithoutShiki = (ws) => ws && ws.type === "lines" ? { ...ws, labels: ws.labels.filter((l) => !/^(式|)$/.test(plainAns(l))) } : ws;
   // 考えるスペースがある計算問題は、答えの四角をスペースの下(「答え □」)にうつす
@@ -33828,7 +33875,7 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
     const figBox = (f) => !!f && (f.type === "multi" ? f.items.some(figBox) : f.type === "table" ? f.rows.flat().some((c) => c === "") : f.type === "draw" && f.items.some((it) => it.t === "poly" && it.pts?.length === 4 && (it.w ?? 0.5) >= 0.45 && (!it.fill || it.fill === "white") && Math.abs(Math.abs(it.pts[2][0] - it.pts[0][0]) - Math.abs(it.pts[2][1] - it.pts[0][1])) < 1.5 && Math.abs(it.pts[2][0] - it.pts[0][0]) >= 7));
     const own = OWN_ANSWER.has(p.generator) || figBox(p.figure) || p.figure?.type === "hissan" || p.workspace && p.workspace.type !== "none" || !display || /グラフ|{下|した}の{表|ひょう}|下の表|図/.test(plainAns(display).slice(0, 6));
     // 中学:答えの四角は字数に合わせたふつうの四角(分数が入るときは高い四角)
-    if (p.plainBox || /^c\d+\./.test(p.generator || "")) {
+    if (p.plainBox || isChuGen(p.generator)) {
       const head = String(display).split("　")[0];
       const flat = plainAns(head.replace(/\[\[f:([^\]\/]+)\/([^\]]+)\]\]/g, (_, n, d) => "0".repeat(Math.max([...plainAns(n)].length, [...plainAns(d)].length) + 1)));
       const kind = /\[\[f:/.test(head) ? "tbox" : "abox";
@@ -38776,7 +38823,7 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
   };
 
   // src/app.js
-  var GRADES = { ...typeof yojiGrade !== "undefined" ? { 0: yojiGrade } : {}, ...typeof chu1Grade !== "undefined" ? { 7: chu1Grade } : {}, ...typeof chu2Grade !== "undefined" ? { 8: chu2Grade } : {}, ...typeof chu3Grade !== "undefined" ? { 9: chu3Grade } : {}, 1: grade1_default, 2: grade2_default, 3: grade3_default, 4: grade4_default, 5: grade5_default, 6: grade6_default };
+  var GRADES = { ...typeof yojiGrade !== "undefined" ? { 0: yojiGrade } : {}, ...typeof chu1Grade !== "undefined" ? { 7: chu1Grade } : {}, ...typeof chu2Grade !== "undefined" ? { 8: chu2Grade } : {}, ...typeof chu3Grade !== "undefined" ? { 9: chu3Grade } : {}, ...typeof kou1Grade !== "undefined" ? { 10: kou1Grade } : {}, ...typeof kouAGrade !== "undefined" ? { 11: kouAGrade } : {}, ...typeof kou2Grade !== "undefined" ? { 12: kou2Grade } : {}, ...typeof kouBGrade !== "undefined" ? { 13: kouBGrade } : {}, ...typeof kou3Grade !== "undefined" ? { 14: kou3Grade } : {}, ...typeof kouCGrade !== "undefined" ? { 15: kouCGrade } : {}, 1: grade1_default, 2: grade2_default, 3: grade3_default, 4: grade4_default, 5: grade5_default, 6: grade6_default };
   var $ = (id) => document.getElementById(id);
   var el = {
     grade: $("grade"),
@@ -38813,7 +38860,7 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
       if (first) select.value = first.value;
     }
   }
-  var gradeName = (g3) => Number(g3) === 0 ? "ようじ" : Number(g3) >= 7 ? `中${g3 - 6}` : `${g3}年`;
+  var gradeName = gradeNameOf;
   var GRADE_KEYS = Object.keys(GRADES).map(Number).sort((a, b) => a - b);
   function refreshGrades() {
     fill2(el.grade, GRADE_KEYS.map((g3) => ({ value: g3, label: gradeName(g3), disabled: !GRADES[g3] })));
@@ -38824,7 +38871,7 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
   function refreshUnits() {
     const data = GRADES[el.grade.value];
     const gN = Number(el.grade.value);
-    $("subtitle").textContent = gN >= 7 ? "中学 ・ 学習指導要領の内容の順" : gN === 0 ? "ようじ(3〜6さい)" : "小学校1〜6年 ・ 東京書籍『新編 新しい算数』の単元順";
+    $("subtitle").textContent = gN >= 10 ? "高校 ・ 学習指導要領の内容の順" : gN >= 7 ? "中学 ・ 学習指導要領の内容の順" : gN === 0 ? "ようじ(3〜6さい)" : "小学校1〜6年 ・ 東京書籍『新編 新しい算数』の単元順";
     const opts = data ? data.units.map((u2) => ({
       value: u2.id,
       label: `${u2.numberless ? "　" : u2.order + " "}${u2.name}${isReady(u2) ? "" : "(準備中)"}`,
@@ -38854,6 +38901,8 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
     const unit = GRADES[el.grade.value]?.units.find((u2) => u2.id === el.unit.value);
     el.fromWrap.hidden = !unit?.starts;
     let counts = k.counts, def = k.defaultCount, label = (c) => `${c}問`;
+    // 高校の計算ドリルは1問が長いので、問題数を少なめに
+    if (Number(el.grade.value) >= 10 && el.kind.value === "drill") counts = [5, 10, 15, 20], def = 10;
     if (unit?.starts) {
       const prevFrom = Number(el.from.value);
       if (el.from.dataset.unit !== unit.id) {
@@ -39172,12 +39221,14 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
     if (g3 === 0) return "いっしょに かずで<br>あそぼう！";
     if (g3 <= 2) return `${g3}ねんせいの プリントを<br>つくろう！`;
     if (g3 <= 6) return `${g3}年生のプリントを<br>作ろう！`;
+    if (g3 >= 10) return `${KOU_NAMES[g3]}の問題に<br>ちょうせんしよう！`;
     return `中${g3 - 6}の問題に<br>ちょうせんしよう！`;
   }
   var LEVEL_SAY = { basic: ["guide", "まずは きほんから！<br>じっくり いこう"], normal: ["idea", "いいね！<br>ちょうどいい むずかしさ"], challenge: ["cheer", "むずかしい問題に<br>ちょうせんだ！"] };
   function renderHome() {
     homeEl.className = `home g${homeGrade}`;
-    $("homeGrades").innerHTML = GRADE_KEYS.map((g3) => `<button type="button" class="hg g${g3}${g3 === homeGrade ? " on" : ""}" data-grade="${g3}" aria-pressed="${g3 === homeGrade}"${GRADES[g3] ? "" : " disabled"}>${g3 === 0 ? '<span class="yj">ようじ</span>' : g3 >= 7 ? `<small>中</small>${g3 - 6}` : `${g3}<small>年</small>`}</button>`).join("");
+    const hgBtn = (g3) => `<button type="button" class="hg g${g3}${g3 === homeGrade ? " on" : ""}" data-grade="${g3}" aria-pressed="${g3 === homeGrade}"${GRADES[g3] ? "" : " disabled"}>${g3 === 0 ? '<span class="yj">ようじ</span>' : g3 >= 10 ? `<small>数</small>${KOU_SHORT[g3]}` : g3 >= 7 ? `<small>中</small>${g3 - 6}` : `${g3}<small>年</small>`}</button>`;
+    $("homeGrades").innerHTML = [["ようじ・小学校", (g3) => g3 <= 6], ["中学", (g3) => g3 >= 7 && g3 <= 9], ["高校", (g3) => g3 >= 10]].map(([cap, f]) => [cap, GRADE_KEYS.filter(f)]).filter(([, gs]) => gs.length).map(([cap, gs]) => `<div class="hg-group"><span class="hg-cap">${cap}</span><div class="hg-btns">${gs.map(hgBtn).join("")}</div></div>`).join("");
     $("homeAges").textContent = homeGrade === 0 ? "★☆☆ 3〜4さい　★★☆ 4〜5さい　★★★ 5〜6さい" : "";
     $("homeLevels").innerHTML = Object.entries(LEVELS).map(([k, v]) => `<button type="button" class="hl${k === homeLevel ? " on" : ""}" data-level="${k}" aria-pressed="${k === homeLevel}">${v.label}</button>`).join("");
     const units = GRADES[homeGrade]?.units ?? [];
