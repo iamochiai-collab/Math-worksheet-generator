@@ -469,9 +469,9 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
 <dialog class="batch" id="batchDlg">
   <form method="dialog" class="batch-form" id="batchForm" onsubmit="return false;">
     <h2>まとめて作る・保存</h2>
-    <p class="batch-note">いまの設定(学年・単元・種類・難易度・問題数)で、プリントを何まいも作ります。1まいごとに問題がかわります。</p>
-    <label class="batch-row">プリントの数
-      <select id="batchN"><option>1</option><option>5</option><option selected>10</option><option>20</option><option>30</option><option>50</option><option>100</option></select>
+    <p class="batch-note">いまの設定(学年・単元・種類・難易度・問題数)で、プリントを何ページも作ります。1まいごとに問題がかわります。ページ数は問題のページの数です(答えのページは別につきます)。</p>
+    <label class="batch-row">ページ数
+      <select id="batchN"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option selected>10</option><option>15</option><option>20</option><option>25</option><option>30</option><option>40</option><option>50</option><option>100</option></select>
     </label>
     <fieldset class="batch-row"><legend>答え</legend>
       <label><input type="radio" name="bAns" value="none" checked> つけない</label>
@@ -53546,9 +53546,30 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
       $("batchBar").style.width = `${Math.round(done / total * 100)}%`;
       $("batchMsg").textContent = msg;
     };
+    // 問題のページのうち、はじめの k ページにある問題だけの sheet を作る(答えもそれに合わせる)
+    const trimSheet = (sheet, arts, k) => {
+      const keep = new Map();
+      for (const a of arts.slice(0, k)) for (const b of a.querySelectorAll(".body > .block")) {
+        const c = b.querySelectorAll("li.item").length || 1;
+        keep.set(b.dataset.sec, (keep.get(b.dataset.sec) || 0) + c);
+      }
+      const secs = [];
+      for (const sec of sheet.sections) {
+        const c = keep.get(String(sec.no));
+        if (c) secs.push({ ...sec, problems: sec.problems.slice(0, c).map((p) => ({ ...p })) });
+      }
+      let no = 0;
+      for (const sec of secs) {
+        sec.no = ++no;
+        sec.problems.forEach((p, i) => p.no = sec.instruction && sec.problems.length > 1 && !p.hideNo ? i + 1 : null);
+      }
+      const total = secs.reduce((a, sec) => a + sec.problems.reduce((b, p) => b + (p.points || 0), 0), 0);
+      return { ...sheet, sections: secs, totalPoints: sheet.totalPoints ? total : null, problemCount: secs.reduce((a, sec) => a + sec.problems.length, 0) };
+    };
     try {
       const n = opt.n;
-      for (let i = 0; i < n; i++) {
+      let made = 0;
+      for (let i = 0; made < n && i < n * 4; i++) {
         if (batchCancel) break;
         const spec = { ...spec0, seed: spec0.seed + i };
         // すうじを かこう は、つぎの プリントへ じゅんばんに つづける
@@ -53556,12 +53577,31 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
           spec.from = (spec0.from || 1) + i * spec0.count * unit.per;
           if (spec.from > 100) break;
         }
-        const sheet = buildSheet(spec);
+        let sheet = buildSheet(spec);
         if (!title) title = fileName(renderText(sheet.title, policy));
-        stage.innerHTML = sheetHtml(sheet, { policy, withAnswers: opt.answers !== "none", hints: el.hints.checked });
-        paginate(stage);
-        const arts = [...stage.querySelectorAll("article.sheet")];
-        const probs = arts.filter((a) => !a.classList.contains("answers")), ans = arts.filter((a) => a.classList.contains("answers"));
+        const render = (sh) => {
+          stage.innerHTML = sheetHtml(sh, { policy, withAnswers: opt.answers !== "none", hints: el.hints.checked });
+          paginate(stage);
+          const arts = [...stage.querySelectorAll("article.sheet")];
+          return [arts.filter((a) => !a.classList.contains("answers")), arts.filter((a) => a.classList.contains("answers"))];
+        };
+        let [probs, ans] = render(sheet);
+        // ページ数をこえるときは、のこりのページに入る問題だけにする
+        const room = n - made;
+        for (let t = 0; probs.length > room && t < 30; t++) {
+          const cut = trimSheet(sheet, probs, room);
+          if (!cut.problemCount) break;
+          // まだ入らないときは、最後の問題を1つずつへらす
+          if (t > 0) {
+            const last = cut.sections[cut.sections.length - 1];
+            last.problems.pop();
+            if (!last.problems.length) cut.sections.pop();
+          }
+          sheet = cut;
+          [probs, ans] = render(sheet);
+        }
+        if (probs.length > room) probs = probs.slice(0, room);
+        made += probs.length;
         if (opt.out === "print") {
           printPages.push(...probs);
           if (opt.answers === "each") printPages.push(...ans);
@@ -53571,13 +53611,13 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
           if (opt.answers === "each") for (const a of ans) await capture(a, true);
           else answerLater.push(...ans);
         }
-        prog(i + 1, n + (answerLater.length && opt.out !== "print" ? 1 : 0), `${i + 1} / ${n} まい つくりました`);
+        prog(made, n + (answerLater.length && opt.out !== "print" ? 1 : 0), `${made} / ${n} ページ つくりました`);
         await sleep(0);
       }
       if (opt.out === "print") {
         el.preview.innerHTML = "";
         for (const a of [...printPages, ...answerLater]) el.preview.appendChild(a);
-        document.title = `${title}_${n}まい`;
+        document.title = `${title}_${n}ページ`;
         prog(1, 1, "印刷の画面を開きます");
         await sleep(300);
         window.print();
@@ -53597,7 +53637,8 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
         else if (files.length === 1) downloadBlob(files[0][1], files[0][0]);
         else downloadBlob(await zip.generateAsync({ type: "blob" }), `${title}_${opt.out === "jpg" ? "JPG" : "PDF"}.zip`);
       }
-      return batchCancel ? "とちゅうで やめました" : `できました(${pageNo || printPages.length + answerLater.length}ページ)`;
+      const total = pageNo || printPages.length + answerLater.length;
+      return batchCancel ? "とちゅうで やめました" : `できました(問題 ${made}ページ${opt.answers !== "none" ? `＋答え ${total - made}ページ` : ""})`;
     } finally {
       stage.remove();
     }
