@@ -46620,11 +46620,14 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       return out;
     }
     // 答えを書く四角(右に「円」)
-    const yenBox = (x, y, s = 13) => [
-      { t: "poly", pts: [[x, y], [x + s * 1.9, y], [x + s * 1.9, y + s], [x, y + s]], w: 0.8, fill: "white", lead: true, ans: true },
-      txt(x + s * 1.9 + 6, y + s * 0.78, "円", s * 0.62)
+    // 答えを書く四角(右に「円」)。高さ 18mm、はばは その問題で出る いちばん大きい金がくの けた数に合わせる(1けた 10mm)
+    const BOX_H = 18;
+    const boxW = (maxDigits) => Math.max(28, maxDigits * 10 + 8);
+    const yenBox = (x, y, w) => [
+      { t: "poly", pts: [[x, y], [x + w, y], [x + w, y + BOX_H], [x, y + BOX_H]], w: 0.8, fill: "white", lead: true, ans: true },
+      txt(x + w + 6, y + BOX_H * 0.74, "円", 10)
     ];
-    const yenAns = (x, y, n, c, s = 13) => [txt(x + s * 0.95, y + s * 0.8, n, String(n).length >= 4 ? s * 0.5 : s * 0.66, { color: c, bold: true })];
+    const yenAns = (x, y, w, n, c) => [txt(x + w / 2, y + BOX_H * 0.78, n, 13, { color: c, bold: true })];
     const redNums = (fig) => fig.items.filter((it) => it.t === "text" && it.color === RED).map((it) => it.s);
     // お金をならべる(しゅるいごとに まとめて、はばに入らないときは つぎの行へ)
     function layoutMoney(list, x0, x1, y0) {
@@ -46654,14 +46657,15 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       levels: lv({ values: [1, 10, 100] }, { values: [1, 5, 10, 50, 100, 500] }, { values: [1, 5, 10, 50, 100, 500, 1000, 5000, 10000] }),
       generate(rng, p, ctx) {
         const v = ctx && Number.isInteger(ctx.index) && rng.chance(0.7) ? p.values[ctx.index % p.values.length] : rng.pick(p.values);
-        const H = 34, k = isBill(v) ? 1.35 : 1.2, items = [...money(v, 50, H / 2 + 1, k)];
-        items.push(...yenBox(102, H / 2 - 6));
+        const H = 36, k = isBill(v) ? 1.35 : 1.2, items = [...money(v, 50, H / 2 + 1, k)];
+        const bw2 = boxW(String(Math.max(...p.values)).length);
+        items.push(...yenBox(100, H / 2 - BOX_H / 2 + 1, bw2));
         return made(p, ctx, {
           key: `tc:${v}`,
           text: "いくらですか。",
           h: H,
           items,
-          ans: (c) => yenAns(102, H / 2 - 6, v, c),
+          ans: (c) => yenAns(100, H / 2 - BOX_H / 2 + 1, bw2, v, c),
           meta: { v }
         });
       },
@@ -46684,14 +46688,15 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           const total = vals.reduce((a, v, i) => a + v * counts[i], 0);
           if (total > p.maxTotal || total < 2) continue;
           const list = vals.flatMap((v, i) => Array(counts[i]).fill(v));
-          const lay = layoutMoney(list, 4, 118, 2);
-          const H = Math.max(26, lay.h + 4), items = [...lay.items, ...yenBox(124, H / 2 - 6.5)];
+          const bw2 = boxW(String(p.maxTotal).length), bx = W - bw2 - 12;
+          const lay = layoutMoney(list, 4, bx - 6, 2);
+          const H = Math.max(BOX_H + 6, lay.h + 4), items = [...lay.items, ...yenBox(bx, H / 2 - BOX_H / 2, bw2)];
           return made(p, ctx, {
             key: `tcs:${vals.join(",")}:${counts.join(",")}`,
             text: "ぜんぶで いくらですか。",
             h: H,
             items,
-            ans: (c) => yenAns(124, H / 2 - 6.5, total, c),
+            ans: (c) => yenAns(bx, H / 2 - BOX_H / 2, bw2, total, c),
             meta: { total }
           });
         }
