@@ -185,6 +185,22 @@ body[data-view="print"] .home { display: none; }
   .home-levels { display: flex; } .hl { flex: 1; }
 }
 
+/* ===== スマホ・小さい画面:操作パネルを上に固定しない・プリントを画面のはばに縮めて見せる(印刷はそのままの大きさ) ===== */
+@media screen and (max-width: 860px) {
+  .panel { position: static; padding: 10px 12px; gap: 8px 10px; }
+  .panel .title-row { gap: 4px 10px; }
+  .panel .title-row .version { display: none; }
+  .panel label { flex: 1 1 140px; min-width: 0; }
+  .panel select, .panel input[type=number] { width: 100%; min-width: 0; font-size: 16px; }
+  .panel .check { flex: 1 1 100%; padding-bottom: 0; font-size: 15px; }
+  .panel .check input { width: 18px; height: 18px; }
+  .panel .buttons { width: 100%; margin-left: 0; flex-wrap: wrap; }
+  .panel .buttons button { flex: 1 1 calc(50% - 8px); white-space: nowrap; padding: 10px 8px; }
+  .preview { padding: 10px 0 24px; overflow-x: hidden; }
+  .preview .sheet { zoom: var(--pvz, 1); margin-bottom: 12px; }
+  .batch-row select { width: 100%; }
+  .batch-buttons button { flex: 1; }
+}
 /* ===== 紙 ===== */
 .preview { padding: 18px 0 40px; }
 .sheet {
@@ -39358,6 +39374,15 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       topicNo: el.subWrap.hidden ? 0 : Number(el.subunit.value) || 0
     };
   }
+  // スマホなど画面のはばがせまいときは、A4 のプリントを画面に入る大きさにして見せる(ページ分けのあとで)
+  function fitPreview() {
+    const w = el.preview.clientWidth || window.innerWidth;
+    const paper = 210 * 96 / 25.4;
+    el.preview.style.setProperty("--pvz", String(Math.min(1, Math.floor((w - 16) / paper * 1000) / 1000)));
+  }
+  window.addEventListener("resize", () => {
+    if (el.preview.firstElementChild) fitPreview();
+  });
   function render() {
     el.msg.textContent = "";
     try {
@@ -39367,8 +39392,10 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       if (EXCLUDE.has(spec.unitId)) throw new Error("この単元は準備中です(この版では作れません)");
       const sheet = buildSheet(spec);
       const policy = makeKanjiPolicy(kanji_default, spec.grade, { excludeCurrentGrade: el.excludeCurrent.checked, furigana: el.furigana.checked });
+      el.preview.style.setProperty("--pvz", "1");
       el.preview.innerHTML = sheetHtml(sheet, { policy, withAnswers: el.withAnswers.checked, gradeLabel: `${spec.grade}年`, hints: el.hints.checked, answerMode: el.ansStyle.value, trace: el.trace.checked });
       paginate(el.preview);
+      fitPreview();
       document.title = `${stripRuby(renderText(sheet.title, policy))} No.${sheet.seed}`;
       el.print.disabled = false;
     } catch (e) {
@@ -39569,6 +39596,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       if (opt.out === "print") {
         el.preview.innerHTML = "";
         for (const a of [...printPages, ...answerLater]) el.preview.appendChild(a);
+        fitPreview();
         document.title = `${title}_${n}ページ`;
         prog(1, 1, "印刷の画面を開きます");
         await sleep(300);
