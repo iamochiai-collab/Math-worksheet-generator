@@ -33072,7 +33072,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       seed,
       title: subTopic ? `${UNIT_RUBY[unit.id] || unit.rubyName || unit.name} ${topicNo}　${topicRuby(subTopic.label)}` : KINDS9[kind].sheetLabel ? `${UNIT_RUBY[unit.id] || unit.rubyName || unit.name}　${KINDS9[kind].sheetLabel}` : UNIT_RUBY[unit.id] || unit.rubyName || unit.name,
       unitTitle: (UNIT_RUBY[unit.id] || unit.rubyName || unit.name) + (subTopic ? ` ${topicNo}` : ""),
-      sheetLabel: subTopic ? topicRuby(subTopic.label) : gradeData.stage ? `${gradeData.stageRuby}${KINDS9[kind].sheetLabel ? "　" + KINDS9[kind].sheetLabel : ""}` : KINDS9[kind].sheetLabel || "",
+      // 特別支援の段階のプリントにも、段階の名前(何学部何段階)は書かない
+      sheetLabel: subTopic ? topicRuby(subTopic.label) : KINDS9[kind].sheetLabel || "",
       stage: gradeData.stage || 0,
       topicNo: subTopic ? topicNo : 0,
       answerStyle: kind === "yoji" ? "filled" : null,
