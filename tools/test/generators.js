@@ -17,6 +17,8 @@ const { chromium } = require('playwright');
       let lower = ''; if (Number(g) < 7) for (let k = 1; k < Number(g); k++) lower += T.kanji_default[String(k)] || '';
       const lowerSet = new Set(lower);
       for (const topic of unit.topics) {
+        // 特別支援の段階(21〜)は、もとの単元と同じ小単元はとばす(段階だけの部品・しぼりこみのあるものだけ調べる)
+        if (Number(g) >= 21 && unitsArg === 'all' && !topic.levels && !/^t\./.test(topic.generator)) continue;
         const gen = T.getGenerator(topic.generator);
         for (const level of ['basic', 'normal', 'challenge']) {
           const p = T.topicParams(topic, level);

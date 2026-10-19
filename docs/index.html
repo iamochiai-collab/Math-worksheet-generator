@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="app-version" content="第3版(2026-10-19)">
+<meta name="app-version" content="第4版(2026-10-19)">
 <meta name="app-exclude" content="">
 <title>算数プリント</title>
 <style>
@@ -98,6 +98,20 @@ body[data-view="home"] .panel, body[data-view="home"] .preview { display: none; 
 body[data-view="print"] .home { display: none; }
 .g0 { --gc: #c9457f; } .g7 { --gc: #3d6f8f; } .g8 { --gc: #5a5f9e; } .g9 { --gc: #7a4f6e; } .g1 { --gc: #c8453b; } .g2 { --gc: #c9731e; } .g3 { --gc: #3b8a4c; }
 .g4 { --gc: #23837f; } .g5 { --gc: #2f67b1; } .g6 { --gc: #7150a6; }
+.g21, .g22, .g23 { --gc: #b0476b; } .g24, .g25 { --gc: #3b7d5a; } .g26, .g27 { --gc: #4a5fa0; }
+.tk-banner { display: flex; align-items: center; gap: 12px; width: 100%; margin: 14px 0 0; padding: 12px 16px; border-radius: 14px; border: 2px solid #e7a3bd; background: linear-gradient(90deg, #fff4f8, #fff); color: #6b2340; font: inherit; text-align: left; cursor: pointer; box-shadow: 0 2px 0 rgba(176,71,107,.15); }
+.tk-banner:hover, .tk-banner:focus-visible { background: #ffe9f1; }
+.tk-banner .tk-badge { flex: none; background: #b0476b; color: #fff; font-weight: bold; font-size: 13px; padding: 5px 10px; border-radius: 999px; }
+.tk-banner .tk-main { flex: 1; min-width: 0; }
+.tk-banner b { display: block; font-size: 18px; line-height: 1.35; }
+.tk-banner small { display: block; font-size: 12.5px; color: #8a4a62; line-height: 1.5; margin-top: 2px; }
+.tk-banner .tk-go { flex: none; font-size: 22px; font-weight: bold; color: #b0476b; }
+.tk-banner.back { border-color: #c5cad6; background: #f6f7fa; color: #2b3a55; box-shadow: none; }
+.tk-banner.back .tk-badge { background: #2b3a55; }
+.tk-banner.back small { color: #555; }
+.tk-banner.back .tk-go { color: #2b3a55; }
+.hg .stg { font-size: 13px; margin-left: 1px; }
+.home-ages.stage-note { max-width: 520px; line-height: 1.6; }
 .g10 { --gc: #9a4a2c; } .g11 { --gc: #2d7a63; } .g12 { --gc: #8a3b5c; } .g13 { --gc: #44628c; } .g14 { --gc: #6b4a8f; } .g15 { --gc: #3f6d3a; }
 .home { max-width: 1100px; margin: 0 auto; padding: 26px 16px 18px; }
 /* キャラクター(画面だけ。プリントには出さない) */
@@ -175,7 +189,7 @@ body[data-view="print"] .home { display: none; }
 @media (max-width: 640px) {
   .home-top { flex-direction: column; align-items: stretch; gap: 0; }
   .home-main { display: contents; }
-  .home-hero { order: 1; } .home-mascot { order: 2; } .home-row { order: 3; }
+  .home-hero { order: 1; } .tk-banner { order: 1; } .home-mascot { order: 2; } .home-row { order: 3; }
   .home-mascot { width: auto; flex-direction: row-reverse; justify-content: flex-end; align-items: flex-end; gap: 6px; margin: 12px 0 0; }
   .home-mascot .chara { width: 76px; height: 96px; }
   .bubble { margin-bottom: 30px; font-size: 14px; max-width: none; }
@@ -498,8 +512,9 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     <h1>算数プリント<span class="version" id="versionHome"></span></h1>
     <p>ようじ ・ 小学校1〜6年(東京書籍『新編 新しい算数』の単元順) ・ 中学・高校(学習指導要領の内容の順)。学年をえらんで、単元のボタンをおすとプリントができます。</p>
   </div>
+  <button type="button" class="tk-banner" id="tkBanner"></button>
   <div class="home-row">
-    <div><div class="home-step"><span class="n">1</span>学年</div><div class="home-grades" id="homeGrades"></div></div>
+    <div><div class="home-step"><span class="n">1</span><span id="homeStep1">学年</span></div><div class="home-grades" id="homeGrades"></div></div>
     <div><div class="home-step"><span class="n">2</span>難易度</div><div class="home-levels" id="homeLevels"></div><div class="home-ages" id="homeAges"></div></div>
   </div>
     </div>
@@ -515,7 +530,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     <div class="chara chara-maru" aria-hidden="true"></div>
     <h1>算数プリント</h1>
     <span class="subtitle" id="subtitle">小学校1〜6年 ・ 東京書籍『新編 新しい算数』の単元順</span>
-    <span class="version" id="version">第3版(2026-10-19)</span>
+    <span class="version" id="version">第4版(2026-10-19)</span>
   </div>
   <label>学年<select id="grade"></select></label>
   <label>単元<select id="unit"></select></label>
@@ -571,6 +586,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   <summary>使い方</summary>
   <ol>
     <li><b>作り方</b> 学年 → 単元 → 種類 → 難易度 → 問題数を選んで「作成」。下に A4 の形で出ます。「印刷」で印刷の画面が開きます。</li>
+    <li><b>特別支援学校の段階</b> メニューの「特別支援学校 各段階のプリントは こちら！」をおすと、知的障害の特別支援学校の学習指導要領(算数・数学)の段階(小学部1〜3段階・中学部1・2段階・高等部1・2段階)でえらべます。段階の内容(A 数と計算、B 図形 など)ごとに、問題を少なめ・字を大きめにしたプリントができます。小学部1・2段階は、ある・ない、おなじものをむすぶ、なかまあつめ、おおきい・ちいさい などの絵のプリントです。</li>
     <li><b>小単元</b> 小学校は、単元の中の小単元(たとえば「折れ線グラフと表」の「2本の折れ線グラフ」)だけのプリントも作れます。メニューの単元の「小単元をえらぶ」から、または上の「小単元」でえらびます。見出しは「単元名 番号」と「◎ 小単元名」になります。「まとめて作る」と組み合わせると、同じ小単元のプリントを何まいも作れます。</li>
     <li><b>作り直しとシード番号</b> 「作り直し」を押すと別の問題になります。プリント左下の「No.」がシード番号(星の中の数字はページの番号)で、同じ番号・同じ設定なら同じプリントになります(先生用と児童用、やり直し用などに)。</li>
     <li><b>解答</b> 問題のページのあとに付きます。「答えのページ」が「プリントに書きこむ」のときは、問題のプリントと同じページに答えをオレンジの字で書きこんだ形になります(1ページずつ対応)。「答えだけの一覧」にすると、答えを短くまとめたページになります。「解答をつける」を外すと付きません。</li>
@@ -583,7 +599,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   </ol>
 </details>
 <div class="preview" id="preview"></div>
-<footer class="site-footer">算数プリント <span id="versionFoot">第3版(2026-10-19)</span></footer>
+<footer class="site-footer">算数プリント <span id="versionFoot">第4版(2026-10-19)</span></footer>
 <script>
 (() => {
   // src/core/rng.js
@@ -46373,6 +46389,325 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     };
   })();
 
+  // add/tokushi
+  // 特別支援学校(知的障害)の算数・数学「段階」用。
+  // 小学部1段階など、いちばんはじめの段階のための絵のプリント(ある・ない、おなじもの、なかまあつめ、おおきい・ちいさい)。
+  // つくりは幼児のプリント(yoji)とおなじ:1まいの問題を少なく、絵と字を大きく。答えのページは答えを赤で書きこんだプリント。
+  var tokushi = (() => {
+    const W = 172;
+    const RED = "#d7263d", GRAY = "#c2c2c2", INK = "#000";
+    const txt = (x, y, s, size, o = {}) => ({ t: "text", x, y, s: String(s), size, halo: false, ...o });
+    const ring = (cx, cy, r, color, w = 0.9) => ({ t: "circle", cx, cy, r, w, color, lead: true });
+    const panel = (x, y, w, h, r = 4) => ({ ...frame(x, y, w, h, r), w: 0.5 });
+    const pic = (kind, cx, cy, s, tag) => icon(kind, cx, cy, s).map((it) => ({ ...it, g: tag, kind }));
+    const dot = (x, y) => ({ t: "dot", x, y, r: 1.7 });
+    const EX = { basic: { example: true }, normal: { example: true }, challenge: { example: false } };
+    const lv = (b, n, c) => ({ basic: { ...EX.basic, ...b }, normal: { ...EX.normal, ...n }, challenge: { ...EX.challenge, ...c } });
+    const nameOf = (k) => ICONS[k].name;
+    // 問題の図と答えの図をまとめて作る(れいは灰色の答え、答えのページは赤)
+    function made(p, ctx, { key, text, h, items, ans, meta }) {
+      const example = p.example && ctx && ctx.index === 0;
+      const fig = (extra) => ({ type: "draw", w: W + 4, h: h + 3, items: [...items, ...extra], scaleK: 1 });
+      return {
+        key: (example ? "ex:" : "") + key,
+        text,
+        figure: fig(example ? ans(GRAY) : []),
+        answer: { display: "", figure: fig(ans(RED)) },
+        workspace: { type: "none" },
+        example,
+        meta
+      };
+    }
+    const redRings = (fig) => fig.items.filter((it) => it.t === "circle" && it.color === RED);
+    const redLines = (fig) => fig.items.filter((it) => it.t === "line" && it.color === RED);
+    const ALL = () => THINGS2.concat(ANIMALS);
+
+    // ===== ある・ない(おさらに ある ほうに ○) =====
+    const tAri = {
+      id: "t.ari",
+      instruction: null,
+      defaults: { rows: 2, many: false },
+      levels: lv({ rows: 2 }, { rows: 3 }, { rows: 3, many: true }),
+      generate(rng, p, ctx) {
+        const kinds = rng.shuffle(THINGS2).slice(0, p.rows);
+        const RH = 48, items = [], has = [];
+        kinds.forEach((k, i) => {
+          const y = 2 + i * RH, left = rng.chance(0.5);
+          has.push(left ? 0 : 1);
+          [0, 1].forEach((side) => {
+            const cx = side === 0 ? 50 : 126;
+            items.push({ t: "path", d: `M${cx - 30},${y + 30} Q${cx},${y + 40} ${cx + 30},${y + 30} L${cx + 24},${y + 35} Q${cx},${y + 41} ${cx - 24},${y + 35} Z`, w: 0.6, fill: "white", lead: true });
+            if ((side === 0) === left) {
+              const n = p.many ? rng.int(1, 3) : 1;
+              for (let j = 0; j < n; j++) items.push(...pic(k, cx + (j - (n - 1) / 2) * 15, y + 22, n > 1 ? 13 : 17, `${i}:${j}`));
+            }
+          });
+        });
+        return made(p, ctx, {
+          key: `ta:${kinds.join(",")}:${has.join("")}`,
+          text: `${kinds.map(nameOf).join("や ")}が ある おさらに ○を つけましょう。`,
+          h: p.rows * RH,
+          items,
+          ans: (c) => has.map((s, i) => ring(s === 0 ? 50 : 126, 2 + i * RH + 25, 21, c, 1.1)),
+          meta: { has, kinds }
+        });
+      },
+      verify(pr) {
+        const { has, kinds } = pr.meta;
+        const rings = redRings(pr.answer.figure);
+        if (rings.length !== has.length) return "○の数が違う";
+        for (let i = 0; i < has.length; i++) {
+          const side = rings[i].cx < 88 ? 0 : 1;
+          const there = pr.figure.items.some((it) => it.kind === kinds[i] && String(it.g).startsWith(`${i}:`));
+          if (!there || side !== has[i]) return "○の場所が違う";
+        }
+        return null;
+      }
+    };
+
+    // ===== おなじ ものを せんで むすぼう =====
+    const tSame = {
+      id: "t.same",
+      instruction: null,
+      defaults: { k: 2 },
+      levels: lv({ k: 2 }, { k: 3 }, { k: 4 }),
+      generate(rng, p, ctx) {
+        const kinds = rng.shuffle(ALL()).slice(0, p.k);
+        let right;
+        do right = rng.shuffle(kinds.slice());
+        while (p.k > 1 && right.every((k, i) => k === kinds[i]));
+        const RH = 30, items = [], lDot = [], rDot = [];
+        kinds.forEach((k, i) => {
+          const y = 2 + i * RH + 12;
+          items.push(panel(10, y - 12, 34, 24, 3), ...pic(k, 27, y, 18, `L${i}`), dot(52, y));
+          lDot.push([52, y]);
+        });
+        right.forEach((k, i) => {
+          const y = 2 + i * RH + 12;
+          items.push(panel(W - 44, y - 12, 34, 24, 3), ...pic(k, W - 27, y, 18, `R${i}`), dot(W - 52, y));
+          rDot.push([W - 52, y]);
+        });
+        return made(p, ctx, {
+          key: `ts:${kinds.join(",")}:${right.join(",")}`,
+          text: "おなじ ものを せんで むすびましょう。",
+          h: p.k * RH,
+          items,
+          ans: (c) => kinds.map((k, i) => ({ t: "line", x1: lDot[i][0], y1: lDot[i][1], x2: rDot[right.indexOf(k)][0], y2: rDot[right.indexOf(k)][1], w: 1, color: c, lead: true, cap: "round", from: i, to: right.indexOf(k) })),
+          meta: { kinds, right }
+        });
+      },
+      verify(pr) {
+        const { kinds, right } = pr.meta;
+        const lines = redLines(pr.answer.figure);
+        if (lines.length !== kinds.length) return "線の数が違う";
+        for (const ln of lines) if (kinds[ln.from] !== right[ln.to]) return "ちがう ものを むすんでいる";
+        return null;
+      }
+    };
+
+    // ===== なかまあつめ(おなじ ものに ぜんぶ ○) =====
+    const tSort = {
+      id: "t.sort",
+      instruction: null,
+      defaults: { kinds: 2, total: [5, 6], target: [2, 3] },
+      levels: lv({ kinds: 2, total: [4, 6], target: [2, 3] }, { kinds: 2, total: [6, 8], target: [2, 4] }, { kinds: 3, total: [8, 10], target: [3, 4] }),
+      generate(rng, p, ctx) {
+        const kinds = rng.shuffle(ALL()).slice(0, p.kinds);
+        const total = rng.int(p.total[0], p.total[1]);
+        const nT = Math.min(total - (p.kinds - 1), rng.int(p.target[0], p.target[1]));
+        const bag = [...Array(nT).fill(kinds[0])];
+        while (bag.length < total) bag.push(kinds[1 + (bag.length % (p.kinds - 1))]);
+        const order = rng.shuffle(bag);
+        const cols = total > 6 ? 5 : total > 4 ? 3 : 2, rows = Math.ceil(total / cols);
+        const CW = Math.min(32, (W - 8) / cols), RH = 28, items = [], pos = [];
+        order.forEach((k, i) => {
+          const r = Math.floor(i / cols), c = i % cols;
+          const cx = (W - cols * CW) / 2 + c * CW + CW / 2 + (r % 2 ? 4 : -4), cy = 2 + r * RH + RH / 2;
+          items.push(...pic(k, cx, cy, 17, `${i}`));
+          pos.push([cx, cy, k]);
+        });
+        return made(p, ctx, {
+          key: `tso:${order.join(",")}`,
+          text: `${nameOf(kinds[0])}に ぜんぶ ○を つけましょう。`,
+          h: rows * RH,
+          items,
+          ans: (c) => pos.filter((q) => q[2] === kinds[0]).map((q) => ring(q[0], q[1], 12, c, 1.1)),
+          meta: { target: kinds[0], order }
+        });
+      },
+      verify(pr) {
+        const { target, order } = pr.meta;
+        const n = order.filter((k) => k === target).length;
+        return redRings(pr.answer.figure).length === n && n >= 1 && n < order.length ? null : "○の数が違う";
+      }
+    };
+
+    // ===== おおきい・ちいさい(おおきい ほうに ○) =====
+    const tBigger = {
+      id: "t.bigger",
+      instruction: null,
+      defaults: { rows: 2, k: 2, small: false },
+      levels: lv({ rows: 2, k: 2 }, { rows: 3, k: 2, small: true }, { rows: 3, k: 3, small: true }),
+      generate(rng, p, ctx) {
+        const askSmall = p.small && rng.chance(0.4);
+        const kinds = rng.shuffle(ALL()).slice(0, p.rows);
+        const RH = 36, items = [], pick = [], sizesAll = [];
+        const SZ = p.k === 3 ? [12, 20, 30] : [14, 30];
+        kinds.forEach((k, i) => {
+          const sizes = rng.shuffle(SZ.slice());
+          sizesAll.push(sizes);
+          const y = 2 + i * RH + RH / 2;
+          sizes.forEach((s, j) => items.push(...pic(k, 30 + j * (p.k === 3 ? 56 : 92), y, s, `${i}:${j}`)));
+          pick.push(sizes.indexOf(askSmall ? Math.min(...sizes) : Math.max(...sizes)));
+        });
+        return made(p, ctx, {
+          key: `tb:${kinds.join(",")}:${sizesAll.map((s) => s.join("-")).join(",")}:${askSmall}`,
+          text: p.k === 3 ? `いちばん ${askSmall ? "ちいさい" : "おおきい"} ものに ○を つけましょう。` : `${askSmall ? "ちいさい" : "おおきい"} ほうに ○を つけましょう。`,
+          h: p.rows * RH,
+          items,
+          ans: (c) => pick.map((j, i) => ring(30 + j * (p.k === 3 ? 56 : 92), 2 + i * RH + RH / 2, Math.max(9, sizesAll[i][j] * 0.62), c, 1.1)),
+          meta: { sizesAll, pick, askSmall }
+        });
+      },
+      verify(pr) {
+        const { sizesAll, pick, askSmall } = pr.meta;
+        for (let i = 0; i < pick.length; i++) {
+          const s = sizesAll[i], want = s.indexOf(askSmall ? Math.min(...s) : Math.max(...s));
+          if (want !== pick[i]) return "○の場所が違う";
+        }
+        return redRings(pr.answer.figure).length === pick.length ? null : "○の数が違う";
+      }
+    };
+
+    return [tAri, tSame, tSort, tBigger];
+  })();
+
+  // ===== 特別支援学校(知的障害)の算数・数学の段階 =====
+  // 学習指導要領(平成29年告示)の段階と内容(A〜D)に合わせて、いまある学年の単元・小単元の問題をならべなおしたもの。
+  // key は GRADES に入れる番号(21〜27)。styleGrade は字の大きさ・漢字の範囲に使う学年。
+  // units の from は「単元id」(全部の小単元)か「単元id:番号」(その小単元だけ)。levels は ★ごとの数の範囲などのしぼりこみ。
+  var tokushiStages = [
+    {
+      key: 21, name: "小学部1段階", ruby: "{小学部|しょうがくぶ}1{段階|だんかい}", short: "1", part: "小学部", styleGrade: 1,
+      note: "ものの有無、対応、3までの数(数唱は5まで)、形の区別、大きさ・長さの違い",
+      units: [
+        { name: "ものの ある・ない", domain: "A 数量の基礎", from: [["t.ari"]] },
+        { name: "おなじ ものを むすぼう", domain: "A 数量の基礎", from: [["t.same"]] },
+        { name: "なかまあつめ", domain: "A 数量の基礎", from: [["t.sort", { basic: { kinds: 2, total: [4, 5], target: [2, 2] }, normal: { kinds: 2, total: [4, 6], target: [2, 3] }, challenge: { kinds: 2, total: [6, 8], target: [2, 4] } }]] },
+        { name: "3までの かず", domain: "B 数と計算", from: [["y-01", { basic: { min: 1, max: 3 }, normal: { min: 1, max: 3, scatter: true }, challenge: { min: 1, max: 5 } }]] },
+        { name: "どちらが おおい", domain: "B 数と計算", from: [["y-04", { basic: { max: 4, minDiff: 2 }, normal: { max: 5, minDiff: 2 }, challenge: { max: 5, minDiff: 1 } }]] },
+        { name: "おなじ かたちを みつけよう", domain: "C 図形", from: [["y-12", { basic: { kinds: 2, total: [4, 6] }, normal: { kinds: 2, total: [5, 8] }, challenge: { kinds: 3, total: [6, 9] } }]] },
+        { name: "おおきい・ちいさい", domain: "D 測定", from: [["t.bigger"]] },
+        { name: "ながい・みじかい", domain: "D 測定", from: [["y-13", { basic: { k: 2 }, normal: { k: 2 }, challenge: { k: 3, short: true } }]] }
+      ]
+    },
+    {
+      key: 22, name: "小学部2段階", ruby: "{小学部|しょうがくぶ}2{段階|だんかい}", short: "2", part: "小学部", styleGrade: 1,
+      note: "10までの数(数え方・読み書き・順序・0・合成と分解)、○△□、長さ・重さなどの比べ方、分類と絵グラフ",
+      units: [
+        { name: "10までの かず", domain: "A 数と計算", from: [["y-01"], ["y-03"]] },
+        { name: "すうじを かこう", domain: "A 数と計算", from: [["y-02b"]], unitProps: { per: 10, starts: [1], defaultCount: 1 } },
+        { name: "かずの じゅんばん", domain: "A 数と計算", from: [["y-05", { basic: { len: 5, lo: 1, hi: 7, blanks: [1, 2] }, normal: { len: 5, lo: 0, hi: 10, blanks: [1, 2] }, challenge: { len: 6, lo: 0, hi: 10, blanks: [2, 3], down: true } }], ["g1-01:4"]] },
+        { name: "どちらが おおい", domain: "A 数と計算", from: [["y-04"], ["g1-01:2"], ["g1-01:5"]] },
+        { name: "いくつと いくつ", domain: "A 数と計算", from: [["y-09"], ["g1-01:3"]] },
+        { name: "かたちの なかま", domain: "B 図形", from: [["y-12"], ["g1-12:1"]] },
+        { name: "ながさ・かさ・ひろさくらべ", domain: "C 測定", from: [["y-13"], ["g1-05:1"], ["g1-10:1"], ["g1-15:1"]] },
+        { name: "なかまわけと えグラフ", domain: "D データの活用", from: [["t.sort"], ["g1-06"]] }
+      ]
+    },
+    {
+      key: 23, name: "小学部3段階", ruby: "{小学部|しょうがくぶ}3{段階|だんかい}", short: "3", part: "小学部", styleGrade: 1,
+      note: "100までの数、20までのたし算・ひき算、身の回りの形と位置、長さ・広さ・かさ、時刻、絵や図での整理",
+      units: [
+        { name: "20までの かず", domain: "A 数と計算", from: [["g1-07"]] },
+        { name: "100までの かず", domain: "A 数と計算", from: [["g1-14"]] },
+        { name: "たしざん(10まで)", domain: "A 数と計算", from: [["g1-03"]] },
+        { name: "ひきざん(10まで)", domain: "A 数と計算", from: [["g1-04"]] },
+        { name: "3つの かずの けいさん", domain: "A 数と計算", from: [["g1-09"]] },
+        { name: "くりあがりの ある たしざん", domain: "A 数と計算", from: [["g1-11"]] },
+        { name: "くりさがりの ある ひきざん", domain: "A 数と計算", from: [["g1-13"]] },
+        { name: "まえ・うしろ・うえ・した", domain: "B 図形", from: [["g1-02"], ["y-08"]] },
+        { name: "かたちあそび・かたちづくり", domain: "B 図形", from: [["g1-12"], ["g1-18"]] },
+        { name: "ながさ・かさ・ひろさ", domain: "C 測定", from: [["g1-05"], ["g1-10"], ["g1-15"]] },
+        { name: "とけい", domain: "C 測定", from: [["g1-08"], ["g1-16"]] },
+        { name: "えグラフ", domain: "D データの活用", from: [["g1-06"]] }
+      ]
+    },
+    {
+      key: 24, name: "中学部1段階", ruby: "{中学部|ちゅうがくぶ}1{段階|だんかい}", short: "1", part: "中学部", styleGrade: 3,
+      note: "3位数までの数、2位数のたし算・ひき算と筆算、かけ算(九九)、三角形・四角形と箱の形、長さ・かさ・重さ、時刻と時間、表とグラフ",
+      units: [
+        { name: "3けたの数", domain: "A 数と計算", from: [["g2-05"]] },
+        { name: "たし算の筆算", domain: "A 数と計算", from: [["g2-02"]] },
+        { name: "ひき算の筆算", domain: "A 数と計算", from: [["g2-03"]] },
+        { name: "たし算とひき算の筆算(3けた)", domain: "A 数と計算", from: [["g2-09"]] },
+        { name: "かけ算(九九)", domain: "A 数と計算", from: [["g2-11"], ["g2-12"]] },
+        { name: "三角形と四角形", domain: "B 図形", from: [["g2-10"]] },
+        { name: "はこの形", domain: "B 図形", from: [["g2-17"]] },
+        { name: "長さ", domain: "C 測定", from: [["g2-04"], ["g2-14"]] },
+        { name: "かさ", domain: "C 測定", from: [["g2-06"]] },
+        { name: "重さ", domain: "C 測定", from: [["g3-14"]] },
+        { name: "時こくと時間", domain: "C 測定", from: [["g2-07"], ["g3-02"]] },
+        { name: "表とグラフ", domain: "D データの活用", from: [["g2-01"], ["g3-06"]] }
+      ]
+    },
+    {
+      key: 25, name: "中学部2段階", ruby: "{中学部|ちゅうがくぶ}2{段階|だんかい}", short: "2", part: "中学部", styleGrade: 4,
+      note: "4位数までの数、3・4位数のたし算・ひき算、かけ算のきまり、わり算とあまり、小数・分数のはじめ、□を使った式、三角形・角・円、面積、変わり方、棒グラフ・折れ線グラフ",
+      units: [
+        { name: "4けたの数・大きい数", domain: "A 数と計算", from: [["g2-13"], ["g3-09"]] },
+        { name: "たし算とひき算の筆算", domain: "A 数と計算", from: [["g3-04"]] },
+        { name: "かけ算のきまり", domain: "A 数と計算", from: [["g3-01"]] },
+        { name: "わり算", domain: "A 数と計算", from: [["g3-03"], ["g3-08"]] },
+        { name: "小数", domain: "A 数と計算", from: [["g3-13"]] },
+        { name: "分数", domain: "A 数と計算", from: [["g2-16"], ["g3-15"]] },
+        { name: "□を使った式", domain: "A 数と計算", from: [["g3-16"]] },
+        { name: "三角形と角", domain: "B 図形", from: [["g3-18"], ["g4-04"]] },
+        { name: "円と球", domain: "B 図形", from: [["g3-12"]] },
+        { name: "垂直・平行と四角形", domain: "B 図形", from: [["g4-09"]] },
+        { name: "面積", domain: "B 図形", from: [["g4-12"]] },
+        { name: "変わり方", domain: "C 変化と関係", from: [["g4-11"], ["g4-06b"]] },
+        { name: "棒グラフと折れ線グラフ", domain: "D データの活用", from: [["g3-06"], ["g4-02"]] }
+      ]
+    },
+    {
+      key: 26, name: "高等部1段階", ruby: "{高等部|こうとうぶ}1{段階|だんかい}", short: "1", part: "高等部", styleGrade: 5,
+      note: "整数のかけ算・わり算、小数・分数の計算、概数、合同・多角形・面積、比例、単位量あたり、百分率、帯グラフ・円グラフ、平均",
+      units: [
+        { name: "わり算の筆算", domain: "A 数と計算", from: [["g4-03"], ["g4-06"]] },
+        { name: "小数のしくみと計算", domain: "A 数と計算", from: [["g4-05"], ["g4-13"]] },
+        { name: "小数のかけ算・わり算", domain: "A 数と計算", from: [["g5-04"], ["g5-05"]] },
+        { name: "分数のたし算・ひき算", domain: "A 数と計算", from: [["g4-10"], ["g5-10"]] },
+        { name: "がい数", domain: "A 数と計算", from: [["g4-07"]] },
+        { name: "計算のきまり", domain: "A 数と計算", from: [["g4-08"]] },
+        { name: "合同な図形", domain: "B 図形", from: [["g5-06"]] },
+        { name: "図形の角", domain: "B 図形", from: [["g5-07"]] },
+        { name: "面積", domain: "B 図形", from: [["g5-13"]] },
+        { name: "比例", domain: "C 変化と関係", from: [["g5-03"]] },
+        { name: "単位量あたりの大きさ", domain: "C 変化と関係", from: [["g5-12"]] },
+        { name: "割合", domain: "C 変化と関係", from: [["g5-14"]] },
+        { name: "帯グラフと円グラフ", domain: "D データの活用", from: [["g5-15"]] },
+        { name: "平均", domain: "D データの活用", from: [["g5-11"]] }
+      ]
+    },
+    {
+      key: 27, name: "高等部2段階", ruby: "{高等部|こうとうぶ}2{段階|だんかい}", short: "2", part: "高等部", styleGrade: 6,
+      note: "整数の性質、分数の計算、文字を使った式、拡大図と縮図、円の面積、体積、比例と反比例、比、データの分布",
+      units: [
+        { name: "倍数と約数", domain: "A 数と計算", from: [["g5-08"]] },
+        { name: "分数と小数", domain: "A 数と計算", from: [["g5-09"]] },
+        { name: "分数のかけ算・わり算", domain: "A 数と計算", from: [["g6-03"], ["g6-04"]] },
+        { name: "文字と式", domain: "A 数と計算", from: [["g6-02"]] },
+        { name: "拡大図と縮図", domain: "B 図形", from: [["g6-06"]] },
+        { name: "円の面積", domain: "B 図形", from: [["g6-08"]] },
+        { name: "体積", domain: "B 図形", from: [["g5-02"], ["g6-09"]] },
+        { name: "比例と反比例", domain: "C 変化と関係", from: [["g6-11"]] },
+        { name: "比", domain: "C 変化と関係", from: [["g6-05"]] },
+        { name: "データの調べ方", domain: "D データの活用", from: [["g6-07"]] }
+      ]
+    }
+  ];
+
   // add/yoji
   // 幼児向けプリント(3〜6さい)。すらぷり・ちびむすドリルのつくりを参考に、1まいの問題を少なく、絵と字を大きく。
   // 答えのページは「答えを赤で書きこんだプリント」。★☆☆・★★☆ は1問目を「れい」(うすい字をなぞるお手本)にする。
@@ -47335,7 +47670,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     prismNet_default,
     cylinderNet_default
   ];
-  list.push(...chu1, ...chu2, ...chu3, ...g4LineGraph, ...kou0, ...kou1, ...kou2, ...kou3, ...kouA, ...kouB, ...kouC, ...yoji);
+  list.push(...chu1, ...chu2, ...chu3, ...g4LineGraph, ...kou0, ...kou1, ...kou2, ...kou3, ...kouA, ...kouB, ...kouC, ...tokushi, ...yoji);
   var generators = Object.fromEntries(list.map((g3) => [g3.id, g3]));
   function getGenerator(id) {
     const g3 = generators[id];
@@ -47524,7 +47859,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       seed,
       title: subTopic ? `${UNIT_RUBY[unit.id] || unit.rubyName || unit.name} ${topicNo}　${topicRuby(subTopic.label)}` : KINDS9[kind].sheetLabel ? `${UNIT_RUBY[unit.id] || unit.rubyName || unit.name}　${KINDS9[kind].sheetLabel}` : UNIT_RUBY[unit.id] || unit.rubyName || unit.name,
       unitTitle: (UNIT_RUBY[unit.id] || unit.rubyName || unit.name) + (subTopic ? ` ${topicNo}` : ""),
-      sheetLabel: subTopic ? topicRuby(subTopic.label) : KINDS9[kind].sheetLabel || "",
+      sheetLabel: subTopic ? topicRuby(subTopic.label) : gradeData.stage ? `${gradeData.stageRuby}${KINDS9[kind].sheetLabel ? "　" + KINDS9[kind].sheetLabel : ""}` : KINDS9[kind].sheetLabel || "",
+      stage: gradeData.stage || 0,
       topicNo: subTopic ? topicNo : 0,
       answerStyle: kind === "yoji" ? "filled" : null,
       sections,
@@ -47572,7 +47908,10 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   // 学年の名前(10〜15 は高校の科目)
   var KOU_NAMES = { 10: "数学Ⅰ", 11: "数学A", 12: "数学Ⅱ", 13: "数学B", 14: "数学Ⅲ", 15: "数学C" };
   var KOU_SHORT = { 10: "Ⅰ", 11: "A", 12: "Ⅱ", 13: "B", 14: "Ⅲ", 15: "C" };
-  var gradeNameOf = (g3) => (g3 = Number(g3), g3 === 0 ? "ようじ" : g3 >= 10 ? KOU_NAMES[g3] : g3 >= 7 ? `中${g3 - 6}` : `${g3}年`);
+  // 21〜27 は特別支援学校(知的障害)の段階
+  var STAGE_NAMES = { 21: "小学部1段階", 22: "小学部2段階", 23: "小学部3段階", 24: "中学部1段階", 25: "中学部2段階", 26: "高等部1段階", 27: "高等部2段階" };
+  var isStage = (g3) => Number(g3) >= 21;
+  var gradeNameOf = (g3) => (g3 = Number(g3), g3 >= 21 ? STAGE_NAMES[g3] || `段階${g3}` : g3 === 0 ? "ようじ" : g3 >= 10 ? KOU_NAMES[g3] : g3 >= 7 ? `中${g3 - 6}` : `${g3}年`);
   function coverageSummary(grades, exclude = /* @__PURE__ */ new Set()) {
     return Object.keys(grades).map(Number).sort((a, b) => a - b).map((grade) => {
       const units = grades[grade]?.units ?? [];
@@ -48907,7 +49246,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   var FIG_ONLY = /^(?:[右下上左]の)?(?:グラフ|図|表)(?:のとおり|のよう)?。?$/;
   function sheetHtml(sheet, { policy, withAnswers, gradeLabel, hints = false, answerMode = "key", trace = false }) {
     const hintShown = new Set();
-    const yoji = sheet.grade === 0;
+    const yoji = sheet.grade === 0 || sheet.kind === "yoji";
     const keyMode = !!withAnswers && answerMode !== "list" && sheet.answerStyle !== "filled" && !yoji;
     const traceOn = !!trace && !yoji && sheet.kind !== "test";
     const keyOn = keyMode || traceOn;
@@ -49065,7 +49404,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       return `<div class="ans-block" data-sec="${s.no}"><span class="block-no">${s.no}</span><div class="ans-items"><span class="ans-item">${ans(p.answer.display)}${ansFig(p)}</span></div></div>`;
     }).join("");
     const footer = `<footer class="sheet-footer"><span class="ft-no" data-seed="No.${sheet.seed}">No.${sheet.seed}</span></footer>`;
-    let gc = Number.isInteger(sheet.grade) ? ` grade-${sheet.grade}` : "";
+    let gc = Number.isInteger(sheet.grade) ? ` grade-${sheet.kind === "yoji" ? 0 : sheet.grade}` : "";
+    if (sheet.stage) gc += " stage";
     if (policy && policy.furigana) gc += " furi";
     const page1 = `<article class="sheet${gc}"${keyMode ? ' data-key="1"' : ""}>${header()}<main class="body">${sections}</main>${footer}</article>`;
     const page2 = withAnswers && !keyMode ? `<article class="sheet answers${sheet.answerStyle === "filled" ? " filled" : ""}${gc}">${header()}<main class="body">${answerSections}</main>${footer}</article>` : "";
@@ -53724,6 +54064,39 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
 
   // src/app.js
   var GRADES = { ...typeof yojiGrade !== "undefined" ? { 0: yojiGrade } : {}, ...typeof chu1Grade !== "undefined" ? { 7: chu1Grade } : {}, ...typeof chu2Grade !== "undefined" ? { 8: chu2Grade } : {}, ...typeof chu3Grade !== "undefined" ? { 9: chu3Grade } : {}, ...typeof kou1Grade !== "undefined" ? { 10: kou1Grade } : {}, ...typeof kouAGrade !== "undefined" ? { 11: kouAGrade } : {}, ...typeof kou2Grade !== "undefined" ? { 12: kou2Grade } : {}, ...typeof kouBGrade !== "undefined" ? { 13: kouBGrade } : {}, ...typeof kou3Grade !== "undefined" ? { 14: kou3Grade } : {}, ...typeof kouCGrade !== "undefined" ? { 15: kouCGrade } : {}, 1: grade1_default, 2: grade2_default, 3: grade3_default, 4: grade4_default, 5: grade5_default, 6: grade6_default };
+  // ===== 特別支援学校(知的障害)の段階:いまある単元・小単元の問題を、学習指導要領の段階・内容にならべなおす =====
+  if (typeof tokushiStages !== "undefined") {
+    const findUnit = (id) => {
+      for (const g3 of Object.values(GRADES)) {
+        const u2 = g3.units.find((x) => x.id === id);
+        if (u2) return u2;
+      }
+      return null;
+    };
+    const withLevels = (tp, lv2) => lv2 ? { ...tp, levels: Object.fromEntries(["basic", "normal", "challenge"].map((k) => [k, { ...tp.levels?.[k] || {}, ...lv2[k] || {} }])) } : tp;
+    for (const st of tokushiStages) {
+      const units = st.units.map((su, i) => {
+        const topics = [];
+        let props = {};
+        for (const [ref, lv2] of su.from) {
+          if (/^t\./.test(ref)) {
+            topics.push(withLevels({ label: su.name, generator: ref, kinds: ["yoji"] }, lv2));
+            continue;
+          }
+          const [uid, no] = ref.split(":");
+          const src = findUnit(uid);
+          if (!src) throw new Error(`段階の単元が見つからない: ${ref}`);
+          const list = no ? [src.topics[Number(no) - 1]] : src.topics;
+          if (list.some((tp) => !tp)) throw new Error(`段階の小単元が見つからない: ${ref}`);
+          for (const tp of list) topics.push(withLevels({ ...tp }, lv2));
+          if (!no && su.from.length === 1 && src.per) props = { per: src.per, starts: src.starts, defaultCount: src.defaultCount };
+          else if (!no && su.from.length === 1 && src.starts) props = { starts: src.starts };
+        }
+        return { id: `s${st.key}-${String(i + 1).padStart(2, "0")}`, order: i + 1, name: su.name, domain: su.domain, topics, ...props, ...su.unitProps || {} };
+      });
+      GRADES[st.key] = { grade: st.styleGrade, stage: st.key, stageName: st.name, stageRuby: st.ruby || st.name, part: st.part, short: st.short, note: st.note, units };
+    }
+  }
   var $ = (id) => document.getElementById(id);
   var el = {
     grade: $("grade"),
@@ -53775,7 +54148,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   function refreshUnits() {
     const data = GRADES[el.grade.value];
     const gN = Number(el.grade.value);
-    $("subtitle").textContent = gN >= 10 ? "高校 ・ 学習指導要領の内容の順" : gN >= 7 ? "中学 ・ 学習指導要領の内容の順" : gN === 0 ? "ようじ(3〜6さい)" : "小学校1〜6年 ・ 東京書籍『新編 新しい算数』の単元順";
+    $("subtitle").textContent = gN >= 21 ? "特別支援学校(知的障害) ・ 学習指導要領の段階と内容" : gN >= 10 ? "高校 ・ 学習指導要領の内容の順" : gN >= 7 ? "中学 ・ 学習指導要領の内容の順" : gN === 0 ? "ようじ(3〜6さい)" : "小学校1〜6年 ・ 東京書籍『新編 新しい算数』の単元順";
     const opts = data ? data.units.map((u2) => ({
       value: u2.id,
       label: `${u2.numberless ? "　" : u2.order + " "}${u2.name}${isReady(u2) ? "" : "(準備中)"}`,
@@ -53785,7 +54158,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     refreshKinds();
   }
   // 小単元(小学校だけ)。「ぜんぶ」は単元ぜんたい
-  var hasSubs = (g3) => g3 >= 1 && g3 <= 6;
+  var hasSubs = (g3) => g3 >= 1 && g3 <= 6 || g3 >= 21;
   function refreshSubs() {
     const g3 = Number(el.grade.value);
     const unit = GRADES[g3]?.units.find((u2) => u2.id === el.unit.value);
@@ -53826,7 +54199,14 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     el.fromWrap.hidden = !unit?.starts;
     let counts = k.counts, def = k.defaultCount, label = (c) => `${c}問`;
     // 高校の計算ドリルは1問が長いので、問題数を少なめに
-    if (Number(el.grade.value) >= 10 && el.kind.value === "drill") counts = [5, 10, 15, 20], def = 10;
+    const gv = Number(el.grade.value);
+    if (gv >= 10 && gv < 21 && el.kind.value === "drill") counts = [5, 10, 15, 20], def = 10;
+    // 特別支援の段階は、1まいの問題を少なめに
+    if (gv >= 21) {
+      if (el.kind.value === "drill") counts = gv <= 23 ? [4, 6, 10, 15, 20] : [5, 10, 15, 20], def = gv <= 23 ? 6 : 10;
+      else if (el.kind.value === "yoji") counts = [1, 2, 3, 4], def = 2;
+      else counts = [1, 2, 3, 4], def = 2;
+    }
     if (unit?.starts) {
       const prevFrom = Number(el.from.value);
       if (el.from.dataset.unit !== unit.id) {
@@ -53875,7 +54255,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       if (!spec.unitId) throw new Error("この学年は単元一覧まで入っていますが、問題の生成器がまだありません(準備中)");
       if (EXCLUDE.has(spec.unitId)) throw new Error("この単元は準備中です(この版では作れません)");
       const sheet = buildSheet(spec);
-      const policy = makeKanjiPolicy(kanji_default, spec.grade, { excludeCurrentGrade: el.excludeCurrent.checked, furigana: el.furigana.checked });
+      const policy = makeKanjiPolicy(kanji_default, spec.gradeData?.grade ?? spec.grade, { excludeCurrentGrade: el.excludeCurrent.checked, furigana: el.furigana.checked });
       el.preview.style.setProperty("--pvz", "1");
       el.preview.innerHTML = sheetHtml(sheet, { policy, withAnswers: el.withAnswers.checked, gradeLabel: `${spec.grade}年`, hints: el.hints.checked, answerMode: el.ansStyle.value, trace: el.trace.checked });
       paginate(el.preview);
@@ -53969,7 +54349,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     const spec0 = currentSpec();
     if (!spec0.gradeData || !spec0.unitId) throw new Error("学年と単元を選んでください");
     const unit = spec0.gradeData.units.find((u2) => u2.id === spec0.unitId);
-    const policy = makeKanjiPolicy(kanji_default, spec0.grade, { excludeCurrentGrade: el.excludeCurrent.checked, furigana: el.furigana.checked });
+    const policy = makeKanjiPolicy(kanji_default, spec0.gradeData?.grade ?? spec0.grade, { excludeCurrentGrade: el.excludeCurrent.checked, furigana: el.furigana.checked });
     const stage = document.createElement("div");
     stage.className = "preview batch-stage";
     document.body.appendChild(stage);
@@ -54197,7 +54577,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   if (q.get("trace") === "1") el.trace.checked = true;
   var homeGrade = store.get("grade") !== null && GRADES[Number(store.get("grade"))] ? Number(store.get("grade")) : 1;
   var homeLevel = LEVELS[store.get("level")] ? store.get("level") : "basic";
-  var SUB_KIND = { drill: "計算", word: "文章題", figure: "図・グラフ" };
+  var SUB_KIND = { drill: "計算", word: "文章題", figure: "図・グラフ", yoji: "え" };
   var KIND_SHORT = { drill: "計算ドリル", word: "文章題", figure: "図形・グラフ", test: "まとめテスト", yoji: "プリントを つくる" };
   var homeEl = $("home");
   $("versionHome").textContent = versionLabel;
@@ -54211,6 +54591,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     m.classList.add("pop");
   }
   function gradeSay(g3) {
+    if (g3 >= 21) return `${gradeName(g3)}の<br>プリントを つくろう！`;
     if (g3 === 0) return "いっしょに かずで<br>あそぼう！";
     if (g3 <= 2) return `${g3}ねんせいの プリントを<br>つくろう！`;
     if (g3 <= 6) return `${g3}年生のプリントを<br>作ろう！`;
@@ -54220,13 +54601,18 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   var LEVEL_SAY = { basic: ["guide", "まずは きほんから！<br>じっくり いこう"], normal: ["idea", "いいね！<br>ちょうどいい むずかしさ"], challenge: ["cheer", "むずかしい問題に<br>ちょうせんだ！"] };
   function renderHome() {
     homeEl.className = `home g${homeGrade}`;
-    const hgBtn = (g3) => `<button type="button" class="hg g${g3}${g3 === homeGrade ? " on" : ""}" data-grade="${g3}" aria-pressed="${g3 === homeGrade}"${GRADES[g3] ? "" : " disabled"}>${g3 === 0 ? '<span class="yj">ようじ</span>' : g3 >= 10 ? `<small>数</small>${KOU_SHORT[g3]}` : g3 >= 7 ? `<small>中</small>${g3 - 6}` : `${g3}<small>年</small>`}</button>`;
-    $("homeGrades").innerHTML = [["ようじ・小学校", (g3) => g3 <= 6], ["中学", (g3) => g3 >= 7 && g3 <= 9], ["高校", (g3) => g3 >= 10]].map(([cap, f]) => [cap, GRADE_KEYS.filter(f)]).filter(([, gs]) => gs.length).map(([cap, gs]) => `<div class="hg-group"><span class="hg-cap">${cap}</span><div class="hg-btns">${gs.map(hgBtn).join("")}</div></div>`).join("");
-    $("homeAges").textContent = homeGrade === 0 ? "★☆☆ 3〜4さい　★★☆ 4〜5さい　★★★ 5〜6さい" : "";
+    const stageMode = isStage(homeGrade);
+    const hgBtn = (g3) => `<button type="button" class="hg g${g3}${g3 === homeGrade ? " on" : ""}" data-grade="${g3}" aria-pressed="${g3 === homeGrade}"${GRADES[g3] ? "" : " disabled"}>${g3 >= 21 ? `${GRADES[g3]?.short ?? ""}<span class="stg">段階</span>` : g3 === 0 ? '<span class="yj">ようじ</span>' : g3 >= 10 ? `<small>数</small>${KOU_SHORT[g3]}` : g3 >= 7 ? `<small>中</small>${g3 - 6}` : `${g3}<small>年</small>`}</button>`;
+    $("homeStep1").textContent = stageMode ? "段階" : "学年";
+    $("tkBanner").className = `tk-banner${stageMode ? " back" : ""}`;
+    $("tkBanner").innerHTML = stageMode ? '<span class="tk-badge">学年べつ</span><span class="tk-main"><b>学年べつ(ようじ・小学校・中学・高校)に もどる</b><small>ふつうの学年・単元のプリントは こちら</small></span><span class="tk-go">◀</span>' : '<span class="tk-badge">特別支援</span><span class="tk-main"><b>特別支援学校 各段階のプリントは こちら！</b><small>知的障害の特別支援学校の学習指導要領(算数・数学)の段階に合わせています。小学部1〜3段階・中学部1・2段階・高等部1・2段階</small></span><span class="tk-go">▶</span>';
+    $("homeGrades").innerHTML = (stageMode ? [["小学部", (g3) => g3 >= 21 && g3 <= 23], ["中学部", (g3) => g3 >= 24 && g3 <= 25], ["高等部", (g3) => g3 >= 26]] : [["ようじ・小学校", (g3) => g3 <= 6], ["中学", (g3) => g3 >= 7 && g3 <= 9], ["高校", (g3) => g3 >= 10 && g3 < 21]]).map(([cap, f]) => [cap, GRADE_KEYS.filter(f)]).filter(([, gs]) => gs.length).map(([cap, gs]) => `<div class="hg-group"><span class="hg-cap">${cap}</span><div class="hg-btns">${gs.map(hgBtn).join("")}</div></div>`).join("");
+    $("homeAges").textContent = homeGrade === 0 ? "★☆☆ 3〜4さい　★★☆ 4〜5さい　★★★ 5〜6さい" : stageMode ? `${gradeName(homeGrade)}:${GRADES[homeGrade]?.note || ""}` : "";
+    $("homeAges").classList.toggle("stage-note", stageMode);
     $("homeLevels").innerHTML = Object.entries(LEVELS).map(([k, v]) => `<button type="button" class="hl${k === homeLevel ? " on" : ""}" data-level="${k}" aria-pressed="${k === homeLevel}">${v.label}</button>`).join("");
     const units = GRADES[homeGrade]?.units ?? [];
-    $("homeUnitsTitle").textContent = homeGrade === 0 ? "ようじの プリント" : `${gradeName(homeGrade)}の単元`;
-    $("homeHint").textContent = homeGrade === 0 ? "「プリントを つくる」を おすと できます。こたえは あかで かきこんだ ページが つきます" : homeGrade <= 6 ? "単元の「計算ドリル」「文章題」などをおすと作れます。「小単元をえらぶ」から小単元だけのプリントも作れます" : "単元の「計算ドリル」「文章題」などをおすと作れます";
+    $("homeUnitsTitle").textContent = homeGrade === 0 ? "ようじの プリント" : stageMode ? `${gradeName(homeGrade)}の内容` : `${gradeName(homeGrade)}の単元`;
+    $("homeHint").textContent = stageMode ? "内容の「えのプリント」「計算ドリル」などをおすと作れます。「小単元をえらぶ」から、もっとしぼったプリントも作れます" : homeGrade === 0 ? "「プリントを つくる」を おすと できます。こたえは あかで かきこんだ ページが つきます" : homeGrade <= 6 ? "単元の「計算ドリル」「文章題」などをおすと作れます。「小単元をえらぶ」から小単元だけのプリントも作れます" : "単元の「計算ドリル」「文章題」などをおすと作れます";
     $("homeUnits").innerHTML = units.map((u2) => {
       const ready = isReady(u2);
       const kinds = ready ? unitKindsAvailable(u2) : [];
@@ -54234,7 +54620,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       return `<div class="ucard${ready ? "" : " off"}">
         <div class="ucard-head"><span class="uno${u2.numberless ? " extra" : ""}">${u2.numberless ? "補" : u2.order}</span><span class="uname">${esc2(u2.name)}</span></div>
         ${u2.domain ? `<div class="udomain">${esc2(u2.domain)}</div>` : ""}
-        <div class="ukinds">${ready ? kinds.map((k) => `<button type="button" class="uk k-${k}" data-unit="${u2.id}" data-kind="${k}">${KIND_SHORT[k]}</button>`).join("") : '<span class="soon">準備中</span>'}</div>
+        <div class="ukinds">${ready ? kinds.map((k) => `<button type="button" class="uk k-${k}" data-unit="${u2.id}" data-kind="${k}">${stageMode && k === "yoji" ? "えのプリント" : KIND_SHORT[k]}</button>`).join("") : '<span class="soon">準備中</span>'}</div>
         ${subs.length > 1 ? `<details class="usubs"><summary>小単元をえらぶ(${subs.length})</summary><ol class="usub-list">${subs.map(([tp, n]) => topicKinds(tp).map((k) => `<li><button type="button" class="usb" data-unit="${u2.id}" data-sub="${n}" data-kind="${k}"><span class="usub-no">${n}</span><span class="usub-name">${esc2(tp.label)}</span><span class="usub-kind">${SUB_KIND[k]}</span></button></li>`).join("")).join("")}</ol></details>` : ""}
       </div>`;
     }).join("");
@@ -54271,6 +54657,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     if (b.dataset.grade) {
       homeGrade = Number(b.dataset.grade);
       store.set("grade", homeGrade);
+      store.set(isStage(homeGrade) ? "stage" : "normalGrade", homeGrade);
       renderHome();
       mascot("idea", gradeSay(homeGrade));
     } else if (b.dataset.level) {
@@ -54282,6 +54669,20 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       mascot("maru", "OK！<br>プリントを 作るよ");
       openPrint(b.dataset.unit, b.dataset.kind, Number(b.dataset.sub) || 0);
     }
+  });
+  // 特別支援の段階 ⇔ 学年べつ の切りかえ(さいごにえらんだものをおぼえておく)
+  $("tkBanner").addEventListener("click", () => {
+    if (isStage(homeGrade)) {
+      store.set("stage", homeGrade);
+      const g3 = Number(store.get("normalGrade") ?? 1);
+      homeGrade = GRADES[g3] && !isStage(g3) ? g3 : 1;
+    } else {
+      const st = Number(store.get("stage"));
+      homeGrade = GRADES[st] && isStage(st) ? st : 21;
+    }
+    store.set("grade", homeGrade);
+    renderHome();
+    mascot("idea", gradeSay(homeGrade));
   });
   $("btnHome").addEventListener("click", () => {
     location.hash = "menu";
