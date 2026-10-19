@@ -189,12 +189,11 @@ body[data-view="print"] .home { display: none; }
   display: flex;
   flex-direction: column;
 }
-/* 見出し:キャラクター・単元名のカード・番号の星・日にちと名前 */
+/* 見出し:単元名のカード・番号の星・日にちと名前 */
 .sheet { --frame: #8cc9da; --frame-bg: #f3fafc; --title: #1f6f8b; --box: #3c9fb3; --key: #ef7d00; }
 .sheet-header {
   display: flex; align-items: center; gap: 0 3mm; margin-bottom: 4mm; min-height: 21mm;
 }
-.hd-chara { width: 15mm; height: 19mm; flex: none; align-self: flex-end; }
 .hd-card {
   flex: 1 1 auto; min-width: 0; border: 1.4pt solid var(--frame); border-radius: 3.5mm; background: var(--frame-bg);
   padding: 1.6mm 4mm 1.4mm; display: flex; flex-direction: column; justify-content: center; min-height: 17mm;
@@ -48860,7 +48859,6 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     const tl = [...stripRuby(renderText(titleSrc, policy))].length;
     const header = () => `
     <header class="sheet-header${yoji ? " yoji-head" : ""}">
-      <div class="hd-chara chara chara-${yoji ? "banzai" : "maru"}" aria-hidden="true"></div>
       <div class="hd-card">
         <h1${tl > (yoji ? 9 : 16) ? ' class="xlong"' : tl > (yoji ? 6 : 11) ? ' class="long"' : ""}>${t(titleSrc, policy)}</h1>
         <div class="hd-sub">${sheet.sheetLabel ? `<span class="hd-mark">◎</span><span>${t(sheet.sheetLabel, policy)}</span>` : ""}<span class="meta">${t(sheet.levelLabel, policy)}</span><span class="hd-ans">${t("{答|こた}え", policy)}</span></div>
