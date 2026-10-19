@@ -39451,6 +39451,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     if (el.preview.firstElementChild) fitPreview();
   });
   function render() {
+    // プリントの画面が出ていないと、ページ分けや図の大きさがはかれない(図が下に落ちる)ので、先に画面を出す
+    if (document.body.dataset.view !== "print") document.body.dataset.view = "print";
     el.msg.textContent = "";
     try {
       const spec = currentSpec();
@@ -39850,9 +39852,9 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     refreshCounts();
     el.level.value = homeLevel;
     el.seed.value = randomSeed();
+    showView("print");
     render();
     if (location.hash !== "#print") location.hash = "print";
-    else showView("print");
   }
   homeEl.addEventListener("click", (e) => {
     const b = e.target.closest("button");
