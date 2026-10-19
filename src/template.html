@@ -18,6 +18,8 @@
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+/* スマホのブラウザが文字を勝手に大きくしないように(ヒントなどが大きくなりすぎるのをふせぐ) */
+html { -webkit-text-size-adjust: 100%; -moz-text-size-adjust: 100%; text-size-adjust: 100%; }
 body {
   font-family: "BIZ UDPGothic", "BIZ UDゴシック", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", "Noto Sans JP", sans-serif;
   color: var(--ink);
@@ -270,7 +272,7 @@ body[data-view="print"] .home { display: none; }
 .item-head { min-width: 0; max-width: 100%; flex-wrap: wrap; }
 .sheet .item .ans-under { flex-wrap: wrap; max-width: 100%; }
 .item-body { min-width: 0; max-width: 100%; }
-.item-no { font-size: 11pt; flex: none; width: 22pt; }
+.item-no { font-size: 11pt; flex: none; min-width: 22pt; padding-right: 3pt; white-space: nowrap; letter-spacing: 0; }
 .item-body { font-size: 16pt; letter-spacing: 1.5pt; }
 .item-head { display: inline-flex; align-items: center; gap: 4pt; }
 .item.has-grid { flex-direction: column; align-items: flex-start; gap: 2pt; }
@@ -347,7 +349,8 @@ table.data.dense th, table.data.dense td { padding: 3pt 4pt; min-width: 26pt; }
 
 /* ===== 3年: 筆算の小問、長いラベルの解答らん ===== */
 .item.has-hissan { flex-direction: row; align-items: flex-start; flex-wrap: nowrap; }
-.item.has-hissan .item-no { width: 18pt; padding-top: 2pt; }
+.item.has-hissan .item-no { min-width: 18pt; padding-top: 2pt; }
+.item.has-hissan > .item-head { flex: none; }
 .item.has-hissan .figure { margin: 0; }
 .ws-lines.wide-label .ws-label { width: auto; min-width: 26pt; white-space: nowrap; }
 /* 図の右に解答らん(p.side) */
@@ -372,7 +375,7 @@ table.data.dense th, table.data.dense td { padding: 3pt 4pt; min-width: 26pt; }
 .sheet.grade-1 .points { font-size: 11pt; }
 .sheet.grade-1 .items { gap: 16pt 22pt; margin-left: 30pt; margin-top: 10pt; }
 .sheet.grade-1 .item { min-height: 40pt; }
-.sheet.grade-1 .item-no { font-size: 13pt; width: 28pt; }
+.sheet.grade-1 .item-no { font-size: 13pt; min-width: 28pt; }
 .sheet.grade-1 .item-body { font-size: 22pt; letter-spacing: 1pt; white-space: nowrap; }
 .sheet.grade-7 .item-body, .sheet.grade-8 .item-body, .sheet.grade-9 .item-body { font-size: 14.5pt; letter-spacing: 0.3pt; }
 .sheet.grade-10 .item-body, .sheet.grade-11 .item-body, .sheet.grade-12 .item-body, .sheet.grade-13 .item-body, .sheet.grade-14 .item-body, .sheet.grade-15 .item-body { font-size: 13.5pt; letter-spacing: 0.2pt; }
@@ -475,10 +478,10 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
 .key-note .kn-tag { display: inline-block; background: var(--key); color: #fff; border-radius: 1.5mm; padding: 0 1.8mm; font-size: 9.5pt; margin-right: 2mm; vertical-align: 1pt; }
 .keyed .key-note { display: block; }
 .fig-wrap { position: relative; max-width: 100%; display: flow-root; }
-.side .fig-wrap, .item.has-hissan > .fig-wrap { flex: none; }
-.side .fig-wrap > .figure, .item.has-hissan > .fig-wrap > .figure { max-width: none; }
-.fig-wrap > .key-fig > .figure { max-width: none; }
-.fig-wrap > .key-fig { position: absolute; left: 0; top: 0; background: #fff; }
+.side .fig-wrap { flex: none; }
+.side .fig-wrap > .figure, .side .fig-wrap > .key-fig > .figure { max-width: none; }
+.item.has-hissan > .fig-wrap { flex: 1 1 0; min-width: 0; }
+.fig-wrap > .key-fig { position: absolute; left: 0; right: 0; top: 0; background: #fff; }
 .keyed .fig-wrap > .figure { visibility: hidden; }
 .keyed .fig-wrap > .key-fig, .item.trace .fig-wrap > .key-fig { display: block; }
 .item.trace svg .keyd, .item.trace svg text[fill="#ef7d00"] { fill: #c4c4c4; font-weight: normal; }
@@ -34631,6 +34634,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           c.classList.add("answers", "keyed");
           at.after(c);
           at = c;
+          fitWide(c);
           fitKeys(c);
         }
       }
@@ -34676,7 +34680,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       }
     }
     for (const kf of page.querySelectorAll(".fig-wrap > .key-fig")) {
-      const w = kf.parentElement.getBoundingClientRect(), r = kf.getBoundingClientRect();
+      const q = kf.parentElement.querySelector(":scope > .figure"), f = kf.querySelector(":scope > .figure");
+      const w = (q || kf.parentElement).getBoundingClientRect(), r = (f || kf).getBoundingClientRect();
       const z = Math.min(1, (w.width + 1) / Math.max(1, r.width), (w.height + 1) / Math.max(1, r.height));
       if (z < 0.999) kf.style.zoom = String(Math.floor(z * 100) / 100);
     }
@@ -39805,8 +39810,9 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   window.addEventListener("hashchange", () => showView(location.hash === "#print" ? "print" : "home"));
   renderHome();
   if (q.get("unit")) {
-    render();
+    // 先に画面を出してから作る(かくれたままだと、ページ分けの大きさがはかれない)
     showView("print");
+    render();
   } else {
     if (location.hash === "#print") {
       try { history.replaceState(null, "", location.pathname + location.search); } catch {}
