@@ -71,6 +71,8 @@ iPad では、「ファイル」アプリで `index.html` を長押し →「共
 │     ├─ kou2/ kouB/      ← 数学Ⅱ・数学B
 │     └─ kou3/ kouC/      ← 数学Ⅲ・数学C
 ├─ assets/chara/          ← メニューのキャラクター画像(webp)
+├─ assets/money/          ← お金(こうか・おさつ)の絵(webp)
+├─ assets/money/          ← お金(こうか)の絵(webp)
 ├─ vendor/                ← PDF・JPG・zip 用の道具(html2canvas / jsPDF / JSZip)とライセンス
 ├─ tools/
 │  ├─ build.py            ← 1 ファイルにまとめる
@@ -143,4 +145,6 @@ var chu1Grade = { grade: 7, units: [ ... ] };  // 学年と単元(src/template.h
 
 - プログラムと問題の部品は [MIT ライセンス](LICENSE) です。だれでも自由に使う・コピーする・書きかえる・配ることができます(著作権表示と LICENSE の文はのこしてください)。
 - `assets/chara/` のキャラクター画像は MIT ライセンスにふくまれません。著作権は落合聡一にあり、許可なく使うことはできません。
+- `assets/money/` のお金(こうか・おさつ)の絵は MIT ライセンスにふくまれません。使うときは、もとの絵の利用条件にしたがってください。
+- `assets/money/` のお金(こうか)の絵は MIT ライセンスにふくまれません。使うときは、もとの絵の利用条件にしたがってください。
 - `vendor/` の html2canvas(MIT)・jsPDF(MIT)・JSZip(MIT または GPLv3)は落合聡一の作ったものではないため、それぞれの作者のライセンスにしたがいます(`vendor/licenses/`)。

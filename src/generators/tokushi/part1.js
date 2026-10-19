@@ -183,16 +183,24 @@ var tokushi = (() => {
 
   // ===== お金 =====
   // お金の絵(本物ににせない、かんたんな図):こうかは まるい形に 金がく、5円・50円は あな。おさつは 四角に 金がく。
+  // こうかの大きさは本物と同じ(直径 1円20mm・5円22mm・10円23.5mm・50円21mm・100円22.6mm・500円26.5mm。印刷の倍率100%のとき)
   const COIN = {
-    1: { r: 7.5, fill: "#f2f2f2" }, 5: { r: 8.8, fill: "#ecd98a", hole: true }, 10: { r: 9.6, fill: "#d9a874" },
-    50: { r: 8.8, fill: "#e4e4e4", hole: true }, 100: { r: 9.8, fill: "#e4e4e4" }, 500: { r: 11.2, fill: "#ece3b8" }
+    1: { r: 10, fill: "#f2f2f2" }, 5: { r: 11, fill: "#ecd98a", hole: true }, 10: { r: 11.75, fill: "#d9a874" },
+    50: { r: 10.5, fill: "#e4e4e4", hole: true }, 100: { r: 11.3, fill: "#e4e4e4" }, 500: { r: 13.25, fill: "#ece3b8" }
   };
   const BILL = { 1000: "#eef3ea", 5000: "#f1ecf4", 10000: "#f4efe4" };
+  // おさつは本物(はば 1000円150mm・5000円156mm・10000円160mm)の 1/3 くらいの大きさ。たて:よこ は絵に合わせる
+  const BILL_SIZE = { 1000: [50, 25.4], 5000: [52, 25.5], 10000: [53.3, 25.5] };
   const isBill = (v) => v >= 1000;
-  const sizeOf = (v, k = 1) => isBill(v) ? { w: 40 * k, h: 20 * k } : { w: COIN[v].r * 2 * k, h: COIN[v].r * 2 * k };
+  const sizeOf = (v, k = 1) => isBill(v) ? { w: BILL_SIZE[v][0] * k, h: BILL_SIZE[v][1] * k } : { w: COIN[v].r * 2 * k, h: COIN[v].r * 2 * k };
+  const hasImg = (v) => typeof MONEY_IMG !== "undefined" && MONEY_IMG[v] && !/^\{\{/.test(MONEY_IMG[v]);
   function money(v, cx, cy, k = 1, tag = "") {
     if (isBill(v)) {
       const { w, h } = sizeOf(v, k), x = cx - w / 2, y = cy - h / 2;
+      if (hasImg(v)) return [
+        { t: "poly", pts: [[x, y], [x + w, y], [x + w, y + h], [x, y + h]], w: 0, fill: "none", lead: true, money: v, g: tag },
+        { t: "image", href: MONEY_IMG[v], x, y, w, h }
+      ];
       return [
         { t: "poly", pts: [[x, y], [x + w, y], [x + w, y + h], [x, y + h]], w: 0.6, fill: BILL[v], lead: true, money: v, g: tag },
         { t: "poly", pts: [[x + 1.6 * k, y + 1.6 * k], [x + w - 1.6 * k, y + 1.6 * k], [x + w - 1.6 * k, y + h - 1.6 * k], [x + 1.6 * k, y + h - 1.6 * k]], w: 0.3, fill: "none", lead: true },
@@ -201,6 +209,11 @@ var tokushi = (() => {
       ];
     }
     const c = COIN[v], r = c.r * k;
+    // こうかの絵があるときは絵をつかう(まるは 位置と金がくを おぼえておくための 見えない わく)
+    if (hasImg(v)) return [
+      { t: "circle", cx, cy, r, w: 0, fill: "none", lead: true, money: v, g: tag },
+      { t: "image", href: MONEY_IMG[v], x: cx - r, y: cy - r, w: r * 2, h: r * 2 }
+    ];
     const out = [
       { t: "circle", cx, cy, r, w: 0.6, fill: c.fill, lead: true, money: v, g: tag },
       { t: "circle", cx, cy, r: r - 1.2 * k, w: 0.25, fill: "none", lead: true }
@@ -244,7 +257,7 @@ var tokushi = (() => {
     levels: lv({ values: [1, 10, 100] }, { values: [1, 5, 10, 50, 100, 500] }, { values: [1, 5, 10, 50, 100, 500, 1000, 5000, 10000] }),
     generate(rng, p, ctx) {
       const v = ctx && Number.isInteger(ctx.index) && rng.chance(0.7) ? p.values[ctx.index % p.values.length] : rng.pick(p.values);
-      const H = 34, k = isBill(v) ? 1.35 : 1.7, items = [...money(v, 50, H / 2 + 1, k)];
+      const H = 34, k = isBill(v) ? 1.35 : 1.2, items = [...money(v, 50, H / 2 + 1, k)];
       items.push(...yenBox(102, H / 2 - 6));
       return made(p, ctx, {
         key: `tc:${v}`,
@@ -372,7 +385,7 @@ var tokushi = (() => {
           txt(x + 22, 13, name, 5),
           txt(x + 22, 22.5, `${price}円`, 6.4, { bold: true })
         ];
-        const fig = [...items.flatMap((nm, i) => tag(6 + i * 50, nm, prices[i])), txt(6 + items.length * 50 + 6, 18, "→", 7), ...money(pay, 6 + items.length * 50 + 40, 15, pay >= 1000 ? 1.1 : 1.4)];
+        const fig = [...items.flatMap((nm, i) => tag(6 + i * 50, nm, prices[i])), txt(6 + items.length * 50 + 6, 18, "→", 7), ...money(pay, 6 + items.length * 50 + 46, 15, pay >= 1000 ? 1 : 1.15)];
         const what = items.length === 2 ? `${items[0]}と ${items[1]}を かって` : `${items[0]}を かって`;
         const shiki = items.length === 2 ? `${pay}－(${prices[0]}＋${prices[1]})＝${change}` : `${pay}－${prices[0]}＝${change}`;
         return {

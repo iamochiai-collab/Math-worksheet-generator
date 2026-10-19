@@ -24,4 +24,6 @@ SOFTWARE.
 
 This license does not cover:
 - assets/chara/ (character images): Copyright (c) 2026 落合聡一. All rights reserved.
+- assets/money/ (coin and banknote images): not covered by the MIT License; subject to the terms of the original illustrations.
+- assets/money/ (coin images): not covered by the MIT License; subject to the terms of the original illustrations.
 - vendor/ (html2canvas, jsPDF, JSZip): see vendor/licenses/ for their own licenses.

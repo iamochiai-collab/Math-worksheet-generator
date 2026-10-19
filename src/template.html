@@ -8938,6 +8938,9 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
         case "text":
           out += textSvg(it, textFn);
           break;
+        case "image":
+          out += `<image href="${it.href}" x="${n2(it.x)}" y="${n2(it.y)}" width="${n2(it.w)}" height="${n2(it.h)}" preserveAspectRatio="xMidYMid meet"/>`;
+          break;
         default:
           throw new Error(`図の部品がない: ${it.t}`);
       }
@@ -21911,6 +21914,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     pig: { name: "ぶた", counter: "ひき", animal: true },
     chick: { name: "ひよこ", counter: "わ", animal: true }
   };
+  // お金の絵。assets/money/coin○.webp(こうか)・bill○.webp(おさつ)
+  var MONEY_IMG = { 1: "{{MONEY:coin1}}", 5: "{{MONEY:coin5}}", 10: "{{MONEY:coin10}}", 50: "{{MONEY:coin50}}", 100: "{{MONEY:coin100}}", 500: "{{MONEY:coin500}}", 1000: "{{MONEY:bill1000}}", 5000: "{{MONEY:bill5000}}", 10000: "{{MONEY:bill10000}}" };
   var THINGS2 = Object.keys(ICONS).filter((k) => !ICONS[k].animal);
   var ANIMALS = Object.keys(ICONS).filter((k) => ICONS[k].animal);
   function icon(kind, cx, cy, s, { fill: fill3 } = {}) {
