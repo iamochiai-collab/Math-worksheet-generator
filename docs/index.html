@@ -283,7 +283,6 @@ table.data.dense th, table.data.dense td { padding: 3pt 4pt; min-width: 26pt; }
 .ws-rule { flex: 1; border-bottom: 0.7pt solid #777; height: 100%; }
 
 .sheet-footer { display: flex; justify-content: space-between; align-items: flex-end; font-size: 8pt; color: #666; margin-top: 4pt; line-height: 1.2; }
-.ft-brand { font-size: 11pt; font-weight: bold; letter-spacing: 1.5pt; color: #4aa6bf; }
 
 /* 解答ページ */
 .answers .ans-block { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4pt 16pt; margin-bottom: 8pt; font-size: 12pt; }
@@ -49008,7 +49007,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       const p = s.problems[0];
       return `<div class="ans-block" data-sec="${s.no}"><span class="block-no">${s.no}</span><div class="ans-items"><span class="ans-item">${ans(p.answer.display)}${ansFig(p)}</span></div></div>`;
     }).join("");
-    const footer = `<footer class="sheet-footer"><span class="ft-no" data-seed="No.${sheet.seed}">No.${sheet.seed}</span><span class="ft-brand">算数プリント</span></footer>`;
+    const footer = `<footer class="sheet-footer"><span class="ft-no" data-seed="No.${sheet.seed}">No.${sheet.seed}</span></footer>`;
     let gc = Number.isInteger(sheet.grade) ? ` grade-${sheet.grade}` : "";
     if (policy && policy.furigana) gc += " furi";
     const page1 = `<article class="sheet${gc}"${keyMode ? ' data-key="1"' : ""}>${header()}<main class="body">${sections}</main>${footer}</article>`;
