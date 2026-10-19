@@ -61,7 +61,7 @@ assert '{{CHARA:' not in s and '{{VENDOR:' not in s
 
 (root / 'docs').mkdir(exist_ok=True)
 (root / 'docs' / 'index.html').write_text(s, encoding='utf-8')
-hook = '  window.__T = { generators, GRADES, buildSheet, makeRng, topicParams, getGenerator, kanji_default, renderText, makeKanjiPolicy, sheetHtml, paginate, ansify, HINTS };\n})();\n\n</script>'
+hook = '  window.__T = { generators, GRADES, buildSheet, makeRng, topicParams, getGenerator, kanji_default, renderText, makeKanjiPolicy, sheetHtml, paginate, ansify, HINTS, topicRuby, topicKinds };\n})();\n\n</script>'
 end = '})();\n\n</script>'
 assert s.count(end) == 1
 (root / 'build').mkdir(exist_ok=True)

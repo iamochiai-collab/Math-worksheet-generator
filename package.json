@@ -9,7 +9,8 @@
     "build": "python3 tools/build.py",
     "test": "npm run build && node tools/test/generators.js build/test.html all 120",
     "test:layout": "npm run build && node tools/test/layout.js docs/index.html",
-    "test:clip": "npm run build && node tools/test/clip.js build/test.html"
+    "test:clip": "npm run build && node tools/test/clip.js build/test.html",
+    "test:sub": "npm run build && node tools/test/subunits.js docs/index.html"
   },
   "devDependencies": {
     "playwright": "^1.47.0"

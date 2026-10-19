@@ -158,6 +158,16 @@ body[data-view="print"] .home { display: none; }
 .uk.k-test { background: #fff; border-color: #2b3a55; color: #2b3a55; font-weight: bold; }
 .uk.k-test:hover, .uk.k-test:focus-visible { background: #2b3a55; color: #fff; }
 .ucard.off { opacity: 0.55; }
+.usubs { margin-top: 6px; border-top: 1px dashed #d5d7de; padding-top: 6px; }
+.usubs summary { cursor: pointer; font-size: 13px; color: var(--gc); font-weight: bold; padding: 2px 0; }
+.usub-list { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.usub-list li { display: block; }
+.usb { font: inherit; width: 100%; display: flex; align-items: center; gap: 7px; text-align: left; font-size: 13.5px; line-height: 1.35; padding: 5px 7px; border-radius: 7px; border: 1px solid #e1e4ea; background: #fafbfc; color: #1f2a40; cursor: pointer; }
+.usub-no { flex: none; min-width: 20px; height: 20px; border-radius: 10px; border: 1.5px solid var(--gc); color: var(--gc); background: #fff; font-size: 11.5px; font-weight: bold; display: inline-flex; align-items: center; justify-content: center; }
+.usub-name { flex: 1; min-width: 0; }
+.usub-kind { flex: none; font-size: 11px; color: #6b7280; }
+.usb:hover, .usb:focus-visible { background: #2b3a55; border-color: #2b3a55; color: #fff; }
+.usb:hover .usub-kind, .usb:focus-visible .usub-kind { color: #dfe4ee; }
 .soon { font-size: 13px; color: #888; }
 .panel .btn-home { background: #fff; color: #2b3a55; border: 1px solid #2b3a55; font-size: 14px; padding: 5px 12px; }
 @media (max-width: 640px) {
@@ -490,6 +500,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   </div>
   <label>学年<select id="grade"></select></label>
   <label>単元<select id="unit"></select></label>
+  <label id="subWrap" hidden>小単元<select id="subunit"></select></label>
   <label>種類<select id="kind"></select></label>
   <label>難易度<select id="level"></select></label>
   <label id="fromWrap" hidden>はじめの かず<select id="from"></select></label>
@@ -541,6 +552,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   <summary>使い方</summary>
   <ol>
     <li><b>作り方</b> 学年 → 単元 → 種類 → 難易度 → 問題数を選んで「作成」。下に A4 の形で出ます。「印刷」で印刷の画面が開きます。</li>
+    <li><b>小単元</b> 小学校は、単元の中の小単元(たとえば「折れ線グラフと表」の「2本の折れ線グラフ」)だけのプリントも作れます。メニューの単元の「小単元をえらぶ」から、または上の「小単元」でえらびます。見出しは「単元名 番号」と「◎ 小単元名」になります。「まとめて作る」と組み合わせると、同じ小単元のプリントを何まいも作れます。</li>
     <li><b>作り直しとシード番号</b> 「作り直し」を押すと別の問題になります。プリント左下の「No.」がシード番号(星の中の数字はページの番号)で、同じ番号・同じ設定なら同じプリントになります(先生用と児童用、やり直し用などに)。</li>
     <li><b>解答</b> 問題のページのあとに付きます。「答えのページ」が「プリントに書きこむ」のときは、問題のプリントと同じページに答えをオレンジの字で書きこんだ形になります(1ページずつ対応)。「答えだけの一覧」にすると、答えを短くまとめたページになります。「解答をつける」を外すと付きません。</li>
     <li><b>お手本(うすい字)</b> つけると、それぞれの大問の(1)に答えをうすい字で入れます。なぞって書き方をたしかめてから、つづきの問題をときます(まとめテストにはつきません)。</li>
@@ -47359,11 +47371,30 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     throw new Error("まとめテストに使える内容がない");
   }
   var UNIT_RUBY = {"g2-02": "たし{算|ざん}のひっ{算|さん}", "g2-03": "ひき{算|ざん}のひっ{算|さん}", "g2-04": "{長|なが}さのたんい", "g2-05": "３けたの{数|かず}", "g2-06": "{水|みず}のかさのたんい", "g2-07": "{時|じ}こくと{時間|じかん}", "g2-08": "{計算|けいさん}のくふう", "g2-09": "たし{算|ざん}とひき{算|ざん}のひっ{算|さん}", "g2-10": "{長方形|ちょうほうけい}と{正方形|せいほうけい}", "g2-11": "かけ{算|ざん}(1)", "g2-12": "かけ{算|ざん}(2)", "g2-13": "４けたの{数|かず}", "g2-14": "{長|なが}いものの{長|なが}さのたんい", "g2-15": "たし{算|ざん}とひき{算|ざん}", "g2-16": "{分数|ぶんすう}", "g2-17": "はこの{形|かたち}", "g3-01": "かけ{算|ざん}", "g3-02": "{時|じ}こくと{時間|じかん}のもとめ{方|かた}", "g3-03": "わり{算|ざん}", "g3-04": "たし{算|ざん}とひき{算|ざん}の{筆算|ひっさん}", "g3-05": "{長|なが}いものの{長|なが}さのはかり{方|かた}と{表|あらわ}し{方|かた}", "g3-06": "ぼうグラフと{表|ひょう}", "g3-07": "{暗算|あんざん}", "g3-08": "あまりのあるわり{算|ざん}", "g3-09": "{大|おお}きい{数|かず}のしくみ", "g3-10": "かけ{算|ざん}の{筆算|ひっさん}(1)", "g3-11": "{大|おお}きい{数|かず}のわり{算|ざん}、{分数|ぶんすう}とわり{算|ざん}", "g3-12": "{円|えん}と{球|きゅう}", "g3-13": "{小数|しょうすう}", "g3-14": "{重|おも}さのたんいとはかり{方|かた}", "g3-15": "{分数|ぶんすう}", "g3-16": "□を{使|つか}った{式|しき}", "g3-17": "かけ{算|ざん}の{筆算|ひっさん}(2)", "g3-17b": "{倍|ばい}の{計算|けいさん}", "g3-18": "{三角形|さんかくけい}と{角|かく}", "g4-01": "{大|おお}きい{数|かず}のしくみ", "g4-02": "{折|お}れ{線|せん}グラフと{表|ひょう}", "g4-03": "わり{算|ざん}の{筆算|ひっさん}(1)", "g4-04": "{角|かく}の{大|おお}きさ", "g4-05": "{小数|しょうすう}のしくみ", "g4-06": "わり{算|ざん}の{筆算|ひっさん}(2)", "g4-06b": "{倍|ばい}の{見方|みかた}", "g4-07": "がい{数|すう}の{表|あらわ}し{方|かた}と{使|つか}い{方|かた}", "g4-08": "{計算|けいさん}のきまり", "g4-09": "{垂直|すいちょく}、{平行|へいこう}と{四角形|しかくけい}", "g4-10": "{分数|ぶんすう}", "g4-11": "{変|か}わり{方|かた}{調|しら}べ", "g4-12": "{面積|めんせき}のくらべ{方|かた}と{表|あらわ}し{方|かた}", "g4-13": "{小数|しょうすう}のかけ{算|ざん}とわり{算|ざん}", "g4-14": "{直方体|ちょくほうたい}と{立方体|りっぽうたい}", "g5-01": "{整数|せいすう}と{小数|しょうすう}", "g5-02": "{直方体|ちょくほうたい}や{立方体|りっぽうたい}の{体積|たいせき}", "g5-03": "{比例|ひれい}", "g5-04": "{小数|しょうすう}のかけ{算|ざん}", "g5-05": "{小数|しょうすう}のわり{算|ざん}", "g5-05b": "{小数|しょうすう}の{倍|ばい}", "g5-06": "{合同|ごうどう}な{図形|ずけい}", "g5-07": "{図形|ずけい}の{角|かく}", "g5-08": "{偶数|ぐうすう}と{奇数|きすう}、{倍数|ばいすう}と{約数|やくすう}", "g5-09": "{分数|ぶんすう}と{小数|しょうすう}、{整数|せいすう}の{関係|かんけい}", "g5-10": "{分数|ぶんすう}のたし{算|ざん}とひき{算|ざん}", "g5-11": "{平均|へいきん}", "g5-12": "{単位量|たんいりょう}あたりの{大|おお}きさ", "g5-13": "{四角形|しかくけい}と{三角形|さんかくけい}の{面積|めんせき}", "g5-14": "{割合|わりあい}", "g5-15": "{帯|おび}グラフと{円|えん}グラフ", "g5-16": "{変|か}わり{方|かた}{調|しら}べ", "g5-17": "{正多角形|せいたかくけい}と{円周|えんしゅう}の{長|なが}さ", "g5-18": "{角柱|かくちゅう}と{円柱|えんちゅう}", "g6-01": "{対称|たいしょう}な{図形|ずけい}", "g6-02": "{文字|もじ}と{式|しき}", "g6-03": "{分数|ぶんすう}×{整数|せいすう}、{分数|ぶんすう}÷{整数|せいすう}、{分数|ぶんすう}×{分数|ぶんすう}", "g6-04": "{分数|ぶんすう}÷{分数|ぶんすう}", "g6-04b": "{分数|ぶんすう}の{倍|ばい}", "g6-05": "{比|ひ}", "g6-06": "{拡大図|かくだいず}と{縮図|しゅくず}", "g6-07": "データの{調|しら}べ{方|かた}", "g6-08": "{円|えん}の{面積|めんせき}", "g6-09": "{角柱|かくちゅう}と{円柱|えんちゅう}の{体積|たいせき}", "g6-10": "およその{面積|めんせき}と{体積|たいせき}", "g6-11": "{比例|ひれい}と{反比例|はんぴれい}", "g6-12": "{並|なら}べ{方|かた}と{組|く}み{合|あ}わせ{方|かた}", "g6-12b": "データを{使|つか}って {生活|せいかつ}を{見|み}なおそう", "g6-13": "{算数|さんすう}のしあげ"};
-  function buildSheet({ gradeData, unitId, kind, level, count, seed, from = 0 }) {
+  // 小単元(単元の中の topics)。番号は 1 から。まとめテストは単元ぜんたいだけ
+  var topicKinds = (topic) => topic.kinds.filter((k) => k !== "test");
+  // 小単元の名前を {漢字|かな} にする(ふりがな・習っていない漢字をひらがなにするため)
+  var TOPIC_WORDS = {"読": "よ", "筆算": "ひっさん", "何十": "なんじゅう", "何百": "なんびゃく", "使": "つか", "暗算": "あんざん", "直角": "ちょっかく", "方眼": "ほうがん", "九九": "くく", "考": "かんが", "字": "じ", "数字": "すうじ", "終": "お", "変": "か", "棒": "ぼう", "二次元表": "{二次元|にじげん}{表|ひょう}", "整理": "せいり", "分度器": "ぶんどき", "角度": "かくど", "三角定規": "さんかくじょうぎ", "見積": "{見|み}{積|つ}", "見分": "{見|み}{分|わ}", "見取図": "みとりず", "見": "み", "順序": "じゅんじょ", "仮分数": "かぶんすう", "帯分数": "たいぶんすう", "帯": "おび", "積": "つ", "木": "き", "内": "うち", "概数": "がいすう", "決": "き", "三角": "さんかく", "公倍数": "こうばいすう", "公約数": "こうやくすう", "最小公倍数": "さいしょうこうばいすう", "最大公約数": "さいだいこうやくすう", "約分": "やくぶん", "約数": "やくすう", "異分母": "いぶんぼ", "混": "ま", "表示": "ひょうじ", "色": "いろ", "換算": "かんさん", "二重数直線": "にじゅうすうちょくせん", "百分率": "ひゃくぶんりつ", "歩合": "ぶあい", "場面": "ばめん", "縮尺": "しゅくしゃく", "縮図": "しゅくず", "拡大図": "かくだいず", "利用": "りよう", "代表値": "だいひょうち", "時期": "じき", "判断": "はんだん", "年": "ねん", "二次元": "にじげん"};
+  var topicRuby = (label) => {
+    if (typeof chuLib === "undefined" || !chuLib.R) return String(label);
+    if (!topicRuby.ready) {
+      for (const [k, v] of Object.entries(TOPIC_WORDS)) if (chuLib.RUBY[k] === void 0) chuLib.RUBY[k] = v;
+      topicRuby.ready = true;
+    }
+    let x = String(label);
+    for (const [re, to] of TOPIC_FIX) x = x.replace(re, to);
+    return chuLib.R(x);
+  };
+  // 読み方が前後で変わることば(辞書の前になおす)
+  var TOPIC_FIX = [[/上(?=が)/g, "{上|あ}"], [/下(?=が)/g, "{下|さ}"], [/(?<=[ぁ-ん])方/g, "{方|かた}"], [/分(?=け)/g, "{分|わ}"], [/何分の一/g, "{何分|なんぶん}の{一|いち}"], [/何分(?=前|後)/g, "{何分|なんぷん}"], [/がい数/g, "がい{数|すう}"], [/積(?=み)/g, "{積|つ}"], [/表(?=し)/g, "{表|あらわ}"]];
+  function buildSheet({ gradeData, unitId, kind, level, count, seed, from = 0, topicNo = 0 }) {
     const unit = gradeData.units.find((u2) => u2.id === unitId);
     if (!unit) throw new Error(`単元がない: ${unitId}`);
     if (!KINDS9[kind]) throw new Error(`種類が不正: ${kind}`);
     if (!LEVELS[level]) throw new Error(`難易度が不正: ${level}`);
+    const subTopic = topicNo ? unit.topics[topicNo - 1] : null;
+    if (topicNo && !subTopic) throw new Error(`小単元がない: ${unitId} ${topicNo}`);
+    if (subTopic && !topicKinds(subTopic).includes(kind)) throw new Error(`この小単元には「${KINDS9[kind].label}」がありません`);
     if (!unitKindsAvailable(unit).includes(kind)) throw new Error(`この単元には「${KINDS9[kind].label}」がありません`);
     const rng = makeRng(seed);
     const used = /* @__PURE__ */ new Set();
@@ -47384,6 +47415,12 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           pr = cand;
           break;
         }
+        // 小単元だけのプリントは、問題の種類が少ないことがあるので、同じ問題もゆるす(となりどうしはさける)
+        if (!pr && subTopic) for (let t2 = 0; t2 < 40 && !pr; t2++) {
+          const cand = gen2.generate(rng, p, { index: start + i, from });
+          if (t2 < 30 && out.length && out[out.length - 1].key === cand.key) continue;
+          pr = cand;
+        }
         if (!pr) throw new Error(`「${topic.label}」で重複しない問題がこれ以上作れません。問題数を減らしてください。`);
         used.add(pr.key);
         if (pr.softKey) usedSoft.add(`${gen2.id}:${pr.softKey}`);
@@ -47393,7 +47430,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     };
     const sections = [];
     let curGroup = kind;
-    const topicsOf = (k) => unit.topics.filter((t2) => t2.kinds.includes(k));
+    const topicsOf = (k) => unit.topics.filter((t2) => (!subTopic || t2 === subTopic) && t2.kinds.includes(k));
     const addCategory = (k, n, points) => {
       const topics = topicsOf(k);
       if (!topics.length) return;
@@ -47466,9 +47503,10 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       level,
       levelLabel: LEVELS[level].label,
       seed,
-      title: KINDS9[kind].sheetLabel ? `${UNIT_RUBY[unit.id] || unit.rubyName || unit.name}　${KINDS9[kind].sheetLabel}` : UNIT_RUBY[unit.id] || unit.rubyName || unit.name,
-      unitTitle: UNIT_RUBY[unit.id] || unit.rubyName || unit.name,
-      sheetLabel: KINDS9[kind].sheetLabel || "",
+      title: subTopic ? `${UNIT_RUBY[unit.id] || unit.rubyName || unit.name} ${topicNo}　${topicRuby(subTopic.label)}` : KINDS9[kind].sheetLabel ? `${UNIT_RUBY[unit.id] || unit.rubyName || unit.name}　${KINDS9[kind].sheetLabel}` : UNIT_RUBY[unit.id] || unit.rubyName || unit.name,
+      unitTitle: (UNIT_RUBY[unit.id] || unit.rubyName || unit.name) + (subTopic ? ` ${topicNo}` : ""),
+      sheetLabel: subTopic ? topicRuby(subTopic.label) : KINDS9[kind].sheetLabel || "",
+      topicNo: subTopic ? topicNo : 0,
       answerStyle: kind === "yoji" ? "filled" : null,
       sections,
       totalPoints: kind === "test" ? total : null,
@@ -53669,6 +53707,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   var el = {
     grade: $("grade"),
     unit: $("unit"),
+    subunit: $("subunit"),
+    subWrap: $("subWrap"),
     kind: $("kind"),
     level: $("level"),
     count: $("count"),
@@ -53723,10 +53763,30 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     fill2(el.unit, opts, true);
     refreshKinds();
   }
+  // 小単元(小学校だけ)。「ぜんぶ」は単元ぜんたい
+  var hasSubs = (g3) => g3 >= 1 && g3 <= 6;
+  function refreshSubs() {
+    const g3 = Number(el.grade.value);
+    const unit = GRADES[g3]?.units.find((u2) => u2.id === el.unit.value);
+    const on = !!(hasSubs(g3) && unit && isReady(unit) && unit.topics.filter((tp) => topicKinds(tp).length).length > 1);
+    const opts = [{ value: "0", label: "ぜんぶ" }];
+    if (on) unit.topics.forEach((tp, i) => {
+      if (topicKinds(tp).length) opts.push({ value: String(i + 1), label: `${i + 1} ${tp.label}` });
+    });
+    fill2(el.subunit, opts, el.subunit.dataset.unit === el.unit.value);
+    el.subunit.dataset.unit = el.unit.value;
+    el.subWrap.hidden = !on;
+    if (!on) el.subunit.value = "0";
+  }
   function refreshKinds() {
+    refreshSubs();
+    refreshSubKinds();
+  }
+  function refreshSubKinds() {
     const data = GRADES[el.grade.value];
     const unit = data?.units.find((u2) => u2.id === el.unit.value);
-    const avail = unit ? unitKindsAvailable(unit) : [];
+    const sub = !el.subWrap.hidden && Number(el.subunit.value) ? unit?.topics[Number(el.subunit.value) - 1] : null;
+    const avail = sub ? topicKinds(sub) : unit ? unitKindsAvailable(unit) : [];
     fill2(el.kind, Object.entries(KINDS9).map(([k, v]) => ({ value: k, label: v.label, disabled: !avail.includes(k) })), true);
     fill2(el.level, Object.entries(LEVELS).map(([k, v]) => ({ value: k, label: v.label })), true);
     refreshCounts();
@@ -53773,7 +53833,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       level: el.level.value,
       count: el.count.disabled ? null : Number(el.count.value),
       seed: Number(el.seed.value) || 1,
-      from: el.fromWrap.hidden ? 0 : Number(el.from.value) || 0
+      from: el.fromWrap.hidden ? 0 : Number(el.from.value) || 0,
+      topicNo: el.subWrap.hidden ? 0 : Number(el.subunit.value) || 0
     };
   }
   function render() {
@@ -53798,6 +53859,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   }
   el.grade.addEventListener("change", refreshUnits);
   el.unit.addEventListener("change", refreshKinds);
+  el.subunit.addEventListener("change", refreshSubKinds);
   el.kind.addEventListener("change", refreshCounts);
   el.from.addEventListener("change", refreshCounts);
   // 設定を変えたら、すぐ作り直す(作ったプリントがあるとき)
@@ -54069,6 +54131,10 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     el.unit.value = q.get("unit");
     refreshKinds();
   }
+  if (q.get("sub") && !el.subWrap.hidden) {
+    el.subunit.value = q.get("sub");
+    refreshSubKinds();
+  }
   if (q.get("kind")) {
     el.kind.value = q.get("kind");
     refreshCounts();
@@ -54098,6 +54164,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   if (q.get("trace") === "1") el.trace.checked = true;
   var homeGrade = store.get("grade") !== null && GRADES[Number(store.get("grade"))] ? Number(store.get("grade")) : 1;
   var homeLevel = LEVELS[store.get("level")] ? store.get("level") : "basic";
+  var SUB_KIND = { drill: "計算", word: "文章題", figure: "図・グラフ" };
   var KIND_SHORT = { drill: "計算ドリル", word: "文章題", figure: "図形・グラフ", test: "まとめテスト", yoji: "プリントを つくる" };
   var homeEl = $("home");
   $("versionHome").textContent = versionLabel;
@@ -54126,14 +54193,16 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     $("homeLevels").innerHTML = Object.entries(LEVELS).map(([k, v]) => `<button type="button" class="hl${k === homeLevel ? " on" : ""}" data-level="${k}" aria-pressed="${k === homeLevel}">${v.label}</button>`).join("");
     const units = GRADES[homeGrade]?.units ?? [];
     $("homeUnitsTitle").textContent = homeGrade === 0 ? "ようじの プリント" : `${gradeName(homeGrade)}の単元`;
-    $("homeHint").textContent = homeGrade === 0 ? "「プリントを つくる」を おすと できます。こたえは あかで かきこんだ ページが つきます" : "単元の「計算ドリル」「文章題」などをおすと作れます";
+    $("homeHint").textContent = homeGrade === 0 ? "「プリントを つくる」を おすと できます。こたえは あかで かきこんだ ページが つきます" : homeGrade <= 6 ? "単元の「計算ドリル」「文章題」などをおすと作れます。「小単元をえらぶ」から小単元だけのプリントも作れます" : "単元の「計算ドリル」「文章題」などをおすと作れます";
     $("homeUnits").innerHTML = units.map((u2) => {
       const ready = isReady(u2);
       const kinds = ready ? unitKindsAvailable(u2) : [];
+      const subs = ready && hasSubs(homeGrade) ? u2.topics.map((tp, i) => [tp, i + 1]).filter(([tp]) => topicKinds(tp).length) : [];
       return `<div class="ucard${ready ? "" : " off"}">
         <div class="ucard-head"><span class="uno${u2.numberless ? " extra" : ""}">${u2.numberless ? "補" : u2.order}</span><span class="uname">${esc2(u2.name)}</span></div>
         ${u2.domain ? `<div class="udomain">${esc2(u2.domain)}</div>` : ""}
         <div class="ukinds">${ready ? kinds.map((k) => `<button type="button" class="uk k-${k}" data-unit="${u2.id}" data-kind="${k}">${KIND_SHORT[k]}</button>`).join("") : '<span class="soon">準備中</span>'}</div>
+        ${subs.length > 1 ? `<details class="usubs"><summary>小単元をえらぶ(${subs.length})</summary><ol class="usub-list">${subs.map(([tp, n]) => topicKinds(tp).map((k) => `<li><button type="button" class="usb" data-unit="${u2.id}" data-sub="${n}" data-kind="${k}"><span class="usub-no">${n}</span><span class="usub-name">${esc2(tp.label)}</span><span class="usub-kind">${SUB_KIND[k]}</span></button></li>`).join("")).join("")}</ol></details>` : ""}
       </div>`;
     }).join("");
   }
@@ -54146,11 +54215,15 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     document.body.dataset.view = v;
     window.scrollTo(0, 0);
   }
-  function openPrint(unitId, kind) {
+  function openPrint(unitId, kind, sub = 0) {
     el.grade.value = String(homeGrade);
     refreshUnits();
     el.unit.value = unitId;
     refreshKinds();
+    if (!el.subWrap.hidden) {
+      el.subunit.value = String(sub || 0);
+      refreshSubKinds();
+    }
     el.kind.value = kind;
     refreshCounts();
     el.level.value = homeLevel;
@@ -54174,7 +54247,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       mascot(...LEVEL_SAY[homeLevel]);
     } else if (b.dataset.unit) {
       mascot("maru", "OK！<br>プリントを 作るよ");
-      openPrint(b.dataset.unit, b.dataset.kind);
+      openPrint(b.dataset.unit, b.dataset.kind, Number(b.dataset.sub) || 0);
     }
   });
   $("btnHome").addEventListener("click", () => {
