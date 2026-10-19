@@ -21,7 +21,7 @@ var kou1d = (() => {
     const [q1, q2, q3] = quarts(xs), iqr = q3 - q1;
     const shown = p.sorted ? xs.slice().sort((u, v) => u - v) : xs;
     if (type === "out") {
-      const L = q1 - 1.5 * iqr, U = q3 + 1.5 * iqr, out = xs.filter((x) => x < L || x > U).sort((u, v) => u - v);
+      const L = q1 - 1.5 * iqr, U = q3 + 1.5 * iqr, out = xs.filter((x) => x <= L || x >= U).sort((u, v) => u - v);
       if (!out.length || iqr === 0) return null;
       return { text: `${shown.join(", ")}[[br]]第1四分位数 [[v:Q]][[_1]]、第3四分位数 [[v:Q]][[_3]] を求め、外れ値(Q[[_1]]－1.5×(Q[[_3]]－Q[[_1]]) 以下、または Q[[_3]]＋1.5×(Q[[_3]]－Q[[_1]]) 以上の値)をすべて答えましょう。`.replace(/Q\[\[_/g, "[[v:Q]][[_"), ans: `Q[[_1]]＝${dec(q1)}，Q[[_3]]＝${dec(q3)}，外れ値 ${out.join(", ")}`.replace(/Q\[\[_/g, "[[v:Q]][[_"), wide: true, meta: { xs, out } };
     }

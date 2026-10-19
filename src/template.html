@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="app-version" content="第2版(2026-10-18)">
+<meta name="app-version" content="第3版(2026-10-19)">
 <meta name="app-exclude" content="">
 <title>算数プリント</title>
 <style>
@@ -189,32 +189,46 @@ body[data-view="print"] .home { display: none; }
   display: flex;
   flex-direction: column;
 }
+/* 見出し:キャラクター・単元名のカード・番号の星・日にちと名前 */
+.sheet { --frame: #8cc9da; --frame-bg: #f3fafc; --title: #1f6f8b; --box: #3c9fb3; --key: #ef7d00; }
 .sheet-header {
-  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 4pt 12pt;
-  border-bottom: 2pt solid var(--ink); padding-bottom: 5pt; margin-bottom: 10pt;
+  display: flex; align-items: center; gap: 0 3mm; margin-bottom: 4mm; min-height: 21mm;
 }
-.sheet-header .title-block { flex: 1 1 auto; }
-.sheet-header h1 { white-space: nowrap; }
-.sheet-header .name-block { flex: none; margin-left: auto; }
-.sheet-header.slim { border-bottom-width: 1pt; margin-bottom: 8pt; }
-.sheet-header.slim h1 { font-size: 12pt; }
-.sheet-header .meta { font-size: 9.5pt; color: #333; letter-spacing: 0.5pt; }
-.sheet-header h1 { font-size: 17pt; margin: 0; letter-spacing: 1pt; }
-.sheet-header h1 .sub { font-size: 11pt; margin-left: 10pt; font-weight: normal; }
-.name-block { display: flex; align-items: flex-end; gap: 10pt; font-size: 10pt; white-space: nowrap; }
-.name-block .field { display: flex; align-items: flex-end; gap: 3pt; }
-.name-block .box { display: inline-block; border-bottom: 1pt solid var(--ink); width: 120pt; height: 14pt; }
-.name-block .box.short { width: 26pt; }
-.name-block .score { display: flex; align-items: flex-end; }
-.name-block .score-box { display: inline-block; width: 44pt; height: 24pt; border: 1pt solid var(--ink); }
-.name-block .score-total { font-size: 11pt; margin-left: 3pt; }
+.hd-chara { width: 15mm; height: 19mm; flex: none; align-self: flex-end; }
+.hd-card {
+  flex: 1 1 auto; min-width: 0; border: 1.4pt solid var(--frame); border-radius: 3.5mm; background: var(--frame-bg);
+  padding: 1.6mm 4mm 1.4mm; display: flex; flex-direction: column; justify-content: center; min-height: 17mm;
+}
+.sheet-header h1 { font-size: 17pt; margin: 0; letter-spacing: 1pt; line-height: 1.3; color: var(--title); }
+.sheet-header h1.long { font-size: 14.5pt; letter-spacing: 0.5pt; }
+.sheet-header h1.xlong { font-size: 12.5pt; letter-spacing: 0; }
+.hd-sub { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 2mm; font-size: 10.5pt; line-height: 1.45; color: #2d4a57; }
+.hd-mark { color: #6fb7c9; margin-right: -1mm; }
+.sheet-header .meta { font-size: 9.5pt; color: #c69b17; letter-spacing: 0.5pt; }
+.hd-ans { display: inline-block; visibility: hidden; background: var(--key); color: #fff; font-weight: bold; border-radius: 2mm; padding: 0 2.2mm; font-size: 10.5pt; }
+.answers .hd-ans { visibility: visible; }
+.hd-star { position: relative; flex: none; width: 17mm; height: 17mm; }
+.hd-star svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hd-num { position: absolute; inset: 1.3mm 0 0; display: flex; align-items: center; justify-content: center; font-size: 17pt; font-weight: bold; color: #2b9cc4; letter-spacing: 0; line-height: 1; }
+.hd-num.n2 { font-size: 14pt; }
+.hd-num.n3 { font-size: 11pt; }
+.hd-num.ans { font-size: 12pt; color: var(--key); }
+.name-block { flex: none; display: flex; flex-direction: column; justify-content: center; gap: 2.2mm; font-size: 11pt; font-weight: bold; white-space: nowrap; color: #333; }
+.name-block .field { display: flex; align-items: flex-end; gap: 2pt; }
+.name-block .box { display: inline-block; border-bottom: 1pt solid #555; width: 40mm; height: 6mm; }
+.name-block .box.short { width: 9mm; border-bottom-color: transparent; }
+.name-block .date .label + .box.short { margin-left: 1mm; }
+.sheet-header .score { flex: none; display: flex; align-items: flex-end; gap: 1pt; }
+.sheet-header .score-box { display: inline-block; width: 19mm; height: 15mm; border: 1.4pt solid var(--frame); border-radius: 2.5mm; }
+.sheet-header .score-total { font-size: 10.5pt; font-weight: bold; color: #333; }
 
 .body { flex: 1; min-height: 0; overflow: hidden; }
 .block { margin: 0 0 15pt; break-inside: avoid; }
 .block-head { display: flex; align-items: baseline; gap: 7pt; font-size: 13.5pt; }
 .block-no {
   flex: none; display: inline-flex; align-items: center; justify-content: center;
-  width: 18pt; height: 18pt; border: 1.3pt solid var(--ink); border-radius: 50%; font-size: 11.5pt; font-weight: bold; line-height: 1;
+  width: 18pt; height: 18pt; border: 1.3pt solid var(--box, var(--ink)); border-radius: 50%; font-size: 11.5pt; font-weight: bold; line-height: 1;
+  background: #e8f5f8; color: #1d5466;
 }
 .block-text { flex: 1; }
 .points { font-size: 9.5pt; color: #333; white-space: nowrap; }
@@ -269,7 +283,8 @@ table.data.dense th, table.data.dense td { padding: 3pt 4pt; min-width: 26pt; }
 .ws-label { font-size: 11pt; flex: none; width: 26pt; padding-bottom: 2pt; white-space: nowrap; }
 .ws-rule { flex: 1; border-bottom: 0.7pt solid #777; height: 100%; }
 
-.sheet-footer { font-size: 8pt; color: #666; text-align: right; margin-top: 6pt; }
+.sheet-footer { display: flex; justify-content: space-between; align-items: flex-end; font-size: 8pt; color: #666; margin-top: 4pt; line-height: 1.2; }
+.ft-brand { font-size: 11pt; font-weight: bold; letter-spacing: 1.5pt; color: #4aa6bf; }
 
 /* 解答ページ */
 .answers .ans-block { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4pt 16pt; margin-bottom: 8pt; font-size: 12pt; }
@@ -320,12 +335,12 @@ table.data.dense th, table.data.dense td { padding: 3pt 4pt; min-width: 26pt; }
 
 /* ===== 1年: 大きい字・教科書体・答えを書く四角 ===== */
 /* [[box]] の四角(どの学年でも使える) */
-.abox { display: inline-block; width: 1.5em; height: 1.3em; border: 1.2pt solid var(--ink); vertical-align: middle; margin: 0 0.15em; }
+.abox { display: inline-block; width: 1.5em; height: 1.3em; border: 1.2pt solid var(--box, var(--ink)); border-radius: 0.18em; vertical-align: middle; margin: 0 0.15em; }
 .sheet.grade-1 {
   font-family: "UD デジタル 教科書体 N-R", "UD Digi Kyokasho N-R", "UD デジタル 教科書体 NK-R", "UD Digi Kyokasho NK-R",
     "BIZ UDPGothic", "BIZ UDゴシック", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", "Noto Sans JP", sans-serif;
 }
-.sheet.grade-1 .sheet-header h1 { font-size: 18pt; }
+.sheet.grade-1 .sheet-header h1:not(.long):not(.xlong) { font-size: 18pt; }
 .sheet.grade-1 .name-block { font-size: 12pt; }
 .sheet.grade-1 .block { margin-bottom: 20pt; }
 .sheet.grade-1 .block-head { font-size: 17pt; line-height: 1.9; gap: 9pt; }
@@ -348,11 +363,11 @@ table.data.dense th, table.data.dense td { padding: 3pt 4pt; min-width: 26pt; }
 .sheet.grade-1 .ws-rule { border-bottom-width: 0.9pt; }
 .sheet.grade-1.answers .ans-block { font-size: 15pt; margin-bottom: 11pt; }
 /* ===== ヒント ===== */
-.hint { margin: 4pt 0 6pt 24pt; padding: 4pt 9pt; border: 1pt dashed #777; border-radius: 4pt; font-size: 12pt; line-height: 1.7; color: #222; background: #f7f7f7; }
-.hint-tag { display: inline-block; background: #555; color: #fff; border-radius: 3pt; padding: 0 6pt; margin-right: 7pt; font-size: 10.5pt; font-weight: bold; }
+.hint { margin: 4pt 0 6pt 24pt; padding: 4pt 10pt; border: 1pt solid #f2b6cf; border-radius: 7pt; font-size: 12pt; line-height: 1.7; color: #222; background: #fdf0f6; }
+.hint-tag { display: inline-block; background: #e07aa5; color: #fff; border-radius: 3pt; padding: 0 6pt; margin-right: 7pt; font-size: 10.5pt; font-weight: bold; }
 .sheet.grade-1 .hint { font-size: 14pt; }
 /* ===== 答えの四角(1字 1cm 以上) ===== */
-.sheet .abox.ans { height: 11mm; min-width: 12mm; border: 1.5pt solid var(--ink); border-radius: 1.2mm; vertical-align: middle; margin: 1mm 0.25em; box-sizing: border-box; }
+.sheet .abox.ans { height: 11mm; min-width: 12mm; border: 1.5pt solid var(--box); border-radius: 2.2mm; vertical-align: middle; margin: 1mm 0.25em; box-sizing: border-box; }
 .sheet .abox.ans.tall { height: 17mm; }
 .calc { margin: 1mm 0 1.5mm 0; flex: 0 0 100%; width: 100%; }
 .item > .ans-under { flex: 0 0 100%; }
@@ -378,11 +393,11 @@ sub.sb { font-size: 0.68em; vertical-align: -0.35em; line-height: 0; }
 .sys .brace { font-size: 2.5em; line-height: 1; transform: scaleX(0.55); margin-right: -2pt; font-weight: 300; }
 .sys .eqs { display: inline-flex; flex-direction: column; line-height: 1.55; }
 .fbox { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 1mm 0.3em; }
-.fbox .fb-n, .fbox .fb-d { width: 12mm; height: 10mm; border: 1.5pt solid var(--ink); border-radius: 1.2mm; box-sizing: border-box; }
+.fbox .fb-n, .fbox .fb-d { width: 12mm; height: 10mm; border: 1.5pt solid var(--box, var(--ink)); border-radius: 2mm; box-sizing: border-box; }
 .fbox .fb-n.gray { border-color: transparent; color: #b5b5b5; font-size: 22pt; line-height: 10mm; text-align: center; letter-spacing: 0; }
 .fbox .fb-bar { width: 15mm; border-top: 1.6pt solid var(--ink); margin: 1.3mm 0; }
 .fbox .fb-bar.gray { border-color: #b5b5b5; }
-.aline { display: inline-block; width: 75mm; height: 10mm; border-bottom: 1.2pt solid var(--ink); vertical-align: bottom; margin: 0 0.3em; }
+.aline { display: inline-block; width: 75mm; height: 10mm; border-bottom: 1.2pt solid var(--box, var(--ink)); vertical-align: bottom; margin: 0 0.3em; }
 .ans-under { margin: 3pt 0 2pt 22pt; font-size: 13pt; display: flex; align-items: center; gap: 6pt; }
 .item .ans-under { margin-left: 0; }
 /* ===== ふりがな ===== */
@@ -394,15 +409,12 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
   font-family: "UD デジタル 教科書体 N-R", "UD Digi Kyokasho N-R", "UD デジタル 教科書体 NK-R", "UD Digi Kyokasho NK-R",
     "BIZ UDPGothic", "BIZ UDゴシック", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", "Noto Sans JP", sans-serif;
 }
-.sheet.grade-0 .sheet-header { align-items: flex-end; flex-wrap: nowrap; border-bottom-width: 2.5pt; padding-bottom: 7pt; margin-bottom: 12pt; }
-.sheet.grade-0 .sheet-header .title-block { min-width: 0; }
-.sheet.grade-0 .sheet-header h1 { font-size: 22pt; letter-spacing: 2pt; white-space: normal; }
-.sheet.grade-0 .sheet-header.slim h1 { font-size: 14pt; }
+.sheet.grade-0 .sheet-header h1 { font-size: 21pt; letter-spacing: 2pt; }
 .sheet.grade-0 .sheet-header h1.long { font-size: 17pt; letter-spacing: 1pt; }
+.sheet.grade-0 .sheet-header h1.xlong { font-size: 14pt; letter-spacing: 0.5pt; }
 .sheet.grade-0 .sheet-header .meta { font-size: 11pt; }
-.sheet.grade-0 .name-block { font-size: 13pt; flex-direction: column; align-items: flex-end; gap: 6pt; }
-.sheet.grade-0 .name-block .box { width: 125pt; height: 24pt; }
-.sheet.grade-0 .name-block .box.short { width: 30pt; }
+.sheet.grade-0 .name-block { font-size: 13pt; }
+.sheet.grade-0 .name-block .box { width: 44mm; height: 8mm; }
 .sticker { flex: none; width: 54pt; height: 54pt; border: 1.3pt dashed #999; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 8pt; line-height: 1.35; color: #888; }
 .sheet.grade-0 .block { margin-bottom: 16pt; }
 .sheet.grade-0 .block-head { font-size: 18pt; line-height: 1.7; gap: 10pt; align-items: flex-start; }
@@ -412,9 +424,42 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
 .sheet.grade-0 .block-no.ex { width: auto; padding: 0 8pt; border-radius: 14pt; font-size: 13pt; background: #444; border-color: #444; color: #fff; }
 .sheet.grade-0 .figure { margin: 6pt 0 0 0; }
 .sheet.grade-0 .item .figure { margin: 0; }
-.sheet.grade-0.answers .sheet-header h1 .sub { color: #d7263d; font-weight: bold; font-size: 16pt; }
 /* 分かち書きの空白のところだけで折り返す(語の途中で切らない)。長すぎる語だけは折る */
 .sheet.grade-1 .block-text, .sheet.grade-1 .item-body { word-break: keep-all; overflow-wrap: anywhere; }
+/* ===== 答えのページ(問題のプリントに答えをオレンジの字で書きこむ)・なぞり書きのお手本 ===== */
+.key { display: none; }
+.kbox { position: relative; display: inline-block; vertical-align: middle; }
+.kbox > .abox, .kbox > .fbox, .kbox > .aline { vertical-align: middle; }
+.kbox > .key { position: absolute; inset: 0; align-items: center; justify-content: center; white-space: nowrap; pointer-events: none; }
+.kbox > .key .kv { display: inline-flex; align-items: center; color: var(--key); font-weight: bold; letter-spacing: 0.5pt; }
+.kbox > .key .kv .frac .den { border-top-color: var(--key); }
+.kbox:has(> .fbox) > .key .kv { background: #fff; font-size: 1.25em; padding: 0 1mm; }
+.kbox:has(> .aline) > .key { justify-content: flex-start; padding-left: 2mm; }
+.keyed .kbox > .key, .item.trace .kbox > .key { display: flex; }
+.item.trace .kbox > .key .kv { color: #c4c4c4; font-weight: normal; }
+.keyed .item.trace .kbox > .key .kv { color: var(--key); font-weight: bold; }
+.trace-note { font-size: 9.5pt; color: #666; white-space: nowrap; margin-left: auto; }
+.ws-rule { position: relative; }
+.key-line { position: absolute; left: 1.5mm; bottom: 0.6mm; color: var(--key); font-weight: bold; font-size: 12.5pt; line-height: 1.35; white-space: nowrap; }
+.keyed .key-line { display: block; }
+.calc { position: relative; }
+.key-note { color: var(--key); font-weight: bold; font-size: 12pt; line-height: 1.6; margin: 1mm 0 0 22pt; }
+.item .key-note { margin-left: 0; flex: none; width: 100%; }
+.ws-grid { position: relative; }
+.ws-grid > .key-note { position: absolute; left: 1.5mm; top: 1mm; right: 0; margin: 0; background: rgba(255,255,255,.85); }
+.calc > .key-note { position: absolute; left: 3mm; top: 4.5mm; right: 2mm; margin: 0; }
+.key-note .kn-tag { display: inline-block; background: var(--key); color: #fff; border-radius: 1.5mm; padding: 0 1.8mm; font-size: 9.5pt; margin-right: 2mm; vertical-align: 1pt; }
+.keyed .key-note { display: block; }
+.fig-wrap { position: relative; max-width: 100%; display: flow-root; }
+.side .fig-wrap, .item.has-hissan > .fig-wrap { flex: none; }
+.side .fig-wrap > .figure, .item.has-hissan > .fig-wrap > .figure { max-width: none; }
+.fig-wrap > .key-fig > .figure { max-width: none; }
+.fig-wrap > .key-fig { position: absolute; left: 0; top: 0; background: #fff; }
+.keyed .fig-wrap > .figure { visibility: hidden; }
+.keyed .fig-wrap > .key-fig, .item.trace .fig-wrap > .key-fig { display: block; }
+.item.trace svg .keyd, .item.trace svg text[fill="#ef7d00"] { fill: #c4c4c4; font-weight: normal; }
+.keyed .item.trace svg .keyd, .keyed .item.trace svg text[fill="#ef7d00"] { fill: var(--key, #ef7d00); font-weight: bold; }
+svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
 
 </style>
 </head>
@@ -443,7 +488,7 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
     <div class="chara chara-maru" aria-hidden="true"></div>
     <h1>算数プリント</h1>
     <span class="subtitle" id="subtitle">小学校1〜6年 ・ 東京書籍『新編 新しい算数』の単元順</span>
-    <span class="version" id="version">第2版(2026-10-18)</span>
+    <span class="version" id="version">第3版(2026-10-19)</span>
   </div>
   <label>学年<select id="grade"></select></label>
   <label>単元<select id="unit"></select></label>
@@ -453,6 +498,8 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
   <label>問題数<select id="count"></select></label>
   <label>シード番号<input type="number" id="seed" min="1" max="999999999" step="1"></label>
   <label class="check"><input type="checkbox" id="withAnswers" checked>解答をつける</label>
+  <label>答えのページ<select id="ansStyle"><option value="key" selected>プリントに書きこむ</option><option value="list">答えだけの一覧</option></select></label>
+  <label class="check"><input type="checkbox" id="trace">お手本(うすい字)をつける</label>
   <label class="check"><input type="checkbox" id="excludeCurrent">習っていない漢字は使わない</label>
   <label class="check"><input type="checkbox" id="furigana">ふりがなをつける</label>
   <label class="check"><input type="checkbox" id="hints">ヒントをつける</label>
@@ -496,8 +543,9 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
   <summary>使い方</summary>
   <ol>
     <li><b>作り方</b> 学年 → 単元 → 種類 → 難易度 → 問題数を選んで「作成」。下に A4 の形で出ます。「印刷」で印刷の画面が開きます。</li>
-    <li><b>作り直しとシード番号</b> 「作り直し」を押すと別の問題になります。プリント右下の「No.」がシード番号で、同じ番号・同じ設定なら同じプリントになります(先生用と児童用、やり直し用などに)。</li>
-    <li><b>解答</b> 最後のページに付きます。「解答をつける」を外すと付きません。</li>
+    <li><b>作り直しとシード番号</b> 「作り直し」を押すと別の問題になります。プリント左下の「No.」がシード番号(星の中の数字はページの番号)で、同じ番号・同じ設定なら同じプリントになります(先生用と児童用、やり直し用などに)。</li>
+    <li><b>解答</b> 問題のページのあとに付きます。「答えのページ」が「プリントに書きこむ」のときは、問題のプリントと同じページに答えをオレンジの字で書きこんだ形になります(1ページずつ対応)。「答えだけの一覧」にすると、答えを短くまとめたページになります。「解答をつける」を外すと付きません。</li>
+    <li><b>お手本(うすい字)</b> つけると、それぞれの大問の(1)に答えをうすい字で入れます。なぞって書き方をたしかめてから、つづきの問題をときます(まとめテストにはつきません)。</li>
     <li><b>習っていない漢字は使わない</b> 上の学年の漢字はもともとひらがなです。これをつけると、その学年で習う漢字もひらがなにします。まだ習っていない時期に使ってください(小学校のプリントだけ)。</li>
     <li><b>ヒントをつける</b> 単位のなおし方や公式など、思い出すとよいことを問題の下に出します(ヒントがある問題だけ)。</li>
     <li><b>ふりがなをつける</b> プリントの漢字に、図や表の中もふくめて すべてふりがなをつけます(高校の数学にはつきません)。</li>
@@ -506,7 +554,7 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
   </ol>
 </details>
 <div class="preview" id="preview"></div>
-<footer class="site-footer">算数プリント <span id="versionFoot">第2版(2026-10-18)</span></footer>
+<footer class="site-footer">算数プリント <span id="versionFoot">第3版(2026-10-19)</span></footer>
 <script>
 (() => {
   // src/core/rng.js
@@ -32953,6 +33001,8 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
       levelLabel: LEVELS[level].label,
       seed,
       title: KINDS9[kind].sheetLabel ? `${UNIT_RUBY[unit.id] || unit.rubyName || unit.name}　${KINDS9[kind].sheetLabel}` : UNIT_RUBY[unit.id] || unit.rubyName || unit.name,
+      unitTitle: UNIT_RUBY[unit.id] || unit.rubyName || unit.name,
+      sheetLabel: KINDS9[kind].sheetLabel || "",
       answerStyle: kind === "yoji" ? "filled" : null,
       sections,
       totalPoints: kind === "test" ? total : null,
@@ -33309,7 +33359,7 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
     return `<svg class="pie" viewBox="0 0 ${W3} ${H6}" width="${W3}mm" height="${H6}mm" font-family="inherit">${out}</svg>`;
   }
   // 筆算のマス(1マス 10.5mm 以上)。いちばん上に、くり上がりなどを書く小さい行をつける
-  function svgHissan({ rows, op, digits, work = 0, places = 0, cell: cell0 = 9 }) {
+  function svgHissan({ rows, op, digits, work = 0, places = 0, cell: cell0 = 9, key = null }) {
     const cell = Math.max(10.5, cell0);
     const cols = digits + 1;
     const nRows = rows.length + work + 1;
@@ -33332,6 +33382,15 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
       });
       if (fp.length) out += `<circle cx="${0.5 + (lastInt + 1) * cell}" cy="${0.5 + CH + (r + 1) * cell - 1.5}" r="0.85" fill="#000"/>`;
     });
+    if (key != null && /^\d+(\.\d+)?$/.test(String(key))) {
+      // 答えのページ:いちばん下の行に答えの数字を書きこむ
+      const [ip, fp = ""] = String(key).split(".");
+      const lastInt = cols - 1 - places, r = rows.length + work, start = lastInt - ip.length + 1;
+      if (start >= 0 && fp.length <= places) [...ip, ...fp].forEach((ch, i) => {
+        out += `<text class="keyd" x="${0.5 + (start + i) * cell + cell / 2}" y="${0.5 + CH + r * cell + cell / 2 + FS9 * 0.36}" font-size="${FS9}" text-anchor="middle">${ch}</text>`;
+      });
+      if (fp.length && start >= 0 && fp.length <= places) out += `<circle class="keyd" cx="${0.5 + (lastInt + 1) * cell}" cy="${0.5 + CH + (r + 1) * cell - 1.5}" r="0.85"/>`;
+    }
     const y0 = 0.5 + CH + (rows.length - 1) * cell;
     out += `<text x="${0.5 + cell / 2}" y="${y0 + cell / 2 + FS9 * 0.36}" font-size="${FS9}" text-anchor="middle">${op}</text>`;
     const rule = (r) => `<line x1="0.5" y1="${0.5 + CH + r * cell}" x2="${0.5 + cols * cell}" y2="${0.5 + CH + r * cell}" stroke="#000" stroke-width="0.7"/>`;
@@ -33793,11 +33852,11 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
     if (fig.type === "tapes") return `<div class="figure">${svgTapes(fig, fig.tapes.map((tp) => esc2(renderText(tp.label, policy))))}</div>`;
     return "";
   }
-  function workspaceHtml(ws, policy, problem) {
+  function workspaceHtml(ws, policy, problem, keys, note = "") {
     if (!ws || ws.type === "none") return "";
-    if (ws.type === "grid") return `<div class="ws-grid">${svgGrid(ws.rows, ws.cols)}</div>`;
+    if (ws.type === "grid") return `<div class="ws-grid">${svgGrid(ws.rows, ws.cols)}${note}</div>`;
     if (ws.type === "lines") {
-      return `<div class="ws-lines${ws.wideLabel ? " wide-label" : ""}">${ws.labels.map((l) => `<div class="ws-line"><span class="ws-label">${t(l, policy)}</span><span class="ws-rule"></span></div>`).join("")}</div>`;
+      return `<div class="ws-lines${ws.wideLabel ? " wide-label" : ""}">${ws.labels.map((l, i) => `<div class="ws-line"><span class="ws-label">${t(l, policy)}</span><span class="ws-rule">${keys && keys[i] ? `<span class="key key-line">${t(keys[i], policy)}</span>` : ""}</span></div>`).join("")}</div>`;
     }
     return "";
   }
@@ -33845,7 +33904,7 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
     const m = /(\[\[(?:a|t)box:[\d.]+\]\])\s*$/.exec(a.text);
     return m ? { text: a.text.slice(0, m.index), box: cap(m[1]) } : { text: a.text, box: null };
   };
-  var calcHtml = (mm, policy, label) => mm ? `<div class="calc${label ? " box" : ""}" style="height:${mm}mm">${label ? `<span class="calc-label">${t(label, policy)}</span>` : ""}</div>` : "";
+  var calcHtml = (mm, policy, label, extra = "") => mm ? `<div class="calc${label ? " box" : ""}" style="height:${mm}mm">${label ? `<span class="calc-label">${t(label, policy)}</span>` : ""}${extra}</div>` : "";
   // 答えの欄を自分で持っている(図にかく・○をつける・筆算)問題
   var OWN_ANSWER = new Set(["g1.bigger", "g1.bigNum", "g1.bigNum120", "g1.ordinalColor", "g1.clockDraw", "g1.clockDrawMinute", "g1.tileMove", "g1.dotCopy", "g3.barDraw", "g4.lgDraw", "g4.lgDrawScale", "g5.congDraw", "g6.symDraw", "g6.scaleGrid"]);
   function ansify(p, inst) {
@@ -33884,6 +33943,190 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
       return { text: s, need: !has && !own && !p.noAnswerBox, box: [...flat].length > 13 ? "[[aline]]" : `[[${kind}:${w}]]` };
     }
     return { text: s, need: !has && !own && !p.noAnswerBox, box: boxFor(display, unitFrac) };
+  }
+  // ===== 答えのページ:問題のプリントに答えを書きこむ =====
+  // 問題の四角(□・（　）・＝のあと)に入れる答えを、四角の順にならべる。分けられないときは null
+  var BOX_TOKEN = /\[\[(?:abox:[\d.]+|pbox:[\d.]+|tbox:[\d.]+|fbox1?|mbox|aline)\]\]/g;
+  var atomsOf = (s) => String(s ?? "").match(/\{[^{}|]+\|[^{}]*\}|\[\[[^\]]*\]\]|[\s\S]/gu) || [];
+  var plainLen = (a) => [...plainAns(a)].length;
+  // 答えから、四角の前後にもう書いてあることば(単位・「x＝」など)をのぞく
+  function trimFill(part, before, after) {
+    let at = atomsOf(String(part).trim());
+    const plain = () => at.map((x) => plainAns(x)).join("");
+    const cut = (u, fromEnd) => {
+      const b = at.slice();
+      let rem = [...u].length;
+      while (rem > 0 && b.length) {
+        const x = plainLen(fromEnd ? b[b.length - 1] : b[0]);
+        if (x > rem) return false;
+        rem -= x;
+        if (fromEnd) b.pop();
+        else b.shift();
+      }
+      if (rem || !b.length || !plainAns(b.join("")).trim()) return false;
+      at = b;
+      return true;
+    };
+    const aft = [...plainAns(after).replace(/^[\s　]+/, "")];
+    for (let L = Math.min(6, aft.length); L >= 1; L--) {
+      const u = aft.slice(0, L).join("");
+      if (/^[\d.,\s　]*$/.test(u) || /[\s　]$/.test(u)) continue;
+      if (plain().endsWith(u) && cut(u, true)) break;
+    }
+    const bef = [...plainAns(before).replace(/[\s　]+$/, "")];
+    for (let L = Math.min(6, bef.length); L >= 1; L--) {
+      const u = bef.slice(-L).join("");
+      if (/^[\d.,\s　]*$/.test(u) || /^[\s　]/.test(u)) continue;
+      if (plain().startsWith(u) && cut(u, false)) break;
+    }
+    return at.join("").trim();
+  }
+  function keyFills(s, display) {
+    s = String(s ?? "");
+    const toks = [...s.matchAll(BOX_TOKEN)];
+    const k = toks.length;
+    if (!k) return [];
+    const d = String(display ?? "").trim();
+    if (!d) return null;
+    const noNo = (x) => x.replace(/^\(\d+\)\s*/, "").trim();
+    let parts = null, work = "";
+    const labeled = d.split("　").filter((x) => /^\(\d+\)/.test(x.trim()));
+    // 四角のあいだのことば(「あまり」「で」など)で答えを分ける
+    const seps = toks.slice(1).map((m, i) => plainAns(s.slice(toks[i].index + toks[i][0].length, m.index)).trim());
+    if (k > 1 && seps.every((x) => x && !/[\s　]/.test(x))) {
+      for (const c of [...d.split("　").map(noNo).reverse(), d]) {
+        const pc = atomsOf(c), out = [];
+        let cur = [], si = 0;
+        for (let j = 0; j < pc.length; j++) {
+          const rest = pc.slice(j).map((x) => plainAns(x)).join("");
+          if (si < seps.length && cur.length && rest.startsWith(seps[si])) {
+            out.push(cur.join(""));
+            cur = [];
+            let n = [...seps[si++]].length;
+            while (n > 0 && j < pc.length) n -= plainLen(pc[j++]);
+            j--;
+            continue;
+          }
+          cur.push(pc[j]);
+        }
+        out.push(cur.join(""));
+        if (si === seps.length && out.length === k && out.every((x) => x.trim())) {
+          parts = out;
+          break;
+        }
+      }
+    }
+    if (parts) ;
+    else if (k === 1) {
+      let one = noNo(labeled.length > 1 ? labeled[labeled.length - 1] : d);
+      // 「式＝答え　答え」のときは、式をのぞく(式は考えるスペースに書く)
+      const sp = one.split("　");
+      if (/(式|しき)[:：]?\s*$/.test(plainAns(s.slice(0, toks[0].index)))) ;
+      else if (sp.length > 1 && /＝/.test(sp[0]) && !/＝/.test(sp.slice(1).join(""))) {
+        work = sp[0];
+        one = sp.slice(1).join("　");
+      } else if (sp.length === 1 && !/[\[{]/.test(one)) {
+        const fm = /^[^＝]*[＋－×÷][^＝]*＝([^＝]+)$/.exec(one);
+        if (fm) {
+          work = one;
+          one = fm[1].trim();
+        }
+      }
+      parts = [one];
+    }
+    else {
+      const sp = d.split(/[　、]/).map(noNo).filter(Boolean);
+      if (sp.length === k) parts = sp;
+      else if (k === 2 && d.split("あまり").length === 2) parts = d.split("あまり");
+      else if (!/\[\[/.test(d)) {
+        const nums = plainAns(d).match(/\d+(?:\.\d+)?/g) || [];
+        if (nums.length === k) parts = nums;
+      }
+    }
+    if (!parts) return null;
+    const res = toks.map((m, i) => {
+      const before = s.slice(i ? toks[i - 1].index + toks[i - 1][0].length : 0, m.index);
+      const after = s.slice(m.index + m[0].length, i + 1 < k ? toks[i + 1].index : void 0);
+      return trimFill(parts[i], before, after);
+    });
+    if (k === 1 && labeled.length > 1) res.rest = labeled.slice(0, -1).join("　");
+    if (work) res.work = work;
+    // 四角に入りきらない答えは書きこまない(「(帯分数)」などのそえがきは省く)
+    const estW = (x) => [...plainAns(x).replace(/00/g, "0")].reduce((a, ch) => a + (ch.charCodeAt(0) < 8192 ? 3.2 : 5.2), 0) + (/\[\[[fm]:/.test(x) ? 6 : 0);
+    for (let i = 0; i < k; i++) {
+      const tok = toks[i][0], m = /:([\d.]+)\]\]$/.exec(tok);
+      const cap = m ? Number(m[1]) : /fbox|mbox/.test(tok) ? 26 : /aline/.test(tok) ? 75 : 12;
+      const pm = /^(.+?)\s*[(（][^()（）]*[)）]$/.exec(res[i]);
+      if (pm && (/fbox|mbox/.test(tok) || estW(res[i]) > cap * 1.35)) res[i] = pm[1];
+      if (estW(res[i]) > cap * 2.2) return null;
+    }
+    return res;
+  }
+  // 答えの線(式・答え・(1)…)に書く答え。答えの「式 …　答え …」を線のことばに合わせて分ける
+  function lineKeys(ws, display) {
+    if (!ws || ws.type !== "lines" || !ws.labels.length) return null;
+    const d = String(display ?? "").trim();
+    if (!d) return null;
+    const labels = ws.labels.map((l) => plainAns(l).replace(/[\s　]+/g, " ").trim());
+    let parts = d.split("　").map((x) => x.trim()).filter(Boolean);
+    const firstTok = (x) => x.split(" ")[0];
+    const isMark = (x) => /^(\(\d+\)|[①-⑳]|[ア-ンA-Z])$/.test(x);
+    const match = (part) => {
+      const pp = plainAns(part).replace(/[\s　]+/g, " ").trim();
+      let best = -1, strip = 0;
+      labels.forEach((L, i) => {
+        if (!L) return;
+        if ((pp === L || pp.startsWith(L + " ")) && [...L].length > strip) best = i, strip = [...L].length;
+        else if (pp.startsWith(L + "＝") && best < 0) best = i, strip = 0;
+        else if (best < 0 && isMark(firstTok(L)) && firstTok(pp) === firstTok(L)) best = i, strip = [...firstTok(L)].length;
+      });
+      return [best, strip];
+    };
+    const stripLead = (part, n) => {
+      if (!n) return part;
+      const at = atomsOf(part);
+      let rem = n;
+      while (rem > 0 && at.length) rem -= plainLen(at.shift());
+      return rem === 0 ? at.join("").trim() : part;
+    };
+    if (!parts.some((x) => match(x)[0] >= 0) && parts.length < labels.length && /[，,]/.test(d)) parts = d.split(/[，,]\s*/).map((x) => x.trim()).filter(Boolean);
+    const out = labels.map(() => null), labeled = new Set(parts.map((x) => match(x)[0]).filter((i) => i >= 0));
+    const add = (i, x) => out[i] = out[i] ? `${out[i]}　${x}` : x;
+    let cur = -1;
+    const rest = [];
+    for (const x of parts) {
+      const [i, n] = match(x);
+      if (i >= 0) {
+        cur = i;
+        add(i, stripLead(x, n));
+        continue;
+      }
+      const nx = cur + 1;
+      if (nx < labels.length && !labeled.has(nx) && !out[nx]) {
+        cur = nx;
+        add(nx, x);
+      } else if (cur >= 0) add(cur, x);
+      else rest.push(x);
+    }
+    return { keys: out, rest: rest.join("　") };
+  }
+  // 図の中の答えの四角(ansBox)に答えを書きこんだ図を作る
+  function keyFigure(fig, display) {
+    if (!fig || display == null) return null;
+    if (fig.type === "hissan") return /^\d+(\.\d+)?$/.test(plainAns(display).trim()) ? { ...fig, key: plainAns(display).trim() } : null;
+    if (fig.type !== "draw") return null;
+    const boxes = fig.items.filter((it) => it.t === "poly" && it.lead && it.pts?.length === 4);
+    if (!boxes.length) return null;
+    let parts = boxes.length === 1 ? [String(display).trim()] : String(display).split(/[　、]/).map((x) => x.trim()).filter(Boolean);
+    if (parts.length !== boxes.length) return null;
+    const extra = boxes.map((b, i) => {
+      const xs = b.pts.map((p) => p[0]), ys = b.pts.map((p) => p[1]);
+      const w = Math.max(...xs) - Math.min(...xs), h = Math.max(...ys) - Math.min(...ys);
+      const s = parts[i], n = Math.max(1, [...plainAns(s)].reduce((a, ch) => a + (ch.charCodeAt(0) < 8192 ? 0.6 : 1), 0));
+      const size = Math.min(h * 0.62, w * 0.9 / n);
+      return { t: "text", x: (Math.max(...xs) + Math.min(...xs)) / 2, y: (Math.max(...ys) + Math.min(...ys)) / 2 + size * 0.36, s, size, color: "#ef7d00", bold: true, halo: false };
+    });
+    return { ...fig, items: [...fig.items, ...extra] };
   }
   // ===== ヒント(「ヒントをつける」のときに大問の下に出す)。キーは 生成器id か 単元id|生成器id =====
   var HINTS_EXTRA = () => typeof chu1Hints !== "undefined" ? chu1Hints : {};
@@ -34128,21 +34371,69 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
   Object.assign(HINTS, HINTS_EXTRA());
 
   var AGE = { basic: "3〜4さい", normal: "4〜5さい", challenge: "5〜6さい" };
-  function sheetHtml(sheet, { policy, withAnswers, gradeLabel, hints = false }) {
+  // 見出しの星(番号を入れる)
+  var STAR_SVG = (() => {
+    const p = [];
+    for (let k = 0; k < 10; k++) {
+      const r = k % 2 ? 22 : 46, a = (-90 + k * 36) * Math.PI / 180;
+      p.push(`${(50 + r * Math.cos(a)).toFixed(1)},${(54 + r * Math.sin(a)).toFixed(1)}`);
+    }
+    return `<svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="${p.join(" ")}" fill="#fffbe3" stroke="#93d2e4" stroke-width="7" stroke-linejoin="round"/></svg>`;
+  })();
+  // 図の答え(グラフをかく・図のとおり など)は、答えの図があれば文にしなくてよい
+  var FIG_ONLY = /^(?:[右下上左]の)?(?:グラフ|図|表)(?:のとおり|のよう)?。?$/;
+  function sheetHtml(sheet, { policy, withAnswers, gradeLabel, hints = false, answerMode = "key", trace = false }) {
     const hintShown = new Set();
     const yoji = sheet.grade === 0;
-    const header = (sub3) => `
+    const keyMode = !!withAnswers && answerMode !== "list" && sheet.answerStyle !== "filled" && !yoji;
+    const traceOn = !!trace && !yoji && sheet.kind !== "test";
+    const keyOn = keyMode || traceOn;
+    const titleSrc = sheet.unitTitle ?? sheet.title;
+    const tl = [...stripRuby(renderText(titleSrc, policy))].length;
+    const header = () => `
     <header class="sheet-header${yoji ? " yoji-head" : ""}">
-      <div class="title-block">
-        <div class="meta">${t(sheet.levelLabel, policy)}</div>
-        <h1${yoji && [...stripRuby(renderText(sheet.title, policy))].length > 9 ? ' class="long"' : ""}>${t(sheet.title, policy)}${sub3 ? `<span class="sub">${t(sub3, policy)}</span>` : ""}</h1>
+      <div class="hd-chara chara chara-${yoji ? "banzai" : "maru"}" aria-hidden="true"></div>
+      <div class="hd-card">
+        <h1${tl > (yoji ? 9 : 16) ? ' class="xlong"' : tl > (yoji ? 6 : 11) ? ' class="long"' : ""}>${t(titleSrc, policy)}</h1>
+        <div class="hd-sub">${sheet.sheetLabel ? `<span class="hd-mark">◎</span><span>${t(sheet.sheetLabel, policy)}</span>` : ""}<span class="meta">${t(sheet.levelLabel, policy)}</span><span class="hd-ans">${t("{答|こた}え", policy)}</span></div>
       </div>
+      <div class="hd-star">${STAR_SVG}<span class="hd-num">1</span></div>
       <div class="name-block">
-        ${yoji ? "" : `<div class="field"><span class="label">${t("{月|がつ}", policy)}</span><span class="box short"></span><span class="label">${t("{日|にち}", policy)}</span></div>`}
+        ${yoji ? "" : `<div class="field date"><span class="label">${t("{日|ひ}にち：", policy)}</span><span class="box short"></span><span class="label">${t("{月|がつ}", policy)}</span><span class="box short"></span><span class="label">${t("{日|にち}", policy)}</span></div>`}
         <div class="field"><span class="label">${t("{名前|なまえ}", policy)}</span><span class="box"></span></div>
-        ${sheet.totalPoints ? `<div class="score"><span class="score-box"></span><span class="score-total">/${sheet.totalPoints}</span></div>` : ""}
       </div>
+      ${sheet.totalPoints ? `<div class="score"><span class="score-box"></span><span class="score-total">/${sheet.totalPoints}${t("{点|てん}", policy)}</span></div>` : ""}
     </header>`;
+    // 答えを四角に書きこむための目じるし(四角の前後に私用文字を入れて、t() のあとで答えの字にかえる)
+    const marker = (fills) => {
+      let i = 0;
+      return (str) => !fills ? str : String(str).replace(BOX_TOKEN, (m) => i < fills.length ? `${String.fromCharCode(0xe300 + i++)}${m}` : m);
+    };
+    const unmark = (html, fills) => !fills ? html : html.replace(/([-])([\s\S]*?)/g, (_, c, box) => {
+      const f = fills[c.charCodeAt(0) - 0xe300];
+      return f ? `<span class="kbox">${box}<span class="key"><span class="kv">${t(f, policy)}</span></span></span>` : box;
+    });
+    // 1問ぶんの答え(四角・線・図・メモ)
+    const itemKey = (p2, a0, ws) => {
+      const disp = p2.answer?.display ?? "";
+      const F = p2.figure?.type === "hissan" ? [] : keyFills(a0.text + (a0.need ? " " + a0.box : ""), disp);
+      const fills = F && F.length && F.every((x) => x) ? F : null;
+      const lk = fills ? null : lineKeys(ws, disp);
+      let kfig = p2.answer?.figure || null, inFig = false;
+      if (!kfig && !fills && !lk) {
+        kfig = keyFigure(p2.figure, disp);
+        inFig = !!kfig;
+      }
+      let note = "";
+      if (fills && fills.rest && !kfig) note = fills.rest;
+      let work = fills?.work || "";
+      if (!fills && !inFig) {
+        if (lk) note = lk.rest;
+        else if (!(kfig && FIG_ONLY.test(plainAns(disp).trim()))) note = disp;
+      }
+      return { fills, lines: lk ? lk.keys : null, kfig, note, work, inFig };
+    };
+    const noteHtml = (note) => note ? `<div class="key key-note"><span class="kn-tag">${t("{答|こた}え", policy)}</span>${t(note, policy)}</div>` : "";
     // filled: 答えのページを「答えを書きこんだプリント」にする(幼児向け)
     const sectionsHtml = (filled) => sheet.sections.map((s) => {
       const ex = s.problems[0]?.example;
@@ -34152,7 +34443,11 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
       const hint = hints && !filled && gid && !hintShown.has(gid) ? HINTS[`${sheet.unitId}|${gid}`] || HINTS[gid] : null;
       if (hint) hintShown.add(gid);
       const hintHtml = hint ? `<div class="hint"><span class="hint-tag">ヒント</span>${t(hint, policy)}</div>` : "";
-      const fig = (p2) => figureHtml(filled ? p2.answer?.figure || p2.figure : p2.figure, policy);
+      const fig = (p2, kf) => {
+        const q = figureHtml(filled ? p2.answer?.figure || p2.figure : p2.figure, policy);
+        return kf && q ? `<div class="fig-wrap">${q}<div class="key key-fig">${figureHtml(kf, policy)}</div></div>` : q;
+      };
+      const useKey = keyOn && !filled && !yoji;
       // 1つの四角だけの問題は、四角のはばをそろえる(答えのけた数がわからないように)
       let uniMax = 0;
       if (!filled && !yoji) for (const p2 of s.problems) {
@@ -34164,21 +34459,32 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
         const ws = [...txt.matchAll(/\[\[abox:([\d.]+)\]\]/g)];
         return ws.length === 1 && uniMax ? txt.replace(/\[\[abox:[\d.]+\]\]/, `[[abox:${uniMax}]]`) : txt;
       };
+      let traced = false;
       if (s.instruction) {
-        const items = s.problems.map((p2) => {
+        const items = s.problems.map((p2, pi) => {
           const a0 = filled || yoji ? { text: p2.text, need: false } : ansify(p2, s.instruction);
           const a = a0.need ? { ...a0, box: uniW(a0.box) } : { ...a0, text: uniW(a0.text) };
           const mv = moveAns(a, p2, filled);
           const tail = mv ? "" : a.need && !p2.figure ? `　→ ${a.box}` : "";
           if (mv) a.text = mv.text;
+          const wsUsed = workOf(p2) && !filled ? wsWithoutShiki(p2.workspace) : p2.workspace;
+          const K = useKey ? itemKey(p2, a0, wsUsed) : null;
+          const mk = marker(K?.fills), tk = (str) => unmark(t(mk(str), policy), K?.fills);
+          const tr = traceOn && pi === 0 && s.problems.length > 1 && !!(K?.fills || K?.inFig);
+          if (tr) traced = true;
+          const calcMm = filled ? 0 : workOf(p2);
+          const gridWs = !calcMm && wsUsed?.type === "grid";
+          // 式は考えるスペース(か計算のます)があるときだけ書く
+          const note = K ? noteHtml(K.note || (calcMm || gridWs ? K.work : "")) : "";
           return `
-        <li class="item ${p2.workspace?.type === "grid" ? "has-grid" : ""} ${p2.figure ? "has-figure" : ""}${p2.figure?.type === "hissan" ? " has-hissan" : ""}">
-          ${!p2.no && !String(a.text + tail).trim() ? "" : `<span class="item-head">${p2.no ? `<span class="item-no">(${p2.no})</span>` : ""}${p2.figure?.type === "hissan" ? "" : `<span class="item-body">${t(a.text + tail, policy)}</span>`}</span>`}
-          ${fig(p2)}
-          ${filled ? "" : calcHtml(workOf(p2), policy, p2.workspace?.type === "lines" ? "{考|かんが}え{方|かた}" : "")}
-          ${mv && mv.box ? `<div class="ans-under">${t("{答|こた}え", policy)} ${t(mv.box, policy)}</div>` : ""}
-          ${a.need && p2.figure ? `<div class="ans-under">${t("{答|こた}え", policy)} ${t(a.box, policy)}</div>` : ""}
-          ${workspaceHtml(workOf(p2) && !filled ? wsWithoutShiki(p2.workspace) : p2.workspace, policy, p2)}
+        <li class="item ${p2.workspace?.type === "grid" ? "has-grid" : ""} ${p2.figure ? "has-figure" : ""}${p2.figure?.type === "hissan" ? " has-hissan" : ""}${tr ? " trace" : ""}">
+          ${!p2.no && !String(a.text + tail).trim() ? "" : `<span class="item-head">${p2.no ? `<span class="item-no">(${p2.no})</span>` : ""}${p2.figure?.type === "hissan" ? "" : `<span class="item-body">${tk(a.text + tail)}</span>`}</span>`}
+          ${fig(p2, K?.kfig)}
+          ${calcMm ? calcHtml(calcMm, policy, p2.workspace?.type === "lines" ? "{考|かんが}え{方|かた}" : "", note) : ""}
+          ${mv && mv.box ? `<div class="ans-under">${t("{答|こた}え", policy)} ${tk(mv.box)}</div>` : ""}
+          ${a.need && p2.figure ? `<div class="ans-under">${t("{答|こた}え", policy)} ${tk(a.box)}</div>` : ""}
+          ${workspaceHtml(wsUsed, policy, p2, K?.lines, gridWs ? note : "")}
+          ${calcMm || gridWs ? "" : note}
         </li>`;
         }).join("");
         let cols = Math.min(...s.problems.map((p2) => p2.cols ?? Infinity)) < Infinity ? Math.min(...s.problems.map((p2) => p2.cols ?? Infinity)) : s.problems[0]?.wide ? 1 : s.problems[0]?.figure ? 2 : s.problems[0]?.workspace?.type === "grid" ? 3 : 2;
@@ -34202,7 +34508,7 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
         }
         return `
       <section class="block"${da}>
-        <div class="block-head">${no}<span class="block-text">${t(s.instruction, policy)}</span>${s.pointsEach ? `<span class="points">${t(`(1つ${s.pointsEach}{点|てん})`, policy)}</span>` : ""}</div>
+        <div class="block-head">${no}<span class="block-text">${t(s.instruction, policy)}</span>${traced ? `<span class="trace-note">${t("(うすい{字|じ}はなぞりましょう。)", policy)}</span>` : ""}${s.pointsEach ? `<span class="points">${t(`(1つ${s.pointsEach}{点|てん})`, policy)}</span>` : ""}</div>
         ${hintHtml}
         <ol class="items cols-${cols}">${items}</ol>
       </section>`;
@@ -34210,34 +34516,37 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
       const p = s.problems[0];
       const a0 = filled || yoji ? { text: p.text, need: false } : ansify(p, "");
       const a = a0.need ? { ...a0, box: uniW(a0.box) } : { ...a0, text: uniW(a0.text) };
+      const wk = filled ? 0 : workOf(p), shiki = p.workspace?.type === "lines" && p.workspace.labels.some((l) => plainAns(l) === "式");
+      const ws = wk ? wsWithoutShiki(p.workspace) : p.workspace;
+      const K = useKey ? itemKey(p, a0, ws) : null;
+      const mk = marker(K?.fills), tk = (str) => unmark(t(mk(str), policy), K?.fills);
+      const note = K ? noteHtml(K.note || (wk ? K.work : "")) : "";
+      const calc = calcHtml(wk, policy, wk ? shiki ? "{式|しき}・{考|かんが}え{方|かた}" : "{考|かんが}え{方|かた}" : "", note);
       return `
       <section class="block word"${da}>
-        <div class="block-head">${no}<span class="block-text">${t(a.text, policy)}</span>${s.pointsEach ? `<span class="points">${t(`(${s.pointsEach}{点|てん})`, policy)}</span>` : ""}</div>
+        <div class="block-head">${no}<span class="block-text">${tk(a.text)}</span>${s.pointsEach ? `<span class="points">${t(`(${s.pointsEach}{点|てん})`, policy)}</span>` : ""}</div>
         ${hintHtml}
-        ${(() => {
-          const wk = filled ? 0 : workOf(p), shiki = p.workspace?.type === "lines" && p.workspace.labels.some((l) => plainAns(l) === "式");
-          const ws = wk ? wsWithoutShiki(p.workspace) : p.workspace, calc = calcHtml(wk, policy, wk ? shiki ? "{式|しき}・{考|かんが}え{方|かた}" : "{考|かんが}え{方|かた}" : "");
-          return p.side ? `<div class="side">${fig(p)}${workspaceHtml(ws, policy, p)}</div>${calc}` : `${fig(p)}${calc}
-        ${workspaceHtml(ws, policy, p)}`;
-        })()}
-        ${a.need ? `<div class="ans-under">${t("{答|こた}え", policy)} ${t(a.box, policy)}</div>` : ""}
+        ${p.side ? `<div class="side">${fig(p, K?.kfig)}${workspaceHtml(ws, policy, p, K?.lines)}</div>${calc}` : `${fig(p, K?.kfig)}${calc}
+        ${workspaceHtml(ws, policy, p, K?.lines)}`}
+        ${a.need ? `<div class="ans-under">${t("{答|こた}え", policy)} ${tk(a.box)}</div>` : ""}
+        ${wk ? "" : note}
       </section>`;
     }).join("");
     const sections = sectionsHtml(false);
     const ans = (display) => t(display, policy).split("　").map((x) => `<span class="ans-part">${x}</span>`).join("");
     const ansFig = (p) => p.answer.figure ? `<span class="ans-fig">${figureHtml(p.answer.figure, policy)}</span>` : "";
-    const answerSections = sheet.answerStyle === "filled" ? sectionsHtml(true) : sheet.sections.map((s) => {
+    const answerSections = keyMode ? "" : sheet.answerStyle === "filled" ? sectionsHtml(true) : sheet.sections.map((s) => {
       if (s.instruction) {
         return `<div class="ans-block" data-sec="${s.no}"><span class="block-no">${s.no}</span><div class="ans-items">${s.problems.map((p2) => `<span class="ans-item">${p2.no ? `<span class="ans-part">(${p2.no})</span>` : ""}${ans(p2.answer.display)}${ansFig(p2)}</span>`).join("")}</div></div>`;
       }
       const p = s.problems[0];
       return `<div class="ans-block" data-sec="${s.no}"><span class="block-no">${s.no}</span><div class="ans-items"><span class="ans-item">${ans(p.answer.display)}${ansFig(p)}</span></div></div>`;
     }).join("");
-    const footer = `<footer class="sheet-footer" data-seed="No.${sheet.seed}">No.${sheet.seed}</footer>`;
+    const footer = `<footer class="sheet-footer"><span class="ft-no" data-seed="No.${sheet.seed}">No.${sheet.seed}</span><span class="ft-brand">算数プリント</span></footer>`;
     let gc = Number.isInteger(sheet.grade) ? ` grade-${sheet.grade}` : "";
     if (policy && policy.furigana) gc += " furi";
-    const page1 = `<article class="sheet${gc}">${header()}<main class="body">${sections}</main>${footer}</article>`;
-    const page2 = withAnswers ? `<article class="sheet answers${sheet.answerStyle === "filled" ? " filled" : ""}${gc}">${header("{答|こた}え")}<main class="body">${answerSections}</main>${footer}</article>` : "";
+    const page1 = `<article class="sheet${gc}"${keyMode ? ' data-key="1"' : ""}>${header()}<main class="body">${sections}</main>${footer}</article>`;
+    const page2 = withAnswers && !keyMode ? `<article class="sheet answers${sheet.answerStyle === "filled" ? " filled" : ""}${gc}">${header()}<main class="body">${answerSections}</main>${footer}</article>` : "";
     return page1 + page2;
   }
 
@@ -34258,10 +34567,70 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
         order = renumber(pages);
       }
       pages.forEach((p, i) => {
-        const f13 = p.querySelector(".sheet-footer");
+        const f13 = p.querySelector(".ft-no");
         if (f13) f13.textContent = `${f13.dataset.seed}　${i + 1}/${pages.length}`;
+        setSheetNo(p, isAns && !first.classList.contains("filled") ? null : i + 1);
       });
+      // 答えのページ:問題のページをそのまま写して、答えを書きこんだ形にする
+      if (!isAns && first.dataset.key) {
+        let at = pages[pages.length - 1];
+        for (const pgE of pages) {
+          const c = pgE.cloneNode(true);
+          c.removeAttribute("data-key");
+          c.classList.add("answers", "keyed");
+          at.after(c);
+          at = c;
+          fitKeys(c);
+        }
+      }
     }
+  }
+  // 見出しの星の番号(null は答えの一覧のページ)
+  function setSheetNo(page, n) {
+    const e = page.querySelector(".hd-num");
+    if (!e) return;
+    e.textContent = n == null ? "答" : String(n);
+    e.className = `hd-num${n == null ? " ans" : String(n).length >= 3 ? " n3" : String(n).length === 2 ? " n2" : ""}`;
+  }
+  // 答えの字が四角や図からはみ出すときは小さくする。それでもページに入らないときは全体を少し縮める
+  function fitKeys(page) {
+    for (const kv of page.querySelectorAll(".kbox > .key > .kv")) {
+      const box = kv.parentElement.parentElement.firstElementChild;
+      const bw2 = box.getBoundingClientRect().width - 4, bh = box.getBoundingClientRect().height;
+      let k = 1;
+      for (let i = 0; i < 12 && kv.getBoundingClientRect().width > bw2 && k > 0.5; i++) {
+        k -= 0.05;
+        kv.style.fontSize = `${k}em`;
+      }
+      if (bh && kv.getBoundingClientRect().height > bh * 1.6 && k > 0.6) kv.style.fontSize = `${Math.max(0.6, k * 0.8)}em`;
+    }
+    for (const kl of page.querySelectorAll(".key-line")) {
+      const w = kl.parentElement.getBoundingClientRect().width - 8;
+      let k = 1;
+      for (let i = 0; i < 12 && kl.getBoundingClientRect().width > w && k > 0.5; i++) {
+        k -= 0.05;
+        kl.style.fontSize = `${(12.5 * k).toFixed(2)}pt`;
+      }
+      if (kl.getBoundingClientRect().width > w) {
+        kl.style.whiteSpace = "normal";
+        kl.style.width = `${w}px`;
+      }
+    }
+    for (const kn of page.querySelectorAll(".calc > .key-note")) {
+      const c = kn.parentElement, ch = c.getBoundingClientRect().height;
+      let k = 1;
+      for (let i = 0; i < 10 && kn.offsetTop + kn.offsetHeight > ch && k > 0.6; i++) {
+        k -= 0.05;
+        kn.style.fontSize = `${(12 * k).toFixed(2)}pt`;
+      }
+    }
+    for (const kf of page.querySelectorAll(".fig-wrap > .key-fig")) {
+      const w = kf.parentElement.getBoundingClientRect(), r = kf.getBoundingClientRect();
+      const z = Math.min(1, (w.width + 1) / Math.max(1, r.width), (w.height + 1) / Math.max(1, r.height));
+      if (z < 0.999) kf.style.zoom = String(Math.floor(z * 100) / 100);
+    }
+    const body = page.querySelector(".body");
+    for (let z = 0.97; overflows(page) && z >= 0.6; z -= 0.03) for (const b of body.children) b.style.zoom = z.toFixed(2);
   }
   // 紙の幅より広い表や図は、幅に合わせて縮める
   function fitWide(sheet) {
@@ -34459,11 +34828,7 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
   }
   function makeContinuation(page) {
     const next = page.cloneNode(false);
-    const head = page.querySelector(".sheet-header");
-    const slim = document.createElement("header");
-    slim.className = "sheet-header slim";
-    slim.innerHTML = `<div class="meta">${head.querySelector(".meta").innerHTML}</div><h1>${head.querySelector("h1").innerHTML}</h1>`;
-    next.appendChild(slim);
+    next.appendChild(page.querySelector(".sheet-header").cloneNode(true));
     const body = document.createElement("main");
     body.className = "body";
     next.appendChild(body);
@@ -38835,6 +39200,8 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
     fromWrap: $("fromWrap"),
     seed: $("seed"),
     withAnswers: $("withAnswers"),
+    ansStyle: $("ansStyle"),
+    trace: $("trace"),
     excludeCurrent: $("excludeCurrent"),
     furigana: $("furigana"),
     hints: $("hints"),
@@ -38942,7 +39309,7 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
       if (EXCLUDE.has(spec.unitId)) throw new Error("この単元は準備中です(この版では作れません)");
       const sheet = buildSheet(spec);
       const policy = makeKanjiPolicy(kanji_default, spec.grade, { excludeCurrentGrade: el.excludeCurrent.checked, furigana: el.furigana.checked });
-      el.preview.innerHTML = sheetHtml(sheet, { policy, withAnswers: el.withAnswers.checked, gradeLabel: `${spec.grade}年`, hints: el.hints.checked });
+      el.preview.innerHTML = sheetHtml(sheet, { policy, withAnswers: el.withAnswers.checked, gradeLabel: `${spec.grade}年`, hints: el.hints.checked, answerMode: el.ansStyle.value, trace: el.trace.checked });
       paginate(el.preview);
       document.title = `${stripRuby(renderText(sheet.title, policy))} No.${sheet.seed}`;
       el.print.disabled = false;
@@ -39101,7 +39468,7 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
         let sheet = buildSheet(spec);
         if (!title) title = fileName(renderText(sheet.title, policy));
         const render = (sh) => {
-          stage.innerHTML = sheetHtml(sh, { policy, withAnswers: opt.answers !== "none", hints: el.hints.checked });
+          stage.innerHTML = sheetHtml(sh, { policy, withAnswers: opt.answers !== "none", hints: el.hints.checked, answerMode: el.ansStyle.value, trace: el.trace.checked });
           paginate(stage);
           const arts = [...stage.querySelectorAll("article.sheet")];
           return [arts.filter((a) => !a.classList.contains("answers")), arts.filter((a) => a.classList.contains("answers"))];
@@ -39122,6 +39489,11 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
           [probs, ans] = render(sheet);
         }
         if (probs.length > room) probs = probs.slice(0, room);
+        // 答えを書きこむ形のときは、答えのページも問題のページと 1まいずつ対応する
+        if (ans[0]?.classList.contains("keyed")) ans = ans.slice(0, probs.length);
+        // 星の番号は、まとめて作ったページの通し番号にする
+        probs.forEach((a, j) => setSheetNo(a, made + j + 1));
+        if (ans[0]?.classList.contains("keyed")) ans.forEach((a, j) => setSheetNo(a, made + j + 1));
         made += probs.length;
         if (opt.out === "print") {
           printPages.push(...probs);
@@ -39203,7 +39575,8 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
     }
   });
 
-  for (const id of ["withAnswers", "excludeCurrent", "furigana", "hints"]) el[id].addEventListener("change", () => {
+  for (const id of ["withAnswers", "excludeCurrent", "furigana", "hints", "ansStyle", "trace"]) el[id].addEventListener("change", () => {
+    if (id === "ansStyle") store.set("ansStyle", el.ansStyle.value);
     if (el.preview.innerHTML) render();
   });
   var version = document.querySelector('meta[name="app-version"]')?.content || "dev";
@@ -39244,6 +39617,9 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
       try { localStorage.setItem("sansu-print:" + k, v); } catch {}
     }
   };
+  if (["key", "list"].includes(store.get("ansStyle"))) el.ansStyle.value = store.get("ansStyle");
+  if (["key", "list"].includes(q.get("ansStyle"))) el.ansStyle.value = q.get("ansStyle");
+  if (q.get("trace") === "1") el.trace.checked = true;
   var homeGrade = store.get("grade") !== null && GRADES[Number(store.get("grade"))] ? Number(store.get("grade")) : 1;
   var homeLevel = LEVELS[store.get("level")] ? store.get("level") : "basic";
   var KIND_SHORT = { drill: "計算ドリル", word: "文章題", figure: "図形・グラフ", test: "まとめテスト", yoji: "プリントを つくる" };
