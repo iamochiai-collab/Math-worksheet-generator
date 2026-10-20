@@ -6,6 +6,15 @@
 <meta name="app-version" content="第4版(2026-10-19)">
 <meta name="app-exclude" content="">
 <title>算数プリント</title>
+<link rel="icon" type="image/png" sizes="32x32" href="{{ICON:icon32}}">
+<link rel="icon" type="image/png" sizes="64x64" href="{{ICON:icon64}}">
+<link rel="icon" type="image/png" sizes="512x512" href="{{ICON:icon512}}">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ICON:icon180}}">
+<meta name="theme-color" content="#0a6aa1">
+<script>
+  // 公開ページ(https)で開いたときは、ホーム画面のアイコンをファイルのほうにする(iPhone・iPad は data URI を使わないことがあるため)
+  if (/^https?:/.test(location.protocol)) document.querySelector('link[rel="apple-touch-icon"]').href = "apple-touch-icon.png";
+</script>
 <style>
 /* ===== 共通(画面・印刷) ===== */
 :root {

@@ -7,6 +7,7 @@ src/template.html に、次のものを入れて 1 ファイルにする。
   - src/generators/<名前>/topics.json があれば、その単元の topics をおきかえる
   - assets/chara/*.webp           キャラクター画像({{CHARA:名前}} の場所に data URI で入る)
   - assets/money/*.webp           お金の絵({{MONEY:名前}} の場所に data URI で入る)
+  - assets/icon/*.png             サイトのアイコン({{ICON:名前}} の場所に data URI で入る)
   - vendor/*.js                   PDF・JPG・zip 用の道具({{VENDOR:ファイル名}} の場所に入る)
 """
 import base64, json, re, pathlib
@@ -57,12 +58,18 @@ def chara(m):
     data = (root / 'assets' / 'chara' / f'{m.group(1)}.webp').read_bytes()
     return 'data:image/webp;base64,' + base64.b64encode(data).decode()
 s = re.sub(r'\{\{CHARA:(\w+)\}\}', chara, s)
+# サイトのアイコン({{ICON:名前}} に assets/icon/名前.png)
+s = re.sub(r'\{\{ICON:(\w+)\}\}', lambda m: 'data:image/png;base64,' + base64.b64encode((root / 'assets' / 'icon' / f'{m.group(1)}.png').read_bytes()).decode(), s)
 # お金の絵({{MONEY:名前}} に assets/money/名前.webp)
 s = re.sub(r'\{\{MONEY:(\w+)\}\}', lambda m: 'data:image/webp;base64,' + base64.b64encode((root / 'assets' / 'money' / f'{m.group(1)}.webp').read_bytes()).decode(), s)
 s = re.sub(r'\{\{VENDOR:([\w.\-]+)\}\}', lambda m: (root / 'vendor' / m.group(1)).read_text(encoding='utf-8'), s)
-assert '{{CHARA:' not in s and '{{VENDOR:' not in s and '{{MONEY:' not in s
+assert '{{CHARA:' not in s and '{{VENDOR:' not in s and '{{MONEY:' not in s and '{{ICON:' not in s
 
 (root / 'docs').mkdir(exist_ok=True)
+# 公開ページ用に、アイコンをファイルとしても置く(iPhone・iPad のホーム画面用)
+import shutil
+shutil.copyfile(root / 'assets' / 'icon' / 'icon180.png', root / 'docs' / 'apple-touch-icon.png')
+shutil.copyfile(root / 'assets' / 'icon' / 'icon32.png', root / 'docs' / 'favicon.png')
 (root / 'docs' / 'index.html').write_text(s, encoding='utf-8')
 hook = '  window.__T = { generators, GRADES, buildSheet, makeRng, topicParams, getGenerator, kanji_default, renderText, makeKanjiPolicy, sheetHtml, paginate, ansify, HINTS, topicRuby, topicKinds };\n})();\n\n</script>'
 end = '})();\n\n</script>'

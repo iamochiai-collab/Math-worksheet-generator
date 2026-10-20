@@ -31,6 +31,7 @@
   - 特別支援の段階は `tokushiStages` を `GRADES[21〜27]` に入れる(`gradeData.grade` は漢字・字の大きさ用の近い学年)
 - `src/generators/<名前>/*.js` … 問題の部品(chu1〜3・kou0〜kouC・g4LineGraph・tokushi・yoji)。フォルダ名の順につながる。各フォルダは `var <フォルダ名> = [...]` が必要
   - `tokushi/part1.js` … 特別支援の絵・お金の部品と、段階ごとの単元のならび(`from: [["単元id" か "単元id:小単元番号" か "t.○○", ★ごとのしぼりこみ, 名前や種類]]`)
+- `assets/icon/*.png` … サイトのアイコン(`{{ICON:icon32}}` などで head に入る。build で docs/apple-touch-icon.png・favicon.png もコピー)
 - `assets/money/*.webp` … お金の絵(`{{MONEY:coin10}}` などで data URI になる)。`assets/chara/` … メニューのキャラクター
 - `tools/build.py` … 1ファイルにまとめる → `docs/index.html`(公開用)と `build/test.html`(検査用、`window.__T` あり)
 

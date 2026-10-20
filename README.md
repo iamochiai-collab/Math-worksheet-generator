@@ -72,6 +72,7 @@ iPad では、「ファイル」アプリで `index.html` を長押し →「共
 │     └─ kou3/ kouC/      ← 数学Ⅲ・数学C
 ├─ assets/chara/          ← メニューのキャラクター画像(webp)
 ├─ assets/money/          ← お金(こうか・おさつ)の絵(webp)
+├─ assets/icon/           ← サイトのアイコン(ブラウザのタブ・ホーム画面)
 ├─ assets/money/          ← お金(こうか)の絵(webp)
 ├─ vendor/                ← PDF・JPG・zip 用の道具(html2canvas / jsPDF / JSZip)とライセンス
 ├─ tools/
