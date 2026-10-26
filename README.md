@@ -62,6 +62,7 @@ iPad では、「ファイル」アプリで `index.html` を長押し →「共
 │  └─ generators/         ← あとから足した問題をつくる部品
 │     ├─ yoji/            ← ようじ
 │     ├─ tokushi/         ← 特別支援学校の段階(段階ごとの単元のならび・小学部1段階の絵のプリント)
+│     ├─ g3MergeTables/   ← 3年「ぼうグラフと表」の「1つの表にまとめよう」(+ topics.json)
 │     ├─ g4LineGraph/     ← 4年「折れ線グラフと表」(+ topics.json)
 │     ├─ chu1/            ← 中学1年
 │     ├─ chu2/            ← 中学2年

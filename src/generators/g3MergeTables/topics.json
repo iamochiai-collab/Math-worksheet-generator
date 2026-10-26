@@ -1,0 +1,7 @@
+{"g3-06": [
+ {"label": "正の字で数えて表に", "generator": "g3.tallyTable", "kinds": ["figure", "test"]},
+ {"label": "ぼうグラフを読む", "generator": "g3.barRead", "kinds": ["figure", "test"]},
+ {"label": "ぼうグラフに表す", "generator": "g3.barDraw", "kinds": ["figure", "test"]},
+ {"label": "組ごとの表", "generator": "g3.crossTable", "kinds": ["figure", "test"]},
+ {"label": "1つの表にまとめよう", "generator": "g3.mergeTables", "kinds": ["figure"]}
+]}
