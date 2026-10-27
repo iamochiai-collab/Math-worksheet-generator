@@ -109,7 +109,7 @@ body[data-view="home"] .panel, body[data-view="home"] .preview { display: none; 
 body[data-view="print"] .home { display: none; }
 .g0 { --gc: #c9457f; } .g7 { --gc: #3d6f8f; } .g8 { --gc: #5a5f9e; } .g9 { --gc: #7a4f6e; } .g1 { --gc: #c8453b; } .g2 { --gc: #c9731e; } .g3 { --gc: #3b8a4c; }
 .g4 { --gc: #23837f; } .g5 { --gc: #2f67b1; } .g6 { --gc: #7150a6; }
-.g21, .g22, .g23 { --gc: #b0476b; } .g24, .g25 { --gc: #3b7d5a; } .g26, .g27 { --gc: #4a5fa0; }
+.g21, .g22, .g23 { --gc: #b0476b; } .g24, .g25 { --gc: #3b7d5a; } .g26, .g27 { --gc: #4a5fa0; } .g28 { --gc: #b8641c; }
 .tk-banner { display: flex; align-items: center; gap: 12px; width: 100%; margin: 14px 0 0; padding: 12px 16px; border-radius: 14px; border: 2px solid #e7a3bd; background: linear-gradient(90deg, #fff4f8, #fff); color: #6b2340; font: inherit; text-align: left; cursor: pointer; box-shadow: 0 2px 0 rgba(176,71,107,.15); }
 .tk-banner:hover, .tk-banner:focus-visible { background: #ffe9f1; }
 .tk-banner .tk-badge { flex: none; background: #b0476b; color: #fff; font-weight: bold; font-size: 13px; padding: 5px 10px; border-radius: 999px; }
@@ -619,7 +619,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   <summary>使い方</summary>
   <ol>
     <li><b>作り方</b> 学年 → 単元 → 種類 → 難易度 → 問題数を選んで「作成」。下に A4 の形で出ます。「印刷」で印刷の画面が開きます。</li>
-    <li><b>特別支援学校の段階</b> メニューの「特別支援学校 各段階のプリントは こちら！」をおすと、知的障害の特別支援学校の学習指導要領(算数・数学)の段階(小学部1〜3段階・中学部1・2段階・高等部1・2段階)でえらべます。段階の内容(A 数と計算、B 図形 など)ごとに、問題を少なめ・字を大きめにしたプリントができます。小学部1・2段階は、ある・ない、おなじものをむすぶ、なかまあつめ、おおきい・ちいさい(1もんに 1つの くらべ) などの絵のプリントです。お金は、小学部2段階(1円・10円)→3段階(いくらかな・ぜんぶで いくら・ちょうど はらう)→中学部1段階(1000円まで・おつり)→2段階(おさつ・2つ買ったときのおつり)と少しずつ広げています。</li>
+    <li><b>特別支援学校の段階</b> メニューの「特別支援学校 各段階のプリントは こちら！」をおすと、知的障害の特別支援学校の学習指導要領(算数・数学)の段階(小学部1〜3段階・中学部1・2段階・高等部1・2段階)でえらべます。段階の内容(A 数と計算、B 図形 など)ごとに、問題を少なめ・字を大きめにしたプリントができます。小学部1・2段階は、ある・ない、おなじものをむすぶ、なかまあつめ、おおきい・ちいさい(1もんに 1つの くらべ) などの絵のプリントです。お金は、小学部2段階(1円・10円)→3段階(いくらかな・ぜんぶで いくら・ちょうど はらう)→中学部1段階(1000円まで・おつり)→2段階(おさつ・2つ買ったときのおつり)と少しずつ広げています。高等部の「くらし」(くらしの数学)は、買い物・料理・予定・時間・お金の使い方・荷物・電気・通勤・仕事・給与明細など、毎日のくらしや働くときの場面の問題です(数や場面は毎回かわります)。</li>
     <li><b>小単元</b> 小学校は、単元の中の小単元(たとえば「折れ線グラフと表」の「2本の折れ線グラフ」)だけのプリントも作れます。メニューの単元の「小単元をえらぶ」から、または上の「小単元」でえらびます。見出しは「単元名 番号」と「◎ 小単元名」になります。「まとめて作る」と組み合わせると、同じ小単元のプリントを何まいも作れます。</li>
     <li><b>作り直しとシード番号</b> 「作り直し」を押すと別の問題になります。プリント左下の「No.」がシード番号(星の中の数字はページの番号)で、同じ番号・同じ設定なら同じプリントになります(先生用と児童用、やり直し用などに)。</li>
     <li><b>解答</b> 問題のページのあとに付きます。「答えのページ」が「プリントに書きこむ」のときは、問題のプリントと同じページに答えをオレンジの字で書きこんだ形になります(1ページずつ対応)。「答えだけの一覧」にすると、答えを短くまとめたページになります。「解答をつける」を外すと付きません。</li>
@@ -47233,6 +47233,2108 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       ]
     }
   ];
+  // ===== くらしの数学(特別支援学校 高等部むけ) =====
+  // 買い物・料理・予定・時間・お金の使い方・荷物・電気・通勤・仕事・給与明細など、くらしや働く場面の問題。
+  // 数や場面は毎回かわる。part2〜part5 に部品、part6 で段階(GRADES[28]「くらしの数学」)に入れる。
+  // 文の漢字は K() で辞書(DICT)から {漢字|かな} にする(ふりがな・習っていない漢字をひらがなにするため)。
+  var kurashiGens = [];
+  var kurashiLib = (() => {
+    // ===== ふりがな辞書(長いことばから先に当てる) =====
+    const DICT = {
+      // 人・生活
+      健康: "けんこう", 生活: "せいかつ", 体温: "たいおん", 睡眠: "すいみん", 記録: "きろく", 食事: "しょくじ", 献立: "こんだて", 摂取: "せっしゅ",
+      朝食: "ちょうしょく", 昼食: "ちゅうしょく", 夕食: "ゆうしょく", 間食: "かんしょく", 寝た: "{寝|ね}た", 寝て: "{寝|ね}て", 寝る: "{寝|ね}る", 起きた: "{起|お}きた", 起きて: "{起|お}きて", 起きる: "{起|お}きる", 起きました: "{起|お}きました",
+      次の日: "{次|つぎ}の{日|ひ}", 平日: "へいじつ", 休日: "きゅうじつ", 午前: "ごぜん", 午後: "ごご", 身長: "しんちょう", 体重: "たいじゅう", 身体計測: "しんたいけいそく", 結果: "けっか",
+      表: "ひょう", 下の: "{下|した}の", 上の: "{上|うえ}の", 何月: "なんがつ", 何日: "なんにち", 何時: "なんじ", 何時間: "なんじかん", 何分: "なんぷん", 何円: "なんえん", 何人: "なんにん", 何個: "なんこ", 何本: "なんぼん", 何枚: "なんまい", 何回: "なんかい", 何杯: "なんばい", 何曜日: "なんようび", 何袋: "なんふくろ", 何箱: "なんはこ",
+      何: "なん", 一年間: "{一年間|いちねんかん}", 年間: "ねんかん", 年: "ねん", 月: "がつ", 毎月: "まいつき", 毎日: "まいにち", 毎週: "まいしゅう", 週: "しゅう", 曜日: "ようび",
+      日曜日: "にちようび", 月曜日: "げつようび", 火曜日: "かようび", 水曜日: "すいようび", 木曜日: "もくようび", 金曜日: "きんようび", 土曜日: "どようび",
+      重かった: "{重|おも}かった", 軽かった: "{軽|かる}かった", 減った: "{減|へ}った", 増えた: "{増|ふ}えた", 減りました: "{減|へ}りました", 増えました: "{増|ふ}えました", 伸びました: "{伸|の}びました",
+      間: "あいだ", 胸囲: "きょうい", 洋服: "ようふく", 男性: "だんせい", 女性: "じょせい", 選ぶ: "{選|えら}ぶ", 選びます: "{選|えら}びます", 選べば: "{選|えら}べば", 大きい: "{大|おお}きい", 小さい: "{小|ちい}さい", 大きいほう: "{大|おお}きいほう",
+      合う: "{合|あ}う", 合わせる: "{合|あ}わせる", 単位: "たんい", 立ち幅跳び: "{立|た}ち{幅跳|はばと}び", 幅: "はば", 跳んだ: "{跳|と}んだ", 班: "はん", 遠く: "{遠|とお}く", 遠い: "{遠|とお}い", 近い: "{近|ちか}い",
+      差: "さ", 合計: "ごうけい", 平均: "へいきん", 走: "そう", 細かい: "{細|こま}かい", 切り上げ: "{切|き}り{上|あ}げ", 切り上げます: "{切|き}り{上|あ}げます", 表示: "ひょうじ", 秒: "びょう", 表しましょう: "{表|あらわ}しましょう", 表す: "{表|あらわ}す",
+      // 天気・季節
+      天気予報: "てんきよほう", 天気: "てんき", 晴れ: "{晴|は}れ", 雨: "あめ", 時々: "ときどき", 気温: "きおん", 最高気温: "さいこうきおん", 最低気温: "さいていきおん", 最高: "さいこう", 最低: "さいてい",
+      降水確率: "こうすいかくりつ", 以上: "いじょう", 以下: "いか", 今日: "きょう", 明日: "あした", 昨日: "きのう", 今週: "こんしゅう", 調べました: "{調|しら}べました", 調べて: "{調|しら}べて", 調べた: "{調|しら}べた",
+      低い: "{低|ひく}い", 高い: "{高|たか}い", 低かった: "{低|ひく}かった", 高かった: "{高|たか}かった", 上がった: "{上|あ}がった", 大きく: "{大|おお}きく", 季節: "きせつ", 校庭: "こうてい", 測った: "{測|はか}った", 測りました: "{測|はか}りました", 時刻: "じこく",
+      // 買い物
+      買い物: "{買|か}い{物|もの}", 買います: "{買|か}います", 買いました: "{買|か}いました", 買う: "{買|か}う", 買って: "{買|か}って", 買える: "{買|か}える", 買えます: "{買|か}えます", 買えるのは: "{買|か}えるのは", 買った: "{買|か}った",
+      支払い: "{支払|しはら}い", 支払う: "{支払|しはら}う", 支払います: "{支払|しはら}います", 払う: "{払|はら}う", 払いました: "{払|はら}いました", 払います: "{払|はら}います", 払えます: "{払|はら}えます", 払え: "{払|はら}え", 払って: "{払|はら}って", 払えない: "{払|はら}えない",
+      金額: "きんがく", 金: "かね", 代金: "だいきん", 消費税: "しょうひぜい", 税込: "ぜいこみ", 税込み: "{税込|ぜいこ}み", 税抜: "ぜいぬき", 税抜き: "{税抜|ぜいぬ}き", 本体: "ほんたい", 小計: "しょうけい", 対象: "たいしょう", 軽減税率: "けいげんぜいりつ", 品目: "ひんもく",
+      合計金額: "ごうけいきんがく", 預り: "あずかり", 釣り: "{釣|つ}り", 領収書: "りょうしゅうしょ", 出しました: "{出|だ}しました", 出した: "{出|だ}した", 現金: "げんきん", 財布: "さいふ", 入って: "{入|はい}って", 入っています: "{入|はい}っています", 入れて: "{入|い}れて", 入れる: "{入|い}れる", 入ります: "{入|はい}ります", 入る: "{入|はい}る",
+      分割払い: "{分割払|ぶんかつばら}い", 手数料: "てすうりょう", 一括: "いっかつ", 商品: "しょうひん", 弁当: "べんとう", 本屋: "ほんや", 雑誌: "ざっし", 店: "みせ", 店員: "てんいん", 使えません: "{使|つか}えません", 使えない: "{使|つか}えない", 使えます: "{使|つか}えます", 使う: "{使|つか}う", 使って: "{使|つか}って", 使った: "{使|つか}った", 使い: "{使|つか}い",
+      決済: "けっさい", 両方: "りょうほう", 足りません: "{足|た}りません", 足りない: "{足|た}りない", 足りる: "{足|た}りる", 円: "えん", 回払い: "{回払|かいばら}い", 回: "かい", 全部: "ぜんぶ", 残り: "{残|のこ}り", 残った: "{残|のこ}った", 残金: "ざんきん",
+      // 料理
+      調理: "ちょうり", 料理: "りょうり", 材料: "ざいりょう", 人分: "にんぶん", 必要: "ひつよう", 分量: "ぶんりょう", 作ります: "{作|つく}ります", 作る: "{作|つく}る", 作り: "{作|つく}り", 作れ: "{作|つく}れ", 作った: "{作|つく}った", 家族: "かぞく", 当番: "とうばん", 実習: "じっしゅう",
+      割引: "わりびき", 半額: "はんがく", 値段: "ねだん", 売って: "{売|う}って", 売られて: "{売|う}られて", 鶏: "とり", 豚: "ぶた", 牛: "ぎゅう", 肉: "にく", 玉: "たま", 大根: "だいこん", 長: "なが", 卵: "たまご", 牛乳: "ぎゅうにゅう", 小麦粉: "こむぎこ", 砂糖: "さとう", 油: "あぶら", 水: "みず", 米: "こめ",
+      大さじ: "{大|おお}さじ", 小さじ: "{小|こ}さじ", 杯: "はい", 個: "こ", 本: "ほん", 枚: "まい", 食品: "しょくひん", 表示ラベル: "{表示|ひょうじ}ラベル", 貼られて: "{貼|は}られて", 国産: "こくさん", 消費期限: "しょうひきげん", 保存: "ほぞん", 正味量: "しょうみりょう", 当り: "あたり", 加工者: "かこうしゃ", 生鮮: "せいせん",
+      食べる: "{食|た}べる", 食べた: "{食|た}べた", 食べました: "{食|た}べました", 食べ: "{食|た}べ", 何g: "{何|なん}g", 何kcal: "{何|なん}kcal", 何mL: "{何|なん}mL", "何℃": "{何|なん}℃", 書いてあります: "{書|か}いてあります", 書いてありました: "{書|か}いてありました",
+      // 予定
+      予定: "よてい", 手帳: "てちょう", 週間後: "しゅうかんご", 仕事: "しごと", 休み: "{休|やす}み", 行きます: "{行|い}きます", 行く: "{行|い}く", 行きました: "{行|い}きました", 祝日: "しゅくじつ", 考えない: "{考|かんが}えない", 貯金箱: "ちょきんばこ", 貯金: "ちょきん", 始めます: "{始|はじ}めます", 始めました: "{始|はじ}めました", 始め: "{始|はじ}め",
+      最後: "さいご", 風邪: "かぜ", 病院: "びょういん", 薬: "くすり", 錠: "じょう", 夜: "よる", 朝: "あさ", 昼: "ひる", 飲み始めます: "{飲|の}み{始|はじ}めます", 飲み始め: "{飲|の}み{始|はじ}め", 飲み終わる: "{飲|の}み{終|お}わる", 飲みます: "{飲|の}みます", 誕生日: "たんじょうび", 第: "だい",
+      // 時間・おでかけ
+      遊び: "{遊|あそ}び", 目的地: "もくてきち", 出発: "しゅっぱつ", 到着: "とうちゃく", 到着地: "とうちゃくち", 出発地: "しゅっぱつち", 着きます: "{着|つ}きます", 着く: "{着|つ}く", 着いた: "{着|つ}いた", 着きたい: "{着|つ}きたい", 家: "いえ", 駅: "えき", 駅前: "えきまえ", 徒歩: "とほ", 電車: "でんしゃ", 自転車: "じてんしゃ",
+      時計: "とけい", 左: "ひだり", 右: "みぎ", 時間: "じかん", 計算: "けいさん", 早く: "{早|はや}く", 遅く: "{遅|おそ}く", 部活動: "ぶかつどう", 朝練習: "あされんしゅう", 練習: "れんしゅう", 出ました: "{出|で}ました", 出る: "{出|で}る", 出て: "{出|で}て", 後: "ご", 前: "まえ",
+      友達: "ともだち", 待ち合わせ: "{待|ま}ち{合|あ}わせ", 待ち合わせる: "{待|ま}ち{合|あ}わせる", 映画: "えいが", 映画館: "えいがかん", 開始: "かいし", 準備: "じゅんび", 乗る: "{乗|の}る", 乗ります: "{乗|の}ります", 乗って: "{乗|の}って", 乗りました: "{乗|の}りました", 乗った: "{乗|の}った", 時刻表: "じこくひょう", 小遣い: "{小遣|こづか}い",
+      整理券: "せいりけん", 運賃: "うんちん", 運賃表: "うんちんひょう", 行き: "{行|い}き", 帰り: "{帰|かえ}り", 帰ります: "{帰|かえ}ります", 帰る: "{帰|かえ}る", 同じ: "{同|おな}じ", 映画代: "えいがだい", 昼食代: "ちゅうしょくだい", 終わりました: "{終|お}わりました", 終わる: "{終|お}わる", 終わった: "{終|お}わった", 歩いて: "{歩|ある}いて", 歩きます: "{歩|ある}きます",
+      // ショッピングセンター・レストラン
+      日: "にち", 時: "じ", 分: "ふん", 分間: "ふんかん", 書きましょう: "{書|か}きましょう", 求めましょう: "{求|もと}めましょう", 数: "かず", 当てはまる: "{当|あ}てはまる", 針: "はり", 雑貨: "ざっか", 電器: "でんき", 書店: "しょてん",
+      残高: "ざんだか", 千円: "せんえん", 単位で: "{単位|たんい}で", 少なく: "{少|すく}なく", 少ない: "{少|すく}ない", 中: "なか", 外食: "がいしょく", 伝票: "でんぴょう", 品名: "ひんめい", 数量: "すうりょう", 割り勘: "{割|わ}り{勘|かん}", 人数: "にんずう", 一人: "{一人|ひとり}", 一人ひとり: "{一人|ひとり}ひとり", 自分: "じぶん",
+      中華丼: "ちゅうかどん", 親子丼: "おやこどん", 定食: "ていしょく", 焼き: "{焼|や}き", 焼き魚: "{焼|や}き{魚|ざかな}", 魚: "さかな", 野菜: "やさい", 炒め: "{炒|いた}め", 野菜炒め: "{野菜炒|やさいいた}め", 豚汁: "とんじる", 汁: "しる", 茶: "ちゃ", 緑茶: "りょくちゃ", 乾電池: "かんでんち", 電池: "でんち",
+      // カタログ・収納
+      広告: "こうこく", 家具: "かぐ", 本棚: "ほんだな", 棚: "たな", 机: "つくえ", 奥行き: "{奥行|おくゆ}き", 高さ: "{高|たか}さ", 長さ: "{長|なが}さ", 価格: "かかく", 送料無料: "そうりょうむりょう", 送料: "そうりょう", 届け: "{届|とど}け", 届きます: "{届|とど}きます", 注文: "ちゅうもん", 置けます: "{置|お}けます", 置けません: "{置|お}けません", 置く: "{置|お}く", 置き: "{置|お}き",
+      部屋: "へや", 壁: "かべ", 理由: "りゆう", 箱: "はこ", 収納: "しゅうのう", 整理: "せいり", 並べ: "{並|なら}べ", 並べます: "{並|なら}べます", 並べられ: "{並|なら}べられ", 内側: "うちがわ", 横: "よこ", 縦: "たて", 列: "れつ", 余り: "{余|あま}り", 余ります: "{余|あま}ります", 段: "だん",
+      // お金の使い方
+      生活費: "せいかつひ", 等分: "とうぶん", 日間: "にちかん", 一日: "いちにち", 欲しい: "{欲|ほ}しい", 物: "もの", 項目: "こうもく", 食費: "しょくひ", 被服費: "ひふくひ", 交通費: "こうつうひ", 娯楽費: "ごらくひ", 通信費: "つうしんひ", 支出: "ししゅつ", 収入: "しゅうにゅう", 家計簿: "かけいぼ", 日付: "ひづけ", 携帯電話代: "けいたいでんわだい",
+      電車代: "でんしゃだい", 遊園地: "ゆうえんち", 帽子: "ぼうし", 本代: "ほんだい", 多く: "{多|おお}く", 多い: "{多|おお}い", 使い道: "{使|つか}い{道|みち}",
+      // 荷物・住居
+      荷物: "にもつ", 送ろう: "{送|おく}ろう", 送る: "{送|おく}る", 送ります: "{送|おく}ります", 宅配便: "たくはいびん", 料金: "りょうきん", 料金表: "りょうきんひょう", 都道府県: "とどうふけん", 配送: "はいそう", 取扱い: "{取扱|とりあつか}い", 窓口: "まどぐち", 持ち込み: "{持|も}ち{込|こ}み", 持ち込む: "{持|も}ち{込|こ}む", 持ち込んで: "{持|も}ち{込|こ}んで", 会社: "かいしゃ", 段ボール: "{段|だん}ボール", 以内: "いない",
+      住居: "じゅうきょ", 家賃: "やちん", 初期費用: "しょきひよう", 敷金: "しききん", 礼金: "れいきん", 仲介手数料: "ちゅうかいてすうりょう", 前家賃: "まえやちん", 火災保険料: "かさいほけんりょう", 鍵交換代: "かぎこうかんだい", 入居: "にゅうきょ", 借ります: "{借|か}ります", 借りる: "{借|か}りる", か月分: "か{月分|げつぶん}", 決まり: "{決|き}まり",
+      電気: "でんき", 契約: "けいやく", 同時: "どうじ", 電子レンジ: "{電子|でんし}レンジ", 冷蔵庫: "れいぞうこ", 炊飯器: "すいはんき", 掃除機: "そうじき", 洗濯機: "せんたくき", 暖房: "だんぼう", 冷房: "れいぼう", 電気ケトル: "{電気|でんき}ケトル", 目安: "めやす", 落ちず: "{落|お}ちず", 落ちる: "{落|お}ちる",
+      // 仕事
+      現場実習: "げんばじっしゅう", 実習先: "じっしゅうさき", 通勤: "つうきん", 手段: "しゅだん", 片道: "かたみち", 往復: "おうふく", 始まります: "{始|はじ}まります", 作業: "さぎょう", 速度: "そくど", 作業所: "さぎょうしょ", 袋: "ふくろ", 袋づめ: "{袋|ふくろ}づめ", 給料: "きゅうりょう", 休憩: "きゅうけい", 休憩時間: "きゅうけいじかん", 歯みがき: "{歯|は}みがき",
+      忙しく: "{忙|いそが}しく", 働く: "{働|はたら}く", 働き: "{働|はたら}き", 働いて: "{働|はたら}いて", 働きます: "{働|はたら}きます", 働くと: "{働|はたら}くと", 勤務時間: "きんむじかん", 勤務: "きんむ", 途中: "とちゅう", 工場: "こうじょう", 先輩: "せんぱい", 倍: "ばい", 速さ: "{速|はや}さ", 手伝い: "{手伝|てつだ}い", 出社: "しゅっしゃ", 退社: "たいしゃ", 制度: "せいど",
+      求人票: "きゅうじんひょう", 就業時間: "しゅうぎょうじかん", 基本給: "きほんきゅう", 年間休日: "ねんかんきゅうじつ", 休日数: "きゅうじつすう", 出勤: "しゅっきん", 月額: "げつがく", 年次有給休暇: "ねんじゆうきゅうきゅうか", 年休: "ねんきゅう", 有給: "ゆうきゅう", 取りました: "{取|と}りました", 取れます: "{取|と}れます", 取る: "{取|と}る", 時点: "じてん", 累計: "るいけい", 残日数: "ざんにっすう",
+      給与明細: "きゅうよめいさい", 給与明細書: "きゅうよめいさいしょ", 給与: "きゅうよ", 支給: "しきゅう", 総支給額: "そうしきゅうがく", 控除: "こうじょ", 総控除額: "そうこうじょがく", 差引支給額: "さしひきしきゅうがく", 実際: "じっさい", 受け取れる: "{受|う}け{取|と}れる", 受け取った: "{受|う}け{取|と}った", 手当: "てあて",
+      時間外手当: "じかんがいてあて", 通勤手当: "つうきんてあて", 住居手当: "じゅうきょてあて", 残業: "ざんぎょう", 健康保険: "けんこうほけん", 厚生年金: "こうせいねんきん", 雇用保険: "こようほけん", 所得税: "しょとくぜい", 住民税: "じゅうみんぜい", 社会保険料: "しゃかいほけんりょう", 欠勤: "けっきん", 勤怠: "きんたい",
+      // そのほか
+      次: "つぎ", 答え: "{答|こた}え", 式: "しき", 図: "ず", 名前: "なまえ", 人: "にん", 見て: "{見|み}て", 見ながら: "{見|み}ながら", 書いて: "{書|か}いて", 書く: "{書|か}く", 考えて: "{考|かんが}えて", 確かめ: "{確|たし}かめ", 場合: "ばあい", 方: "かた", 全員: "ぜんいん", 中から: "{中|なか}から", 一番: "いちばん",
+      今: "いま", 場所: "ばしょ", 決め: "{決|き}め", 来て: "{来|き}て", 来ます: "{来|き}ます", 気持ち: "{気持|きも}ち", 計: "けい", 位: "くらい", 小数第: "{小数|しょうすう}{第|だい}", 四捨五入: "ししゃごにゅう", 概数: "がいすう", 約: "やく", 位までの: "{位|くらい}までの", 百の位: "{百|ひゃく}の{位|くらい}",
+      連絡: "れんらく", 遅れ: "{遅|おく}れ", 送る: "{送|おく}る", 父: "ちち", 母: "はは", 兄: "あに", 姉: "あね", 弟: "おとうと", 妹: "いもうと", 家の人: "{家|いえ}の{人|ひと}", 一週間: "{一週間|いっしゅうかん}", 週間: "しゅうかん", 合わせると: "{合|あ}わせると", 合わせて: "{合|あ}わせて", 同時に: "{同時|どうじ}に", 使用: "しよう"
+    };
+
+    Object.assign(DICT, {
+      十の位: "{十|じゅう}の{位|くらい}", 起きます: "{起|お}きます", 伸び: "{伸|の}び", 下: "した", 用: "よう", 対象額: "たいしょうがく", 入れた: "{入|い}れた", 洗剤: "せんざい", 歯: "は", 切り捨て: "{切|き}り{捨|す}て",
+      地図: "ちず", 手袋: "てぶくろ", 幕の内: "{幕|まく}の{内|うち}", 使えず: "{使|つか}えず", 支払えません: "{支払|しはら}えません", 粉: "こ", 半玉: "はんたま", 株: "かぶ", 揚げ: "{揚|あ}げ", 求めます: "{求|もと}めます", 求めて: "{求|もと}めて",
+      水族館: "すいぞくかん", 乗りかえ: "{乗|の}りかえ", 図書館: "としょかん", 中央: "ちゅうおう", 公園: "こうえん", 博物館: "はくぶつかん", 動物園: "どうぶつえん", 停: "てい", 待つ: "{待|ま}つ", 出た: "{出|で}た", 学校: "がっこう", 見に: "{見|み}に",
+      始まる: "{始|はじ}まる", 土曜: "どよう", 区間: "くかん", 文房具: "ぶんぼうぐ", 払い: "{払|はら}い", 飲んだ: "{飲|の}んだ", 台: "だい", 木: "き", 衣装: "いしょう", 残る: "{残|のこ}る", 全体: "ぜんたい", 順: "じゅん", 思います: "{思|おも}います",
+      足りなく: "{足|た}りなく", 服: "ふく", 電話: "でんわ", 帳: "ちょう", 代: "だい", 量: "りょう", 機器: "きき", 借りて: "{借|か}りて", 費用: "ひよう", 決まった: "{決|き}まった", 検索: "けんさく", 先: "さき", 部品: "ぶひん", 組み立て: "{組|く}み{立|た}て",
+      封筒: "ふうとう", 宛名: "あてな", 貼り: "{貼|は}り", 工賃: "こうちん", 作: "つく", 物流: "ぶつりゅう", 屋: "や", 仕上げ: "{仕上|しあ}げ", 入社: "にゅうしゃ", 考えません: "{考|かんが}えません", 製作所: "せいさくしょ", 働いた: "{働|はたら}いた", 年目: "ねんめ",
+      取り: "{取|と}り", 取った: "{取|と}った", 引いて: "{引|ひ}いて", 欄: "らん", 表します: "{表|あらわ}します", 合計: "ごうけい", 入れ: "{入|い}れ", 見る: "{見|み}る", 読む: "{読|よ}む", 買え: "{買|か}え", 切れ: "{切|ぎ}れ", 出れば: "{出|で}れば", 書かれた: "{書|か}かれた", 使える: "{使|つか}える", 飲み: "{飲|の}み", 残って: "{残|のこ}って", 名: "めい", 足して: "{足|た}して", 買お: "{買|か}お", 下がった: "{下|さ}がった", 日数: "にっすう", 出勤日数: "しゅっきんにっすう", 欠勤日数: "けっきんにっすう", 有給日数: "ゆうきゅうにっすう"
+    });
+    const PRE = [[/(?<![\d０-９])1人分/g, "{1人分|ひとりぶん}"], [/(?<![\d０-９])2人分/g, "{2人分|ふたりぶん}"], [/(?<![\d０-９{])1人(?!分)/g, "{1人|ひとり}"], [/(?<![\d０-９{])2人(?!分)/g, "{2人|ふたり}"], [/か月分/g, "か{月分|げつぶん}"], [/か月/g, "か{月|げつ}"], [/(ある|この|その)月/g, "$1{月|つき}"], [/最後の日/g, "{最後|さいご}の{日|ひ}"], [/大きく伸/g, "{大|おお}きく{伸|の}"]];
+    const MAXK = 8;
+    const isK = (ch) => /[一-鿿々]/.test(ch);
+    function conv(s) {
+      let out = "";
+      for (let i = 0; i < s.length; ) {
+        if (!isK(s[i])) {
+          out += s[i++];
+          continue;
+        }
+        let hit = null;
+        for (let L = Math.min(MAXK, s.length - i); L >= 1; L--) {
+          const w = s.substr(i, L);
+          if (DICT[w] !== void 0) {
+            hit = w;
+            break;
+          }
+        }
+        if (!hit) {
+          out += s[i++];
+          continue;
+        }
+        const v = DICT[hit];
+        out += v.includes("{") ? v : `{${hit}|${v}}`;
+        i += hit.length;
+      }
+      return out;
+    }
+    // すでに {漢字|かな} や [[...]] になっているところはそのまま
+    const K = (s) => PRE.reduce((x, [re, to]) => x.replace(re, to), String(s)).split(/(\{[^{}|]+\|[^{}|]*\}|\[\[[^\]]*\]\])/).map((seg, i) => i % 2 ? seg : conv(seg)).join("");
+    const plain = (s) => String(s ?? "").replace(/\{([^{}|]+)\|[^{}]*\}/g, "$1").replace(/\[\[br\]\]/g, "");
+
+    // ===== 数による読みのちがい =====
+    const fun = (n) => `{分|${[2, 5, 7, 9].includes(n % 10) ? "ふん" : "ぷん"}}`;
+    const DAY_RD = { 1: "ついたち", 2: "ふつか", 3: "みっか", 4: "よっか", 5: "いつか", 6: "むいか", 7: "なのか", 8: "ようか", 9: "ここのか", 10: "とおか", 14: "じゅうよっか", 20: "はつか", 24: "にじゅうよっか" };
+    const DUR_RD = { 1: "いちにち", 2: "ふつか", 3: "みっか", 4: "よっか", 5: "いつか", 6: "むいか", 7: "なのか", 8: "ようか", 9: "ここのか", 10: "とおか", 14: "じゅうよっか", 20: "はつか" };
+    const dayOf = (d) => DAY_RD[d] ? `{${d}日|${DAY_RD[d]}}` : `${d}{日|にち}`;
+    const days = (n) => DUR_RD[n] ? `{${n}日|${DUR_RD[n]}}` : `${n}{日|にち}`;
+    const md = (m, d) => `${m}{月|がつ}${dayOf(d)}`;
+    const nin = (n) => n === 1 ? "{1人|ひとり}" : n === 2 ? "{2人|ふたり}" : `${n}{人|にん}`;
+    const hon = (n) => `{本|${[1, 6, 8, 0].includes(n % 10) ? "ぽん" : n % 10 === 3 ? "ぼん" : "ほん"}}`;
+    const hai = (n) => `{杯|${[1, 6, 8, 0].includes(n % 10) ? "ぱい" : n % 10 === 3 ? "ばい" : "はい"}}`;
+    const ko = (n) => `${n}{個|こ}`;
+    // 時刻(1日の何分め)。ampm で「午前・午後」をつける
+    const tm = (t, ampm = false) => {
+      t = ((t % 1440) + 1440) % 1440;
+      let h = Math.floor(t / 60);
+      const m = t % 60;
+      let pre = "";
+      if (ampm) {
+        pre = h < 12 ? "{午前|ごぜん}" : "{午後|ごご}";
+        h = h % 12;
+      }
+      return `${pre}${h}{時|じ}${m ? `${m}${fun(m)}` : ""}`;
+    };
+    const tmBox = (t) => `${Math.floor((((t % 1440) + 1440) % 1440) / 60)}{時|じ}${t % 60}${fun(t % 60 || 10)}`;
+    // 時間の長さ(分)
+    const dur = (min) => {
+      const h = Math.floor(min / 60), m = min % 60;
+      return `${h ? `${h}{時間|じかん}` : ""}${m || !h ? `${m}${fun(m || 10)}` : ""}`;
+    };
+    const clock = (t) => `${String(Math.floor(t / 60)).padStart(1, "0")}:${String(t % 60).padStart(2, "0")}`;
+    const WD = ["日", "月", "火", "水", "木", "金", "土"];
+    const WDR = ["{日曜日|にちようび}", "{月曜日|げつようび}", "{火曜日|かようび}", "{水曜日|すいようび}", "{木曜日|もくようび}", "{金曜日|きんようび}", "{土曜日|どようび}"];
+    const WD1 = ["{日|にち}", "{月|げつ}", "{火|か}", "{水|すい}", "{木|もく}", "{金|きん}", "{土|ど}"];
+    const NAMES = ["ゆうき", "さくら", "はると", "あおい", "そうた", "みお", "たくみ", "ひなた", "けんた", "ゆい", "りく", "めい", "かいと", "ことね"];
+    const sum = (a) => a.reduce((x, y) => x + y, 0);
+    const comma = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    // ===== 問題のかたち =====
+    const LINES = ["{式|しき}", "{答|こた}え"];
+    const SA = (shiki, ans) => `{式|しき} ${shiki}　{答|こた}え ${ans}`;
+    // 答えの四角(はばは mm)。四角を文に書いたときは noBox にする
+    const BX = (w = 16) => `[[abox:${w}]]`;
+    const lv = (b, n, c) => ({ basic: b, normal: n, challenge: c });
+    // o: key, text, ans(答え), figure, lines(true なら 式・答え の線), labels(線のことば), meta, noBox, softKey
+    function P(o) {
+      const pr = {
+        key: o.key,
+        text: K(o.text),
+        answer: { display: K(o.ans) },
+        workspace: o.lines || o.labels ? { type: "lines", labels: (o.labels || LINES).map(K), ...(o.labels || []).some((l) => [...plain(l)].length > 2) ? { wideLabel: true } : {} } : { type: "none" },
+        meta: o.meta || {}
+      };
+      if (o.figure) pr.figure = o.figure;
+      if (o.noBox) pr.noAnswerBox = true;
+      if (o.softKey) pr.softKey = o.softKey;
+      if (o.value !== void 0) pr.answer.value = o.value;
+      return pr;
+    }
+    // 答えの文に、その値が入っているか(検査用)
+    const hasAns = (pr, ...vals) => {
+      const d = plain(pr.answer.display);
+      for (const v of vals) if (!d.includes(String(v))) return `答えに ${v} がない(${d})`;
+      return null;
+    };
+
+    // ===== 図の部品(単位は mm) =====
+    const T = (x, y, s, size = 4, o = {}) => ({ t: "text", x, y, s: K(String(s)), size, halo: false, ...o });
+    const rect = (x, y, w, h, o = {}) => ({ t: "poly", pts: [[x, y], [x + w, y], [x + w, y + h], [x, y + h]], w: o.w ?? 0.4, fill: o.fill || "none", ...o.dash ? { dash: o.dash } : {} });
+    const abox = (x, y, w, h) => ({ t: "poly", pts: [[x, y], [x + w, y], [x + w, y + h], [x, y + h]], w: 0.6, fill: "white", lead: true });
+    const line = (x1, y1, x2, y2, w = 0.35, o = {}) => ({ t: "line", x1, y1, x2, y2, w, ...o });
+    // 角の丸い四角(わく)
+    const round = (x, y, w, h, r = 3, o = {}) => ({ t: "path", d: `M${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h - r}Q${x + w},${y + h} ${x + w - r},${y + h}H${x + r}Q${x},${y + h} ${x},${y + h - r}V${y + r}Q${x},${y} ${x + r},${y}Z`, w: o.w ?? 0.5, fill: o.fill || "none" });
+    // 表(セルは 文字 か {s, ans, fill, bold, anchor, size})。head の行は灰色
+    function table(x0, y0, colW, rowH, cells, o = {}) {
+      const items = [], lines2 = [];
+      const W = sum(colW), size = o.size || 4;
+      let y = y0;
+      cells.forEach((row, r) => {
+        const h = Array.isArray(rowH) ? rowH[r] : rowH;
+        let x = x0;
+        row.forEach((cell, c) => {
+          const w = colW[c];
+          const sp = cell && typeof cell === "object" ? cell : { s: cell };
+          const head = r < (o.head ?? 1) || c < (o.headCol ?? 0);
+          if (sp.fill || head) items.push(rect(x, y, w, h, { w: 0, fill: sp.fill || "#e3e3e3" }));
+          if (sp.ans) items.push(abox(x + 1.2, y + 1.1, w - 2.4, h - 2.2));
+          else if (sp.s != null && sp.s !== "") {
+            const an = sp.anchor || "middle", fs = sp.size || size;
+            const tx = an === "start" ? x + 1.6 : an === "end" ? x + w - 1.6 : x + w / 2;
+            const ls = String(sp.s).split("\n");
+            ls.forEach((ln, i) => items.push(T(tx, y + h / 2 + fs * 0.36 + (i - (ls.length - 1) / 2) * fs * 1.15, ln, fs, { anchor: an, ...sp.bold ? { bold: true } : {} })));
+          }
+          x += w;
+        });
+        y += h;
+      });
+      const H = y - y0;
+      let x = x0;
+      colW.slice(0, -1).forEach((w) => {
+        x += w;
+        lines2.push(line(x, y0, x, y0 + H, 0.3));
+      });
+      let yy = y0;
+      cells.slice(0, -1).forEach((_, r) => {
+        yy += Array.isArray(rowH) ? rowH[r] : rowH;
+        lines2.push(line(x0, yy, x0 + W, yy, 0.3));
+      });
+      return { items: [...items, ...lines2, rect(x0, y0, W, H, { w: 0.6 })], w: W, h: H };
+    }
+    const draw = (w, h, items) => ({ type: "draw", w, h, items });
+    const htable = (head, rows) => ({ type: "table", head: head.map(K), rows: rows.map((r) => r.map((c) => K(String(c)))) });
+
+    // ===== お金の絵(本物と同じ形の絵があれば使う) =====
+    const COIN_R = { 1: 10, 5: 11, 10: 11.75, 50: 10.5, 100: 11.3, 500: 13.25 };
+    const BILL = { 1000: [50, 25.4], 5000: [52, 25.5], 10000: [53.3, 25.5] };
+    const hasImg = (v) => typeof MONEY_IMG !== "undefined" && MONEY_IMG[v] && !/^\{\{/.test(MONEY_IMG[v]);
+    function money(v, cx, cy, k = 1) {
+      if (v >= 1000) {
+        const [w0, h0] = BILL[v], w = w0 * k, h = h0 * k, x = cx - w / 2, y = cy - h / 2;
+        if (hasImg(v)) return [{ t: "image", href: MONEY_IMG[v], x, y, w, h }, { ...rect(x, y, w, h, { w: 0 }), money: v }];
+        return [{ ...rect(x, y, w, h, { w: 0.5, fill: "#eef3ea" }), money: v }, T(cx, cy + 2, `${v}円`, 6 * k, { bold: true })];
+      }
+      const r = COIN_R[v] * k;
+      if (hasImg(v)) return [{ t: "image", href: MONEY_IMG[v], x: cx - r, y: cy - r, w: r * 2, h: r * 2 }, { t: "circle", cx, cy, r, w: 0, fill: "none", money: v }];
+      return [{ t: "circle", cx, cy, r, w: 0.5, fill: "#e8e8e8", money: v }, T(cx, cy + r * 0.3, v, r * 0.8, { bold: true })];
+    }
+    const moneySize = (v, k) => v >= 1000 ? [BILL[v][0] * k, BILL[v][1] * k] : [COIN_R[v] * 2 * k, COIN_R[v] * 2 * k];
+    // 財布(お金をしゅるいごとにならべる)
+    function wallet(list, x0, y0, wMax, k = 0.72) {
+      const items = [];
+      let x = x0 + 4, y = y0 + 4, rowH = 0, right = x0;
+      list.forEach((v, i) => {
+        const [w, h] = moneySize(v, k);
+        if (x + w > x0 + wMax - 4) {
+          x = x0 + 4;
+          y += rowH + 2;
+          rowH = 0;
+        }
+        if (i > 0 && list[i - 1] !== v && x > x0 + 4) x += 2;
+        items.push(...money(v, x + w / 2, y + h / 2, k));
+        x += w + 1.5;
+        right = Math.max(right, x);
+        rowH = Math.max(rowH, h);
+      });
+      const H = y + rowH + 4 - y0, W = Math.min(wMax, right - x0 + 3);
+      return { items: [round(x0, y0, W, H, 4, { w: 0.7, fill: "#f6f6f6" }), ...items], w: W, h: H };
+    }
+
+    return { BX, K, plain, fun, dayOf, days, md, nin, hon, hai, ko, tm, tmBox, dur, clock, WD, WDR, WD1, NAMES, sum, comma, LINES, SA, lv, P, hasAns, T, rect, abox, line, round, table, draw, htable, money, wallet };
+  })();
+
+  // ===== Ⅰ 自分の身の回りのこと =====
+  (() => {
+    const { K, fun, dur, tm, NAMES, sum, SA, lv, P, hasAns, T, round, table, draw, htable } = kurashiLib;
+
+    // ----- 1日の摂取カロリー -----
+    const FOODS = {
+      朝食: [["トーストと{目玉焼|めだまや}き", 380, 470], ["ごはんとみそ{汁|しる}", 330, 440], ["シリアルと{牛乳|ぎゅうにゅう}", 290, 380], ["おにぎり2こ", 340, 410], ["パンとサラダ", 300, 390]],
+      昼食: [["カレーライス", 600, 780], ["ラーメン", 480, 620], ["ハンバーグ{定食|ていしょく}", 700, 860], ["{親子丼|おやこどん}", 610, 720], ["{焼|や}きそば", 520, 650], ["きつねうどん", 420, 520]],
+      夕食: [["{焼|や}き{魚|ざかな}{定食|ていしょく}", 540, 680], ["からあげ{定食|ていしょく}", 780, 920], ["スパゲッティ", 570, 700], ["{肉|にく}じゃがとごはん", 600, 730], ["ぎょうざとごはん", 620, 770], ["{野菜炒|やさいいた}めとごはん", 560, 690]],
+      間食: [["プリン", 120, 180], ["ポテトチップス", 300, 340], ["バナナ", 80, 95], ["アイスクリーム", 150, 260], ["クッキー", 130, 190]]
+    };
+    const MEAL_R = { 朝食: "{朝食|ちょうしょく}", 昼食: "{昼食|ちゅうしょく}", 夕食: "{夕食|ゆうしょく}", 間食: "おやつ" };
+    const kCalorie = {
+      id: "t.kCalorie",
+      instruction: null,
+      defaults: { snack: false, round: false, step: 10 },
+      levels: lv({ snack: false, round: false, step: 10 }, { snack: true, round: false, step: 1 }, { snack: true, round: true, step: 1 }),
+      generate(rng, p) {
+        const meals = p.snack ? ["朝食", "昼食", "間食", "夕食"] : ["朝食", "昼食", "夕食"];
+        const list = meals.map((m) => {
+          const [name, lo, hi] = rng.pick(FOODS[m]);
+          return { m, name, k: rng.int(Math.ceil(lo / p.step), Math.floor(hi / p.step)) * p.step };
+        });
+        const n = list.length, CW = (172 - (n - 1) * 3) / n, items = [];
+        list.forEach((f, i) => {
+          const x = i * (CW + 3);
+          items.push(round(x + 0.5, 0.5, CW - 1, 25, 3, { w: 0.5 }), round(x + CW / 2 - 9, 2.5, 18, 6, 2, { w: 0, fill: "#e3e3e3" }), T(x + CW / 2, 7, MEAL_R[f.m], 3.6));
+          items.push(T(x + CW / 2, 15, f.name, f.name.replace(/\{([^|]*)\|[^}]*\}/g, "$1").length > 8 ? 3.3 : 3.8), T(x + CW / 2, 22.5, `${f.k}kcal`, 4.6, { bold: true }));
+        });
+        const ks = list.map((f) => f.k), total = sum(ks);
+        if (p.round) {
+          const r = ks.map((k) => Math.round(k / 100) * 100), tr = sum(r);
+          return P({
+            key: `kc:r:${ks.join(",")}`,
+            text: "ある日に食べたものと、そのカロリーです。それぞれのカロリーを、十の位で四捨五入して百の位までの概数にしてから、1日の摂取カロリーがおよそ何kcalかを求めましょう。",
+            figure: draw(172, 26, items),
+            lines: true,
+            ans: SA(r.join("＋") + "＝" + tr, `{約|やく}${tr}kcal`),
+            meta: { ks, round: true, ans: tr }
+          });
+        }
+        return P({
+          key: `kc:${ks.join(",")}`,
+          text: "ある日に食べたものと、そのカロリーです。1日の摂取カロリーは、合計で何kcalですか。",
+          figure: draw(172, 26, items),
+          lines: true,
+          ans: SA(ks.join("＋") + "＝" + total, `${total}kcal`),
+          meta: { ks, round: false, ans: total }
+        });
+      },
+      verify(pr) {
+        const { ks, round: r, ans } = pr.meta;
+        const want = r ? sum(ks.map((k) => Math.round(k / 100) * 100)) : sum(ks);
+        return want !== ans ? "合計が合わない" : hasAns(pr, `${ans}kcal`);
+      }
+    };
+
+    // ----- 睡眠時間 -----
+    const kSleep = {
+      id: "t.kSleep",
+      instruction: null,
+      defaults: { step: 30, two: false },
+      levels: lv({ step: 30, two: false }, { step: 5, two: false }, { step: 5, two: true }),
+      generate(rng, p) {
+        const one = () => {
+          const bed = rng.int(Math.ceil(1260 / p.step), Math.floor(1435 / p.step)) * p.step;
+          const wake = rng.int(Math.ceil(330 / p.step), Math.floor(480 / p.step)) * p.step;
+          return { bed, wake, s: wake + 1440 - bed };
+        };
+        if (!p.two) {
+          const a = one();
+          return P({
+            key: `ks:${a.bed}:${a.wake}`,
+            text: `${tm(a.bed, true)}に寝て、次の日の${tm(a.wake, true)}に起きました。睡眠時間は何時間何分ですか。`,
+            ans: dur(a.s),
+            meta: { list: [a], ans: a.s }
+          });
+        }
+        for (let t = 0; t < 100; t++) {
+          const a = one(), b = one();
+          if (b.s <= a.s || b.s - a.s > 180) continue;
+          return P({
+            key: `ks2:${a.bed}:${a.wake}:${b.bed}:${b.wake}`,
+            text: `平日は${tm(a.bed, true)}に寝て、${tm(a.wake, true)}に起きます。休日は${tm(b.bed, true)}に寝て、${tm(b.wake, true)}に起きました。休日の睡眠時間は、平日より何時間何分長いですか。`,
+            ans: dur(b.s - a.s),
+            meta: { list: [a, b], ans: b.s - a.s }
+          });
+        }
+        throw new Error("睡眠時間の問題が作れない");
+      },
+      verify(pr) {
+        const L = pr.meta.list.map((x) => x.wake + 1440 - x.bed);
+        const want = L.length === 1 ? L[0] : L[1] - L[0];
+        return want === pr.meta.ans && want > 0 ? null : "睡眠時間が合わない";
+      }
+    };
+
+    // ----- 身長と体重の記録 -----
+    const MONTHS = [4, 6, 9, 12, 3];
+    const f1 = (n) => (n / 10).toFixed(1);
+    const kGrowth = {
+      id: "t.kGrowth",
+      instruction: null,
+      defaults: { asks: ["grow", "heavy", "down"] },
+      levels: lv({ asks: ["grow", "heavy"] }, { asks: ["grow", "heavy", "down"] }, { asks: ["grow", "down", "most", "wdiff"] }),
+      generate(rng, p, ctx) {
+        for (let t = 0; t < 300; t++) {
+          const hs = [rng.int(1480, 1680)];
+          for (let i = 1; i < 5; i++) hs.push(hs[i - 1] + rng.int(2, 18));
+          const ws = [rng.int(400, 620)];
+          const down = rng.int(1, 4);
+          for (let i = 1; i < 5; i++) ws.push(ws[i - 1] + (i === down ? -rng.int(2, 9) : rng.int(2, 14)));
+          const ask = Number.isInteger(ctx?.index) ? p.asks[ctx.index % p.asks.length] : rng.pick(p.asks);
+          const inc = hs.slice(1).map((h, i) => h - hs[i]);
+          if (ask === "heavy" && ws.filter((w) => w === Math.max(...ws)).length !== 1) continue;
+          if (ask === "most" && inc.filter((d) => d === Math.max(...inc)).length !== 1) continue;
+          const name = rng.pick(NAMES);
+          const fig = htable(["", ...MONTHS.map((m) => `${m}月`)], [["身長(cm)", ...hs.map(f1)], ["体重(kg)", ...ws.map(f1)]]);
+          const lead = `下の表は、${name}さんの1年間の身長と体重の記録です。`;
+          let q, ans, val;
+          if (ask === "grow") {
+            val = hs[4] - hs[0];
+            q = "4月から3月までに、身長は何cm伸びましたか。";
+            ans = SA(`${f1(hs[4])}－${f1(hs[0])}＝${f1(val)}`, `${f1(val)}cm`);
+          } else if (ask === "heavy") {
+            val = MONTHS[ws.indexOf(Math.max(...ws))];
+            q = "体重がいちばん重かったのは何月ですか。";
+            ans = `${val}{月|がつ}`;
+          } else if (ask === "down") {
+            val = down;
+            q = "体重が減ったのは、何月から何月の間ですか。";
+            ans = `${MONTHS[down - 1]}{月|がつ}から${MONTHS[down]}{月|がつ}`;
+          } else if (ask === "most") {
+            val = inc.indexOf(Math.max(...inc)) + 1;
+            q = "身長がいちばん大きく伸びたのは、何月から何月の間ですか。";
+            ans = `${MONTHS[val - 1]}{月|がつ}から${MONTHS[val]}{月|がつ}`;
+          } else {
+            val = ws[4] - ws[0];
+            q = "4月と3月の体重の差は何kgですか。";
+            ans = SA(`${f1(ws[4])}－${f1(ws[0])}＝${f1(val)}`, `${f1(val)}kg`);
+          }
+          return P({ key: `kg:${ask}:${hs.join(",")}:${ws.join(",")}`, text: lead + "[[br]]" + q, figure: fig, lines: ask === "grow" || ask === "wdiff", ans, meta: { hs, ws, ask, val }, softKey: ask });
+        }
+        throw new Error("身体計測の問題が作れない");
+      },
+      verify(pr) {
+        const { hs, ws, ask, val } = pr.meta;
+        const inc = hs.slice(1).map((h, i) => h - hs[i]);
+        const wd = ws.slice(1).map((w, i) => w - ws[i]);
+        if (ask === "grow") return val === hs[4] - hs[0] ? hasAns(pr, `${f1(val)}cm`) : "のびが合わない";
+        if (ask === "wdiff") return val === ws[4] - ws[0] ? hasAns(pr, `${f1(val)}kg`) : "差が合わない";
+        if (ask === "heavy") return MONTHS[ws.indexOf(Math.max(...ws))] === val ? null : "重い月が合わない";
+        if (ask === "down") return wd.filter((d) => d < 0).length === 1 && wd[val - 1] < 0 ? null : "減った月が合わない";
+        return inc.indexOf(Math.max(...inc)) + 1 === val ? null : "いちばんのびた月が合わない";
+      }
+    };
+
+    // ----- サイズ表 -----
+    // [サイズ, 胸, ウエスト] の はんい(cm)。答えが1つにきまる はんい(uq)も持つ
+    const SIZES = {
+      men: { chest: "チェスト", rows: [["S", [80, 88], [68, 76]], ["M", [88, 96], [76, 84]], ["L", [96, 104], [84, 94]], ["LL", [104, 112], [94, 104]], ["3L", [112, 120], [104, 114]]] },
+      women: { chest: "バスト", rows: [["S", [72, 80], [58, 64]], ["M", [79, 87], [64, 70]], ["L", [86, 94], [69, 77]], ["LL", [93, 101], [77, 85]], ["3L", [100, 108], [85, 93]]] }
+    };
+    const inR = (v, r) => v >= r[0] && v <= r[1];
+    const sizeOf = (tb, v, col) => tb.rows.filter((r) => inR(v, r[col])).map((r) => r[0]);
+    const kSize = {
+      id: "t.kSize",
+      instruction: null,
+      defaults: { sets: ["men"], differ: false },
+      levels: lv({ sets: ["men"], differ: false }, { sets: ["men", "women"], differ: false }, { sets: ["men", "women"], differ: true }),
+      generate(rng, p) {
+        for (let t = 0; t < 500; t++) {
+          const set = rng.pick(p.sets), tb = SIZES[set];
+          const i = rng.int(0, 4), j = p.differ ? rng.pick([0, 1, 2, 3, 4].filter((x) => x !== i)) : i;
+          const c = rng.int(tb.rows[i][1][0], tb.rows[i][1][1]), w = rng.int(tb.rows[j][2][0], tb.rows[j][2][1]);
+          const sc = sizeOf(tb, c, 1), sw = sizeOf(tb, w, 2);
+          if (sc.length !== 1 || sw.length !== 1) continue;
+          const name = rng.pick(NAMES);
+          const fig = htable(["サイズ", `${tb.chest}`, "ウエスト"], tb.rows.map((r) => [r[0], `${r[1][0]}〜${r[1][1]}`, `${r[2][0]}〜${r[2][1]}`]));
+          const who = set === "men" ? "男性" : "女性";
+          const head = `下は${set === "men" ? "メンズ(男性用)" : "レディース(女性用)"}の洋服のサイズ表です(単位はcm)。${who}の${name}さんの${tb.chest}は${c}cm、ウエストは${w}cmです。`;
+          if (!p.differ) return P({ key: `kz:${set}:${c}:${w}`, text: head + "[[br]]" + `${name}さんに合うのは何サイズですか。`, figure: fig, ans: `${sc[0]}サイズ`, meta: { set, c, w, differ: false, ans: sc[0] } });
+          const big = [sc[0], sw[0]].sort((a, b) => tb.rows.findIndex((r) => r[0] === b) - tb.rows.findIndex((r) => r[0] === a))[0];
+          return P({ key: `kz2:${set}:${c}:${w}`, text: head + "[[br]]" + `${tb.chest}とウエストでサイズがちがうときは、大きいほうのサイズを選びます。何サイズを選べばよいですか。`, figure: fig, ans: `${big}サイズ`, meta: { set, c, w, differ: true, ans: big } });
+        }
+        throw new Error("サイズの問題が作れない");
+      },
+      verify(pr) {
+        const { set, c, w, differ, ans } = pr.meta, tb = SIZES[set];
+        const sc = sizeOf(tb, c, 1), sw = sizeOf(tb, w, 2);
+        if (sc.length !== 1 || sw.length !== 1) return "サイズが1つに決まらない";
+        const idx = (s) => tb.rows.findIndex((r) => r[0] === s);
+        if (!differ) return sc[0] === sw[0] && ans === sc[0] ? null : "サイズが合わない";
+        return sc[0] !== sw[0] && idx(ans) === Math.max(idx(sc[0]), idx(sw[0])) ? null : "大きいほうのサイズが合わない";
+      }
+    };
+
+    // ----- 立ち幅跳びの記録 -----
+    const mcm = (cm) => `${Math.floor(cm / 100)}m${String(cm % 100).padStart(2, "0")}cm`;
+    const kJump = {
+      id: "t.kJump",
+      instruction: null,
+      defaults: { asks: ["far", "diff"] },
+      levels: lv({ asks: ["far", "diff"] }, { asks: ["far", "diff", "total"] }, { asks: ["diff", "avg"] }),
+      generate(rng, p, ctx) {
+        for (let t = 0; t < 300; t++) {
+          const names = rng.shuffle(NAMES.slice()).slice(0, 4);
+          const rec = names.map(() => rng.int(135, 235));
+          if (new Set(rec).size !== 4) continue;
+          const ask = Number.isInteger(ctx?.index) ? p.asks[ctx.index % p.asks.length] : rng.pick(p.asks);
+          if (ask === "avg" && sum(rec) % 4) continue;
+          const fig = htable(["名前", ...names], [["記録", ...rec.map(mcm)]]);
+          const lead = "下の表は、ある班の立ち幅跳びの記録です。";
+          const mx = Math.max(...rec), mn = Math.min(...rec);
+          let q, ans, opt = {};
+          if (ask === "far") {
+            q = "いちばん遠くまで跳んだのはだれですか。";
+            ans = `${names[rec.indexOf(mx)]}さん`;
+          } else if (ask === "diff") {
+            q = "いちばん遠い記録と、いちばん近い記録の差は何cmですか。";
+            ans = SA(`${mx}－${mn}＝${mx - mn}`, `${mx - mn}cm`);
+            opt.lines = true;
+          } else if (ask === "total") {
+            q = "4人の記録を合計すると、何m何cmですか。";
+            ans = SA(`${rec.join("＋")}＝${sum(rec)}`, mcm(sum(rec)));
+            opt.lines = true;
+          } else {
+            q = "4人の記録の平均は何cmですか。";
+            ans = SA(`(${rec.join("＋")})÷4＝${sum(rec) / 4}`, `${sum(rec) / 4}cm`);
+            opt.lines = true;
+          }
+          return P({ key: `kj:${ask}:${rec.join(",")}`, text: lead + "[[br]]" + q, figure: fig, ans, meta: { rec, names, ask }, softKey: ask, ...opt });
+        }
+        throw new Error("立ち幅跳びの問題が作れない");
+      },
+      verify(pr) {
+        const { rec, names, ask } = pr.meta, mx = Math.max(...rec), mn = Math.min(...rec);
+        if (ask === "far") return hasAns(pr, names[rec.indexOf(mx)]);
+        if (ask === "diff") return hasAns(pr, `${mx - mn}cm`);
+        if (ask === "total") return hasAns(pr, mcm(sum(rec)));
+        return sum(rec) % 4 ? "平均がわりきれない" : hasAns(pr, `${sum(rec) / 4}cm`);
+      }
+    };
+
+    // ----- ストップウォッチ(0.1秒より細かいところは切り上げ) -----
+    const kStopwatch = {
+      id: "t.kStopwatch",
+      instruction: "ストップウォッチの表示を、秒で表しましょう。0.1秒より細かいところは切り上げます。",
+      defaults: { lo: 600, hi: 999, long: false },
+      levels: lv({ lo: 650, hi: 999, long: false }, { lo: 600, hi: 1299, long: false }, { lo: 600, hi: 1299, long: true }),
+      generate(rng, p, ctx) {
+        const long = p.long && ctx && ctx.index % 3 === 2;
+        let cs = long ? rng.int(6000, 8999) : rng.int(p.lo, p.hi);
+        if (rng.chance(0.15)) cs = Math.floor(cs / 10) * 10;
+        const sec = Math.floor(cs / 100), m = Math.floor(sec / 60), s = sec % 60, c = cs % 100;
+        const disp = `${m}:${String(s).padStart(2, "0")}:${String(c).padStart(2, "0")}`;
+        const tenth = Math.ceil(cs / 10);
+        const ans = `${Math.floor(tenth / 10)}.${tenth % 10}`;
+        return { key: `ksw:${cs}`, text: K(`${disp} → □秒`), answer: { display: ans, value: tenth / 10 }, workspace: { type: "none" }, meta: { cs, tenth } };
+      },
+      verify(pr) {
+        const { cs, tenth } = pr.meta;
+        return tenth * 10 >= cs && tenth * 10 - cs < 10 && pr.answer.display === `${Math.floor(tenth / 10)}.${tenth % 10}` ? null : "切り上げが合わない";
+      }
+    };
+
+    kurashiGens.push(kCalorie, kSleep, kGrowth, kSize, kJump, kStopwatch);
+  })();
+  // ===== くらしの数学 Ⅱ 毎日の生活(天気・気温・買い物・調理・予定) =====
+  (() => {
+    const { BX, K, plain, fun, md, days, dayOf, nin, hon, hai, NAMES, WD, WDR, WD1, sum, SA, lv, P, hasAns, T, rect, abox, line, round, table, draw, htable } = kurashiLib;
+    const pickAsk = (rng, p, ctx) => Number.isInteger(ctx?.index) ? p.asks[ctx.index % p.asks.length] : rng.pick(p.asks);
+    const uniqueMax = (a) => a.filter((x) => x === Math.max(...a)).length === 1;
+    const uniqueMin = (a) => a.filter((x) => x === Math.min(...a)).length === 1;
+
+    // ----- 週間天気予報 -----
+    const WX = [["晴れ", 0, 20], ["くもり", 20, 40], ["雨", 60, 90], ["晴れのち雨", 50, 70], ["くもりのち晴れ", 10, 30], ["雨のちくもり", 50, 70], ["くもりのち雨", 50, 70], ["晴れのちくもり", 10, 30]];
+    const SEASON = [[4, 14], [14, 24], [28, 35], [16, 26]];
+    const kWeather = {
+      id: "t.kWeather",
+      instruction: null,
+      defaults: { asks: ["low", "rain"] },
+      levels: lv({ asks: ["low", "rain", "high"] }, { asks: ["low", "diff", "rain", "cmp"] }, { asks: ["diff", "cmp", "rain"] }),
+      generate(rng, p, ctx) {
+        for (let t = 0; t < 400; t++) {
+          const [lo, hi] = rng.pick(SEASON);
+          const wx = WD.map(() => rng.pick(WX));
+          const highs = wx.map(() => rng.int(lo, hi));
+          const lows = highs.map((h) => h - rng.int(3, 10));
+          const prob = wx.map((w, i) => i === 0 ? null : rng.int(w[1] / 10, w[2] / 10) * 10);
+          const ask = pickAsk(rng, p, ctx);
+          const diffs = highs.map((h, i) => h - lows[i]);
+          const fut = [1, 2, 3, 4, 5, 6];
+          let q, ans, val, opt = {};
+          if (ask === "low" || ask === "high") {
+            const f = ask === "low" ? uniqueMin : uniqueMax;
+            if (!f(highs)) continue;
+            val = highs.indexOf(ask === "low" ? Math.min(...highs) : Math.max(...highs));
+            q = `最高気温がいちばん${ask === "low" ? "低い" : "高い"}のは何曜日ですか。`;
+            ans = WDR[val];
+          } else if (ask === "diff") {
+            if (!uniqueMax(diffs)) continue;
+            val = diffs.indexOf(Math.max(...diffs));
+            q = `最高気温と最低気温の差がいちばん大きいのは${BX(14)}曜日で、その差は${BX(16)}℃です。□に当てはまる曜日と数を書きましょう。`;
+            opt.noBox = true;
+            ans = `${WD1[val]}　${diffs[val]}`;
+          } else if (ask === "rain") {
+            val = fut.filter((i) => prob[i] >= 50).length;
+            if (!val) continue;
+            q = "今日(月曜日)から土曜日までで、降水確率が50%以上の日は何日ありますか。";
+            ans = `${val}{日|にち}`;
+          } else {
+            const [a, b] = rng.shuffle(fut.slice()).slice(0, 2).sort((x, y) => x - y);
+            if (highs[a] === highs[b]) continue;
+            val = Math.abs(highs[b] - highs[a]);
+            const up = highs[b] > highs[a];
+            q = `${WDR[b]}の最高気温は、${WDR[a]}より何℃${up ? "高い" : "低い"}ですか。`;
+            ans = SA(`${Math.max(highs[a], highs[b])}－${Math.min(highs[a], highs[b])}＝${val}`, `${val}℃`);
+            opt = { lines: true };
+            opt.meta2 = { a, b };
+          }
+          const two = (w) => w.replace(/(のち|時々)/, "\n$1");
+          const tb = table(0.5, 0.5, [30, ...Array(7).fill(20)], [7, 13, 8, 8, 8], [["", ...WD1.map((x) => ({ s: x, size: 3.8 }))], [{ s: "天気", size: 3.6 }, ...wx.map((w) => ({ s: two(w[0]), size: 3.2 }))], [{ s: "最高気温(℃)", size: 3.2 }, ...highs.map((x) => ({ s: x, size: 3.8 }))], [{ s: "最低気温(℃)", size: 3.2 }, ...lows.map((x) => ({ s: x, size: 3.8 }))], [{ s: "降水確率(%)", size: 3.2 }, ...prob.map((x) => ({ s: x == null ? "—" : x, size: 3.8 }))]], { head: 1, headCol: 1 });
+          const fig = draw(172, tb.h + 1, tb.items);
+          return P({
+            key: `kw:${ask}:${highs.join(",")}:${lows.join(",")}:${prob.join(",")}`,
+            text: "今日は月曜日です。下の表は、スマートフォンで調べた今週の天気予報です。[[br]]" + q,
+            figure: fig,
+            ans,
+            meta: { highs, lows, prob, ask, val, ...opt.meta2 || {} },
+            softKey: ask,
+            lines: opt.lines,
+            noBox: opt.noBox
+          });
+        }
+        throw new Error("天気予報の問題が作れない");
+      },
+      verify(pr) {
+        const { highs, lows, prob, ask, val, a, b } = pr.meta;
+        if (ask === "low") return highs[val] === Math.min(...highs) && uniqueMin(highs) ? null : "最低が合わない";
+        if (ask === "high") return highs[val] === Math.max(...highs) && uniqueMax(highs) ? null : "最高が合わない";
+        if (ask === "diff") {
+          const d = highs.map((h, i) => h - lows[i]);
+          return d[val] === Math.max(...d) && uniqueMax(d) ? hasAns(pr, d[val]) : "差が合わない";
+        }
+        if (ask === "rain") return prob.slice(1).filter((x) => x >= 50).length === val ? null : "日数が合わない";
+        return Math.abs(highs[b] - highs[a]) === val ? hasAns(pr, `${val}℃`) : "気温の差が合わない";
+      }
+    };
+
+    // ----- 1日の気温の変わり方 -----
+    const h1 = (n) => (n / 2).toFixed(1);
+    const kTemp = {
+      id: "t.kTemp",
+      instruction: null,
+      defaults: { asks: ["max", "diff", "rise"] },
+      levels: lv({ asks: ["max", "diff"] }, { asks: ["max", "diff", "rise"] }, { asks: ["diff", "rise", "fall"] }),
+      generate(rng, p, ctx) {
+        for (let t = 0; t < 400; t++) {
+          const peak = rng.int(3, 5), v = [rng.int(16, 44)];
+          for (let i = 1; i < 7; i++) v.push(v[i - 1] + (i <= peak ? rng.int(1, 6) : -rng.int(1, 5)));
+          const rise = v.slice(1).map((x, i) => x - v[i]);
+          const ask = pickAsk(rng, p, ctx);
+          if (!uniqueMax(v)) continue;
+          if (ask === "rise" && !uniqueMax(rise)) continue;
+          if (ask === "fall" && !uniqueMin(rise)) continue;
+          let q, ans, val, lines = false;
+          if (ask === "max") {
+            val = 9 + v.indexOf(Math.max(...v));
+            q = "気温がいちばん高かったのは何時ですか。";
+            ans = `${val}{時|じ}`;
+          } else if (ask === "diff") {
+            val = Math.max(...v) - Math.min(...v);
+            q = "いちばん高い気温と、いちばん低い気温の差は何℃ですか。";
+            ans = SA(`${h1(Math.max(...v))}－${h1(Math.min(...v))}＝${h1(val)}`, `${h1(val)}℃`);
+            lines = true;
+          } else if (ask === "rise") {
+            val = 9 + rise.indexOf(Math.max(...rise));
+            q = "1時間で気温がいちばん大きく上がったのは、何時から何時の間ですか。";
+            ans = `${val}{時|じ}から${val + 1}{時|じ}`;
+          } else {
+            val = 9 + rise.indexOf(Math.min(...rise));
+            q = "1時間で気温がいちばん大きく下がったのは、何時から何時の間ですか。";
+            ans = `${val}{時|じ}から${val + 1}{時|じ}`;
+          }
+          const fig = htable(["時刻(時)", "9", "10", "11", "12", "13", "14", "15"], [["気温(℃)", ...v.map(h1)]]);
+          return P({ key: `kt:${ask}:${v.join(",")}`, text: "下の表は、ある晴れた日に、校庭で1時間ごとに気温を測った記録です。[[br]]" + q, figure: fig, ans, lines, meta: { v, ask, val }, softKey: ask });
+        }
+        throw new Error("気温の問題が作れない");
+      },
+      verify(pr) {
+        const { v, ask, val } = pr.meta, rise = v.slice(1).map((x, i) => x - v[i]);
+        if (ask === "max") return 9 + v.indexOf(Math.max(...v)) === val ? null : "時刻が合わない";
+        if (ask === "diff") return hasAns(pr, `${h1(Math.max(...v) - Math.min(...v))}℃`);
+        if (ask === "rise") return rise[val - 9] === Math.max(...rise) && uniqueMax(rise) ? null : "上がり方が合わない";
+        return rise[val - 9] === Math.min(...rise) && uniqueMin(rise) ? null : "下がり方が合わない";
+      }
+    };
+
+    // ----- レシート -----
+    const FOOD8 = [["おにぎり", 110, 180], ["パン", 100, 260], ["お茶", 100, 160], ["サンドイッチ", 250, 390], ["牛乳", 150, 260], ["ヨーグルト", 100, 180], ["お弁当", 400, 650], ["バナナ", 120, 220]];
+    const GOODS10 = [["ノート", 120, 260], ["乾電池", 300, 520], ["ボールペン", 100, 220], ["ティッシュ", 200, 360], ["歯ブラシ", 150, 300], ["洗剤", 250, 460]];
+    function receiptFig(rows, v, hide) {
+      // v: {sub8, tax8, sub10, tax10, total, pay, change}
+      const W = 78, items = [];
+      let y = 7;
+      items.push(T(W / 2, y, "スーパー〇〇", 5, { bold: true }));
+      y += 6;
+      items.push(T(4, y, v.date, 3.2, { anchor: "start" }), T(W - 4, y, "{領収書|りょうしゅうしょ}", 3.2, { anchor: "end" }));
+      y += 6;
+      rows.forEach((r) => {
+        items.push(T(5, y, (r.food ? "＊" : "　") + r.name, 3.8, { anchor: "start" }), T(W - 5, y, `¥${r.price}`, 3.8, { anchor: "end" }));
+        y += 5.4;
+      });
+      items.push(line(4, y - 2.6, W - 4, y - 2.6, 0.3, { dash: "dot" }));
+      y += 2.4;
+      const row = (label, key, size = 3.5, bold = false) => {
+        if (hide.includes(key)) {
+          items.push(T(5, y, label, size, { anchor: "start", ...bold ? { bold: true } : {} }), T(W - 31, y, "¥", size, { anchor: "end" }), abox(W - 30, y - size - 1.2, 25, size + 3));
+          y += size + 3.6;
+        } else {
+          items.push(T(5, y, label, size, { anchor: "start", ...bold ? { bold: true } : {} }), T(W - 5, y, `¥${v[key]}`, size, { anchor: "end", ...bold ? { bold: true } : {} }));
+          y += size + 1.8;
+        }
+      };
+      if (v.sub8) {
+        row("小計 8%対象額(税抜)", "sub8", 3.3);
+        row("　消費税 8%", "tax8", 3.3);
+      }
+      if (v.sub10) {
+        row("小計 10%対象額(税抜)", "sub10", 3.3);
+        row("　消費税 10%", "tax10", 3.3);
+      }
+      items.push(line(4, y - 2.4, W - 4, y - 2.4, 0.3, { dash: "dot" }));
+      y += 3;
+      row("{合|ごう}　{計|けい}", "total", 4.4, true);
+      row("お預り", "pay", 3.8);
+      row("お釣り", "change", 4.2, true);
+      items.push(T(5, y, "＊は軽減税率(8%)の品目です。", 2.9, { anchor: "start" }));
+      y += 3;
+      items.unshift(rect(0.5, 0.5, W - 1, y, { w: 0.5, fill: "white" }));
+      return draw(W + 1, y + 1.5, items);
+    }
+    const kReceipt = {
+      id: "t.kReceipt",
+      instruction: null,
+      defaults: { n: 3, step: 10, hide: [] },
+      levels: lv({ n: 3, step: 10, hide: [] }, { n: 4, step: 10, hide: ["total", "change"] }, { n: 5, step: 1, hide: ["tax8", "tax10", "total", "change"] }),
+      generate(rng, p, ctx) {
+        for (let t = 0; t < 200; t++) {
+          const nf = rng.int(Math.max(1, p.n - 2), p.n - 1);
+          const pickItems = (pool, n) => rng.shuffle(pool.slice()).slice(0, n).map(([name, lo, hi]) => ({ name, price: rng.int(Math.ceil(lo / p.step), Math.floor(hi / p.step)) * p.step }));
+          const rows = rng.shuffle([...pickItems(FOOD8, nf).map((r) => ({ ...r, food: true })), ...pickItems(GOODS10, p.n - nf)]);
+          const sub8 = sum(rows.filter((r) => r.food).map((r) => r.price)), sub10 = sum(rows.filter((r) => !r.food).map((r) => r.price));
+          const tax8 = Math.floor(sub8 * 8 / 100), tax10 = Math.floor(sub10 / 10), total = sub8 + tax8 + sub10 + tax10;
+          const unit = rng.pick([500, 1000, 1000]), pay = Math.ceil((total + 1) / unit) * unit;
+          if (pay <= total) continue;
+          const v = { sub8, tax8, sub10, tax10, total, pay, change: pay - total, date: `2026年${rng.int(1, 12)}月${rng.int(1, 28)}日 ${rng.int(9, 20)}:${String(rng.int(0, 59)).padStart(2, "0")}` };
+          const fig = receiptFig(rows, v, p.hide);
+          if (p.hide.length) {
+            return P({
+              key: `kr:${rows.map((r) => r.name + r.price).join(",")}:${pay}`,
+              text: "買い物をしたときのレシートです。レシートの□に当てはまる金額を書きましょう。消費税は、1円より細かいところを切り捨てます。",
+              figure: fig,
+              ans: p.hide.map((k) => v[k]).join("　"),
+              noBox: true,
+              meta: { rows, v, hide: p.hide }
+            });
+          }
+          const asks = ["item", "tax", "total", "pay", "change"];
+          const ask = Number.isInteger(ctx?.index) ? asks[ctx.index % asks.length] : rng.pick(asks);
+          const it = rng.pick(rows);
+          const Q = { item: [`${it.name}はいくらでしたか。`, `${it.price}円`], tax: ["消費税は、合計でいくらでしたか。", SA(`${tax8}＋${tax10}＝${tax8 + tax10}`, `${tax8 + tax10}円`)], total: ["消費税も入れた合計金額は、いくらでしたか。", `${total}円`], pay: ["支払いのとき、いくら出しましたか。", `${pay}円`], change: ["お釣りはいくらでしたか。", `${pay - total}円`] }[ask];
+          if (ask === "tax" && (!tax8 || !tax10)) continue;
+          return P({ key: `kr:${ask}:${rows.map((r) => r.name + r.price).join(",")}:${pay}:${ask === "item" ? it.name : ""}`, text: "買い物をしたときのレシートです。レシートを見て答えましょう。[[br]]" + Q[0], figure: fig, ans: Q[1], lines: ask === "tax", meta: { rows, v, hide: [], ask, item: it.name }, softKey: ask });
+        }
+        throw new Error("レシートの問題が作れない");
+      },
+      verify(pr) {
+        const { rows, v, hide, ask, item } = pr.meta;
+        const s8 = sum(rows.filter((r) => r.food).map((r) => r.price)), s10 = sum(rows.filter((r) => !r.food).map((r) => r.price));
+        const t8 = Math.floor(s8 * 0.08 + 1e-9), t10 = Math.floor(s10 * 0.1 + 1e-9), tot = s8 + s10 + t8 + t10;
+        if (t8 !== v.tax8 || t10 !== v.tax10 || tot !== v.total || v.pay - tot !== v.change || v.change <= 0) return "レシートの計算が合わない";
+        if (hide.length) return pr.answer.display === hide.map((k) => v[k]).join("　") ? null : "□の答えが合わない";
+        if (ask === "item") return hasAns(pr, `${rows.find((r) => r.name === item).price}円`);
+        if (ask === "tax") return hasAns(pr, `${t8 + t10}円`);
+        return hasAns(pr, `${{ total: tot, pay: v.pay, change: v.change }[ask]}円`);
+      }
+    };
+
+    // ----- ポイントカード -----
+    const kPoint = {
+      id: "t.kPoint",
+      instruction: null,
+      defaults: { asks: ["get"] },
+      levels: lv({ asks: ["get"] }, { asks: ["get", "need"] }, { asks: ["odd", "need", "use"] }),
+      generate(rng, p, ctx) {
+        const rate = rng.pick([1, 2, 3, 5]);
+        const ask = pickAsk(rng, p, ctx);
+        const head = `100円の買い物をするごとに${rate}ポイントたまるポイントカードがあります。`;
+        if (ask === "get") {
+          const s = rng.int(5, 60) * 100;
+          return P({ key: `kp:g:${rate}:${s}`, text: head + `${s}円の買い物をすると、何ポイントたまりますか。`, lines: true, ans: SA(`${s}÷100×${rate}＝${s / 100 * rate}`, `${s / 100 * rate}ポイント`), meta: { rate, ask, s, val: s / 100 * rate } });
+        }
+        if (ask === "need") {
+          const n = rng.int(10, 80), pt = n * rate;
+          return P({ key: `kp:n:${rate}:${pt}`, text: head + `${pt}ポイントためるには、全部でいくらの買い物をすればよいですか。`, lines: true, ans: SA(`${pt}÷${rate}×100＝${n * 100}`, `${n * 100}円`), meta: { rate, ask, pt, val: n * 100 } });
+        }
+        if (ask === "odd") {
+          const s = rng.int(500, 6000);
+          if (s % 100 === 0) return this.generate(rng, p, ctx);
+          const v = Math.floor(s / 100) * rate;
+          return P({ key: `kp:o:${rate}:${s}`, text: head + `100円に足りない分には、ポイントはつきません。${s}円の買い物をすると、何ポイントたまりますか。`, lines: true, ans: SA(`${Math.floor(s / 100)}×${rate}＝${v}`, `${v}ポイント`), meta: { rate, ask, s, val: v } });
+        }
+        const s = rng.int(8, 60) * 100 + rng.pick([0, 50, 80]), use = rng.int(2, 30) * 10;
+        return P({ key: `kp:u:${s}:${use}`, text: `ためたポイントは、1ポイントを1円として使えます。${s}円の買い物で${use}ポイントを使うと、いくら払えばよいですか。`, lines: true, ans: SA(`${s}－${use}＝${s - use}`, `${s - use}円`), meta: { ask, s, use, val: s - use } });
+      },
+      verify(pr) {
+        const m = pr.meta;
+        const want = m.ask === "get" ? m.s / 100 * m.rate : m.ask === "need" ? m.pt / m.rate * 100 : m.ask === "odd" ? Math.floor(m.s / 100) * m.rate : m.s - m.use;
+        return want === m.val && Number.isInteger(want) ? hasAns(pr, want) : "ポイントが合わない";
+      }
+    };
+
+    // ----- 分割払い -----
+    const kInstall = {
+      id: "t.kInstall",
+      instruction: null,
+      defaults: { ns: [2, 3, 4], total: false },
+      levels: lv({ ns: [2, 3, 4, 5], total: false }, { ns: [3, 4, 5, 6, 10, 12], total: false }, { ns: [3, 5, 6, 10, 12], total: true }),
+      generate(rng, p) {
+        const n = rng.pick(p.ns), per = rng.int(n >= 10 ? 5 : 10, n >= 10 ? 30 : 60) * 100, price = per * n, fee = rng.pick([100, 150, 200, 300]);
+        const pay1 = per + fee;
+        const head = `${price}円の商品を${n}回の分割払いで買います。手数料は1回あたり${fee}円です。`;
+        if (!p.total) return P({ key: `ki:${price}:${n}:${fee}`, text: head + "1回に支払う金額は、手数料を入れていくらですか。", lines: true, ans: SA(`${price}÷${n}＋${fee}＝${pay1}`, `${pay1}円`), meta: { price, n, fee, val: pay1, total: false } });
+        return P({ key: `kit:${price}:${n}:${fee}`, text: head + "全部でいくら支払うことになりますか。また、一括(1回)で払うときより何円多くなりますか。", labels: ["全部で", "多くなる金額"], ans: `{全部|ぜんぶ}で ${pay1 * n}円　{多|おお}くなる{金額|きんがく} ${fee * n}円`, meta: { price, n, fee, val: pay1 * n, total: true } });
+      },
+      verify(pr) {
+        const { price, n, fee, val, total } = pr.meta;
+        if (price % n) return "わりきれない";
+        return total ? (val === (price / n + fee) * n ? hasAns(pr, `${val}円`, `${fee * n}円`) : "合計が合わない") : val === price / n + fee ? hasAns(pr, `${val}円`) : "1回分が合わない";
+      }
+    };
+
+    // ----- どれが買える(現金・ICカード) -----
+    const PAIRS = [["ハンバーグ弁当", "焼き魚弁当", "からあげ弁当", "のり弁当", "幕の内弁当"], ["雑誌", "カレンダー", "まんが", "手帳", "地図"], ["Tシャツ", "くつ下", "帽子", "ハンカチ", "手袋"]];
+    const kCanBuy = {
+      id: "t.kCanBuy",
+      instruction: null,
+      defaults: { both: false },
+      levels: lv({ both: false }, { both: false }, { both: true }),
+      generate(rng, p) {
+        for (let t = 0; t < 300; t++) {
+          const pool = rng.pick(PAIRS), [a, b] = rng.shuffle(pool.slice()).slice(0, 2);
+          const pa = rng.int(30, 160) * 10, pb = rng.int(30, 160) * 10;
+          const cash = rng.int(30, 160) * 10, ic = rng.int(50, 300) * 10;
+          if (!p.both) {
+            if ((pa <= cash) === (pb <= cash) || ic < Math.max(pa, pb)) continue;
+            const ok = pa <= cash ? a : b;
+            return P({ key: `kb:${a}${pa}:${b}${pb}:${cash}`, text: `お店で、${a}(${pa}円)か${b}(${pb}円)のどちらかを買います。財布には現金が${cash}円、ICカードには${ic}円分入っています。このお店ではキャッシュレス決済が使えませんでした。どちらを買えばよいですか。`, ans: ok, meta: { pa, pb, cash, ok: ok === a ? 0 : 1 } });
+          }
+          if (pa + pb <= ic) continue;
+          const need = pa + pb - ic;
+          return P({ key: `kb2:${pa}:${pb}:${ic}`, text: `このお店は現金が使えず、ICカードでしか支払えません。${a}(${pa}円)と${b}(${pb}円)を両方買います。ICカードには${ic}円分入っています。あと何円足りませんか。`, lines: true, ans: SA(`${pa}＋${pb}－${ic}＝${need}`, `${need}円`), meta: { pa, pb, ic, need, both: true } });
+        }
+        throw new Error("買える物の問題が作れない");
+      },
+      verify(pr) {
+        const m = pr.meta;
+        if (m.both) return m.pa + m.pb - m.ic === m.need && m.need > 0 ? hasAns(pr, `${m.need}円`) : "足りない金額が合わない";
+        const okA = m.pa <= m.cash, okB = m.pb <= m.cash;
+        return okA !== okB && (okA ? 0 : 1) === m.ok ? null : "買える物が合わない";
+      }
+    };
+
+    // ----- レシピの分量 -----
+    const RECIPES = [
+      { dish: "カレー", items: [["豚肉", 100, 1, "g"], ["玉ねぎ", 1, 1, "個"], ["にんじん", 1, 2, "本"], ["じゃがいも", 1, 1, "個"], ["水", 300, 1, "mL"], ["カレールウ", 1, 4, "箱"]] },
+      { dish: "親子丼", items: [["鶏もも肉", 150, 1, "g"], ["玉ねぎ", 1, 2, "個"], ["卵", 3, 1, "個"], ["めんつゆ", 3, 1, "大さじ"]] },
+      { dish: "野菜炒め", items: [["豚肉", 100, 1, "g"], ["にんじん", 1, 2, "本"], ["ピーマン", 1, 1, "個"], ["キャベツ", 1, 4, "玉"]] },
+      { dish: "豚汁", items: [["豚こま肉", 80, 1, "g"], ["大根", 1, 4, "本"], ["にんじん", 1, 4, "本"], ["長ねぎ", 1, 2, "本"], ["みそ", 2, 1, "大さじ"]] },
+      { dish: "ホットケーキ", items: [["ホットケーキミックス", 150, 1, "g"], ["卵", 1, 1, "個"], ["牛乳", 100, 1, "mL"]] },
+      { dish: "ハンバーグ", items: [["ひき肉", 200, 1, "g"], ["玉ねぎ", 1, 2, "個"], ["卵", 1, 1, "個"], ["パン粉", 4, 1, "大さじ"]] }
+    ];
+    const qty = (n, d, u) => u === "大さじ" ? `大さじ${d === 1 ? n : `${n}/${d}`}` : `${d === 1 ? n : `${n}/${d}`}${u}`;
+    const ask = (name, u, v) => u === "大さじ" ? [`${name}は、大さじ何杯必要ですか。`, `{大|おお}さじ${v}${hai(v)}`] : u === "本" ? [`${name}は何本必要ですか。`, `${v}${hon(v)}`] : u === "箱" ? [`${name}は何箱必要ですか。`, `${v}{箱|はこ}`] : u === "玉" ? [`${name}は{何玉|なんたま}必要ですか。`, `${v}{玉|たま}`] : u === "個" ? [`${name}は何個必要ですか。`, `${v}{個|こ}`] : [`${name}は何${u}必要ですか。`, `${v}${u}`];
+    function recipeCard(r, people) {
+      const W = 82, items = [round(0.5, 0.5, W - 1, 10 + r.items.length * 6.2 + 4, 3, { w: 0.5, fill: "white" }), round(4, 2.5, W - 8, 6.5, 3, { w: 0, fill: "#e3e3e3" }), T(W / 2, 7.3, `${r.dish} レシピ(${people}人分)`, 3.9)];
+      items.push(T(W / 2, 13.5, "■材料■", 3.6, { bold: true }));
+      r.items.forEach(([name, n, d, u], i) => {
+        const y = 19.5 + i * 6.2;
+        items.push(T(5, y, name, 3.8, { anchor: "start" }), line(5 + [...plain(K(name))].length * 3.9 + 2, y - 0.6, W - 22, y - 0.6, 0.35, { dash: "dot" }), T(W - 5, y, qty(n, d, u), 3.8, { anchor: "end" }));
+      });
+      return draw(W, 10 + r.items.length * 6.2 + 5.5, items);
+    }
+    const kRecipe = {
+      id: "t.kRecipe",
+      instruction: null,
+      defaults: { mults: [2], two: false },
+      levels: lv({ mults: [2], two: false }, { mults: [2, 3, 4], two: false }, { mults: [3, 4, 5], two: true }),
+      generate(rng, p) {
+        for (let t = 0; t < 300; t++) {
+          const r = rng.pick(RECIPES), m = rng.pick(p.mults);
+          const ok = r.items.filter(([, n, d]) => (n * m) % d === 0);
+          if (ok.length < (p.two ? 2 : 1)) continue;
+          const pick = rng.shuffle(ok.slice()).slice(0, p.two ? 2 : 1);
+          const name = rng.pick(NAMES), people = 2 * m;
+          const head = `${name}さんは、${r.dish}を${people}人分作ります。レシピには2人分の材料しか書いてありません。`;
+          const vals = pick.map(([, n, d]) => (n * m) / d);
+          if (!p.two) {
+            const [q, a] = ask(pick[0][0], pick[0][3], vals[0]);
+            return P({ key: `krc:${r.dish}:${m}:${pick[0][0]}`, text: head + q, figure: recipeCard(r, 2), ans: a, meta: { m, pick, vals } });
+          }
+          const blank = (it, v) => it[3] === "大さじ" ? `${it[0]}は大さじ${BX(16)}${hai(v)}` : `${it[0]}は${BX(18)}${it[3] === "本" ? hon(v) : it[3] === "個" ? "{個|こ}" : it[3] === "箱" ? "{箱|はこ}" : it[3] === "玉" ? "{玉|たま}" : it[3]}`;
+          return P({ key: `krc2:${r.dish}:${m}:${pick.map((x) => x[0]).join(",")}`, text: head + `必要な分量を□に書きましょう。[[br]]${blank(pick[0], vals[0])}、${blank(pick[1], vals[1])}必要です。`, figure: recipeCard(r, 2), ans: vals.join("　"), noBox: true, meta: { m, pick, vals } });
+        }
+        throw new Error("レシピの問題が作れない");
+      },
+      verify(pr) {
+        const { m, pick, vals } = pr.meta;
+        for (let i = 0; i < pick.length; i++) if ((pick[i][1] * m) / pick[i][2] !== vals[i] || !Number.isInteger(vals[i])) return "分量が合わない";
+        return hasAns(pr, ...vals);
+      }
+    };
+
+    // ----- 割引 -----
+    const SALE = [["豚こま肉 100g", 180, 320], ["キャベツ 半玉", 100, 200], ["にんじん 1本", 40, 90], ["鶏もも肉 100g", 100, 220], ["牛乳 1本", 180, 260], ["ピーマン 3個", 100, 180], ["トマト 1個", 80, 160], ["たまご 1パック", 200, 300]];
+    const OFF = { half: ["半額", 50], 10: ["10%OFF", 10], 20: ["20%OFF", 20], 30: ["30%OFF", 30] };
+    function saleTag(name, price, off) {
+      const W = 78, lab = OFF[off][0];
+      return draw(W, 30, [
+        rect(1, 7, W - 16, 21, { w: 0.6, fill: "white" }),
+        T(5, 15.5, name, 4.4, { anchor: "start" }),
+        T(5, 24, `¥${price}(税込)`, 4.6, { anchor: "start", bold: true }),
+        { t: "circle", cx: W - 14, cy: 9, r: 8.5, w: 0, fill: "#333" },
+        T(W - 14, off === "half" ? 10.6 : 8.3, off === "half" ? "{半額|はんがく}" : lab.replace("OFF", ""), off === "half" ? 4.4 : 4, { color: "#fff", bold: true }),
+        ...off === "half" ? [] : [T(W - 14, 12.8, "OFF", 3.4, { color: "#fff", bold: true })]
+      ]);
+    }
+    const kDiscount = {
+      id: "t.kDiscount",
+      instruction: null,
+      defaults: { offs: ["half", 10], qty: [1, 1], grams: false },
+      levels: lv({ offs: ["half", 10], qty: [1, 1], grams: false }, { offs: [10, 20, 30, "half"], qty: [1, 3], grams: false }, { offs: [10, 20, 30], qty: [1, 1], grams: true }),
+      generate(rng, p) {
+        for (let t = 0; t < 300; t++) {
+          const off = rng.pick(p.offs), rate = OFF[off][1];
+          if (p.grams) {
+            const [nm, lo, hi] = rng.pick(SALE.filter((s) => /100g/.test(s[0])));
+            const price = rng.int(lo / 10, hi / 10) * 10, g = rng.pick([200, 300, 400, 500, 250, 350]);
+            const full = price * g / 100, after = full * (100 - rate) / 100;
+            if (!Number.isInteger(full) || !Number.isInteger(after)) continue;
+            return P({ key: `kd:g:${nm}:${price}:${off}:${g}`, text: `スーパーで、肉が割引で売られていました。この肉を${g}g買うと、いくらになりますか。`, figure: saleTag(nm, price, off), lines: true, ans: SA(`${price}×${g / 100}×${(100 - rate) / 100}＝${after}`, `${after}円`), meta: { price, rate, g, n: 1, after } });
+          }
+          const [nm, lo, hi] = rng.pick(SALE.filter((s) => !/100g/.test(s[0])));
+          const price = rng.int(Math.ceil(lo / 10), Math.floor(hi / 10)) * 10, n = rng.int(p.qty[0], p.qty[1]);
+          const one = price * (100 - rate) / 100;
+          if (!Number.isInteger(one)) continue;
+          const item = nm.split(" ")[0];
+          const shiki = rate === 50 ? `${price}÷2${n > 1 ? `×${n}` : ""}＝${one * n}` : `${price}×${(100 - rate) / 100}${n > 1 ? `×${n}` : ""}＝${one * n}`;
+          return P({ key: `kd:${nm}:${price}:${off}:${n}`, text: `スーパーで、${item}が割引で売られていました。この${item}を${n > 1 ? n + "つ" : ""}買うと、いくらになりますか。`, figure: saleTag(nm, price, off), lines: true, ans: SA(shiki, `${one * n}円`), meta: { price, rate, g: 100, n, after: one * n } });
+        }
+        throw new Error("割引の問題が作れない");
+      },
+      verify(pr) {
+        const { price, rate, g, n, after } = pr.meta;
+        return price * g / 100 * (100 - rate) / 100 * n === after ? hasAns(pr, `${after}円`) : "割引の計算が合わない";
+      }
+    };
+
+    // ----- 1人分のカロリー -----
+    const kKcal = {
+      id: "t.kKcal",
+      instruction: null,
+      defaults: { mode: "one" },
+      levels: lv({ mode: "one" }, { mode: "many" }, { mode: "from4" }),
+      generate(rng, p) {
+        const dish = rng.pick(["野菜炒め", "カレー", "親子丼", "豚汁", "ハンバーグ"]);
+        if (p.mode === "from4") {
+          const one = rng.int(15, 45) * 10, n = rng.pick([2, 3, 6]);
+          return P({ key: `kk4:${dish}:${one}:${n}`, text: `${dish}のレシピに、4人分で${one * 4}kcalと書いてありました。${n}人分は何kcalですか。`, lines: true, ans: SA(`${one * 4}÷4×${n}＝${one * n}`, `${one * n}kcal`), meta: { tot: one * 4, base: 4, n, val: one * n } });
+        }
+        const one = rng.int(15, 45) * 10;
+        if (p.mode === "one") return P({ key: `kk1:${dish}:${one}`, text: `${dish}のレシピに、2人分で${one * 2}kcalと書いてありました。1人分は何kcalですか。`, lines: true, ans: SA(`${one * 2}÷2＝${one}`, `${one}kcal`), meta: { tot: one * 2, base: 2, n: 1, val: one } });
+        const n = rng.pick([3, 4, 5, 6, 8]);
+        return P({ key: `kkn:${dish}:${one}:${n}`, text: `${dish}のレシピに、2人分で${one * 2}kcalと書いてありました。${n}人分は何kcalですか。`, lines: true, ans: SA(`${one * 2}÷2×${n}＝${one * n}`, `${one * n}kcal`), meta: { tot: one * 2, base: 2, n, val: one * n } });
+      },
+      verify(pr) {
+        const { tot, base, n, val } = pr.meta;
+        return tot / base * n === val ? hasAns(pr, `${val}kcal`) : "カロリーが合わない";
+      }
+    };
+
+    // ----- 食品表示ラベル -----
+    const MEATS = ["【国産】豚ロース しょうが焼き用", "【国産】牛かたロース", "【国産】鶏もも肉 から揚げ用", "【国産】豚ひき肉", "【国産】豚こま切れ"];
+    function labelFig(v, hide) {
+      const W = 120, items = [round(0.5, 0.5, W - 1, 40, 3, { w: 0.6, fill: "white" })];
+      items.push(T(5, 8, v.name, 4.8, { anchor: "start", bold: true }));
+      items.push(T(5, 15, `消費期限 ${v.y % 100}.${v.m}.${v.d}`, 4.2, { anchor: "start", bold: true }), T(62, 15, `${v.temp}℃以下で保存`, 3.4, { anchor: "start" }));
+      for (let i = 0; i < 26; i++) items.push(rect(5 + i * 1.5, 19, i % 3 === 0 ? 0.9 : 0.5, 11, { w: 0, fill: "#111" }));
+      items.push(T(5, 33.5, "1 234567 891231", 2.6, { anchor: "start" }));
+      items.push(T(46, 22.5, "100g当り(円)", 2.6, { anchor: "start" }), T(46, 28.5, "正味量(g)", 2.6, { anchor: "start" }));
+      items.push(T(74, 23.5, v.u, 4.6, { anchor: "end", bold: true }), T(74, 29.8, v.g, 4.6, { anchor: "end", bold: true }));
+      if (hide) {
+        items.push(T(80, 20.5, "(本体)", 2.8, { anchor: "start" }), abox(92, 16.5, 24, 6.2));
+        items.push(abox(80, 23.5, 30, 7.5), T(113, 29.5, "円", 3.6, { anchor: "middle" }));
+      } else {
+        items.push(T(115, 19.5, `${v.base}円(本体)`, 2.8, { anchor: "end" }), T(110, 29.5, v.tax, 8, { anchor: "end", bold: true }), T(114, 29.5, "円", 3.6, { anchor: "middle" }));
+      }
+      items.push(rect(80, 31.5, 34, 4, { w: 0, fill: "#333" }), T(97, 34.6, "お値段(税込)", 2.8, { color: "#fff" }));
+      items.push(line(4, 37, W - 4, 37, 0.3), T(5, 39.6, "加工者 スーパー〇〇(株) 生鮮食品センター", 2.4, { anchor: "start" }));
+      return draw(W, 42, items);
+    }
+    const kLabel = {
+      id: "t.kLabel",
+      instruction: null,
+      defaults: { asks: ["g", "tax", "date", "temp"], calc: false },
+      levels: lv({ asks: ["g", "tax", "date", "temp"], calc: false }, { asks: ["g", "tax", "u", "date", "temp"], calc: false }, { asks: ["calc"], calc: true }),
+      generate(rng, p, ctx) {
+        const u = rng.int(98, 698), g = rng.int(15, 45) * 10, base = Math.floor(u * g / 100), tax = Math.floor(base * 108 / 100);
+        const v = { name: rng.pick(MEATS), u, g, base, tax, y: rng.pick([2026, 2027]), m: rng.int(1, 12), d: rng.int(1, 28), temp: rng.pick([4, 4, 10]) };
+        const head = "肉のパックに貼られている食品表示ラベルを見て答えましょう。[[br]]";
+        if (p.calc) return P({ key: `kl:c:${u}:${g}`, text: head + "本体の値段は、100gあたりの値段に正味量をかけて求めます(1円より細かいところは切り捨て)。税込みの値段は、本体の値段の1.08倍です(1円より細かいところは切り捨て)。ラベルの□に当てはまる数を書きましょう。", figure: labelFig(v, true), ans: `${base}　${tax}`, noBox: true, meta: { v, ask: "calc" } });
+        const ask = pickAsk(rng, p, ctx);
+        const Q = { g: ["このパックには、肉が何g入っていますか。", `${g}g`], tax: ["このパックは、税込みでいくらですか。", `${tax}円`], u: ["この肉は、100gあたりいくら(税抜き)ですか。", `${u}円`], date: ["この肉は、いつまでに食べる必要がありますか。", `${v.y}{年|ねん}${md(v.m, v.d)}`], temp: ["この肉は、何℃以下で保存する必要がありますか。", `${v.temp}℃{以下|いか}`] }[ask];
+        return P({ key: `kl:${ask}:${u}:${g}:${v.y}${v.m}${v.d}:${v.temp}`, text: head + Q[0], figure: labelFig(v, false), ans: Q[1], meta: { v, ask }, softKey: ask });
+      },
+      verify(pr) {
+        const { v, ask } = pr.meta;
+        if (Math.floor(v.u * v.g / 100) !== v.base || Math.floor(v.base * 1.08 + 1e-9) !== v.tax) return "ラベルの値段が合わない";
+        if (ask === "calc") return pr.answer.display === `${v.base}　${v.tax}` ? null : "□の答えが合わない";
+        return hasAns(pr, { g: `${v.g}g`, tax: `${v.tax}円`, u: `${v.u}円`, date: `${v.y}年${v.m}月`, temp: `${v.temp}℃` }[ask]);
+      }
+    };
+
+    // ----- カレンダー(手帳)-----
+    const lastDay = (y, m) => new Date(y, m, 0).getDate();
+    const wdOf = (y, m, d) => new Date(y, m - 1, d).getDay();
+    function calFig(y, m) {
+      const first = wdOf(y, m, 1), L = lastDay(y, m), rows = Math.ceil((first + L) / 7);
+      const CW = 24, RH = 10.5, cells = [WD1.map((w) => ({ s: w, size: 3.6 }))];
+      for (let r = 0; r < rows; r++) cells.push(WD.map((_, c) => {
+        const d = r * 7 + c - first + 1;
+        return d >= 1 && d <= L ? { s: d, anchor: "start", size: 3.6 } : "";
+      }));
+      const tb = table(0.5, 7, Array(7).fill(CW), [6, ...Array(rows).fill(RH)], cells, { head: 1 });
+      // 日にちは 左上に
+      const items = tb.items.map((it) => it.t === "text" && it.anchor === "start" ? { ...it, y: it.y - RH / 2 + 4.5 } : it);
+      return draw(7 * CW + 1, 7 + tb.h + 1, [T(1, 5, `${y}{年|ねん}${m}{月|がつ}`, 4.4, { anchor: "start", bold: true }), ...items]);
+    }
+    const addDays = (y, m, d, n) => {
+      const dt = new Date(y, m - 1, d + n);
+      return [dt.getMonth() + 1, dt.getDate()];
+    };
+    const kCalendar = {
+      id: "t.kCalendar",
+      instruction: null,
+      defaults: { asks: ["week", "nextSat", "count"] },
+      levels: lv({ asks: ["week", "nextSat", "count"] }, { asks: ["week", "work", "save", "nthSat"] }, { asks: ["work", "save", "medicine", "nthSat"] }),
+      generate(rng, p, ctx) {
+        for (let t = 0; t < 300; t++) {
+          const y = rng.pick([2026, 2027]), m = rng.int(1, 12), L = lastDay(y, m);
+          const ask = pickAsk(rng, p, ctx);
+          let q, ans, meta = { y, m, ask };
+          if (ask === "week") {
+            const d = rng.int(1, L - 7);
+            q = `${md(m, d)}(${WDR[wdOf(y, m, d)]})の1週間後は、何月何日ですか。`;
+            ans = md(m, d + 7);
+            meta = { ...meta, d, val: d + 7 };
+          } else if (ask === "nextSat") {
+            const d = rng.int(1, L - 7);
+            if (wdOf(y, m, d) === 6) continue;
+            const val = d + ((6 - wdOf(y, m, d) + 7) % 7);
+            q = `${md(m, d)}(${WDR[wdOf(y, m, d)]})の次の土曜日は、何月何日ですか。`;
+            ans = md(m, val);
+            meta = { ...meta, d, val };
+          } else if (ask === "count") {
+            const w = rng.int(0, 6), val = Array.from({ length: L }, (_, i) => i + 1).filter((d) => wdOf(y, m, d) === w).length;
+            q = `この月に、${WDR[w]}は何回ありますか。`;
+            ans = `${val}{回|かい}`;
+            meta = { ...meta, w, val };
+          } else if (ask === "work") {
+            const val = Array.from({ length: L }, (_, i) => i + 1).filter((d) => wdOf(y, m, d) >= 1 && wdOf(y, m, d) <= 5).length;
+            const name = rng.pick(NAMES);
+            q = `${name}さんは、月曜日から金曜日まで仕事で、土曜日と日曜日は休みです。${name}さんは、この月に何日仕事に行きますか。(祝日は考えないことにします。)`;
+            ans = `${val}{日|にち}`;
+            meta = { ...meta, val, name };
+          } else if (ask === "save") {
+            const d = rng.int(1, 12), per = rng.pick([10, 20, 50, 100]), n = L - d + 1;
+            q = `${md(m, d)}から、毎日${per}円ずつ貯金箱に入れて貯金を始めます。この月の最後の日(${md(m, L)})には、貯金は何円になっていますか。`;
+            ans = SA(`${per}×${n}＝${per * n}`, `${per * n}円`);
+            meta = { ...meta, d, per, val: per * n, lines: true };
+          } else if (ask === "medicine") {
+            const d = rng.int(L - 8, L), n = rng.pick([3, 5, 7, 10, 14]);
+            const [m2, d2] = addDays(y, m, d, n - 1);
+            q = `${md(m, d)}に風邪をひいて病院に行き、薬を${days(n)}{分|ぶん}(1日1錠・${n}錠)もらいました。その日の夜から飲み始めると、薬を飲み終わるのは何月何日ですか。`;
+            ans = md(m2, d2);
+            meta = { ...meta, d, n, val: [m2, d2] };
+          } else {
+            const k = rng.int(1, 4), w = rng.pick([6, 0, 3]);
+            const ds = Array.from({ length: L }, (_, i) => i + 1).filter((d) => wdOf(y, m, d) === w);
+            q = `この月の第${k}${WDR[w]}は、何月何日ですか。`;
+            ans = md(m, ds[k - 1]);
+            meta = { ...meta, k, w, val: ds[k - 1] };
+          }
+          return P({ key: `kcl:${ask}:${y}:${m}:${JSON.stringify(meta)}`, text: "下の手帳(カレンダー)を見て答えましょう。[[br]]" + q, figure: calFig(y, m), ans, lines: !!meta.lines, meta, softKey: ask });
+        }
+        throw new Error("カレンダーの問題が作れない");
+      },
+      verify(pr) {
+        const m = pr.meta, L = lastDay(m.y, m.m);
+        const cnt = (f) => Array.from({ length: L }, (_, i) => i + 1).filter(f).length;
+        switch (m.ask) {
+          case "week": return m.val === m.d + 7 && m.val <= L ? null : "1週間後が合わない";
+          case "nextSat": return wdOf(m.y, m.m, m.val) === 6 && m.val > m.d && m.val - m.d <= 7 ? null : "次の土曜日が合わない";
+          case "count": return cnt((d) => wdOf(m.y, m.m, d) === m.w) === m.val ? null : "回数が合わない";
+          case "work": return cnt((d) => wdOf(m.y, m.m, d) % 6 !== 0) === m.val ? hasAns(pr, `${m.val}日`) : "仕事の日数が合わない";
+          case "save": return m.per * (L - m.d + 1) === m.val ? hasAns(pr, `${m.val}円`) : "貯金が合わない";
+          case "medicine": {
+            const dt = new Date(m.y, m.m - 1, m.d);
+            dt.setDate(dt.getDate() + m.n - 1);
+            return dt.getMonth() + 1 === m.val[0] && dt.getDate() === m.val[1] ? null : "飲み終わる日が合わない";
+          }
+          default: return wdOf(m.y, m.m, m.val) === m.w && Math.ceil(m.val / 7) === m.k ? null : "第○曜日が合わない";
+        }
+      }
+    };
+
+    kurashiGens.push(kWeather, kTemp, kReceipt, kPoint, kInstall, kCanBuy, kRecipe, kDiscount, kKcal, kLabel, kCalendar);
+  })();
+  // ===== くらしの数学 Ⅲ 楽しむ(余暇):時間・待ち合わせ・ショッピング・レストラン・カタログ・収納 =====
+  (() => {
+    const { BX, K, plain, fun, md, nin, tm, dur, NAMES, sum, SA, lv, P, hasAns, T, rect, abox, line, round, table, draw, htable, wallet } = kurashiLib;
+    const pickAsk = (rng, p, ctx) => Number.isInteger(ctx?.index) ? p.asks[ctx.index % p.asks.length] : rng.pick(p.asks);
+    const hm = (t) => [Math.floor(t / 60) % 24, t % 60];
+    const tmA = (t) => `${Math.floor(t / 60) % 24}{時|じ}${t % 60 ? `${t % 60}${fun(t % 60)}` : ""}`;
+
+    // ----- 時計の時刻と、たった時間 -----
+    const kClockSpan = {
+      id: "t.kClockSpan",
+      instruction: null,
+      defaults: { span: [5, 55], step: 5, cross: false },
+      levels: lv({ span: [5, 50], step: 5, cross: false }, { span: [5, 55], step: 1, cross: true }, { span: [65, 170], step: 1, cross: true }),
+      generate(rng, p) {
+        for (let t = 0; t < 300; t++) {
+          const a = rng.int(60, 11 * 60 + 59), s = rng.int(Math.ceil(p.span[0] / p.step), Math.floor(p.span[1] / p.step)) * p.step;
+          if (a % p.step || a % 60 === 0) continue;
+          const b = a + s;
+          if (b % 60 === 0 || b >= 12 * 60 + 60) continue;
+          if (!p.cross && Math.floor(a / 60) !== Math.floor(b / 60)) continue;
+          if (p.cross && s < 60 && Math.floor(a / 60) === Math.floor(b / 60) && rng.chance(0.6)) continue;
+          const [ah, am] = hm(a), [bh, bm] = hm(b);
+          const big = s >= 60;
+          return P({
+            key: `kcs:${a}:${b}`,
+            text: `左の時計から右の時計まで、時間がたちました。2つの時計の時刻と、たった時間を書きましょう。[[br]]左の時計　${BX(14)}時${BX(16)}分[[br]]右の時計　${BX(14)}時${BX(16)}分[[br]]たった時間　${big ? `${BX(14)}時間${BX(16)}分` : `${BX(16)}分間`}`,
+            noBox: true,
+            figure: { type: "clocks", clocks: [{ t: a, caption: "{左|ひだり}" }, { t: b, caption: "{右|みぎ}" }] },
+            ans: [ah, am, bh, bm, ...big ? [Math.floor(s / 60), s % 60] : [s]].join("　"),
+            meta: { a, b, s }
+          });
+        }
+        throw new Error("時計の問題が作れない");
+      },
+      verify(pr) {
+        const { a, b, s } = pr.meta;
+        if (b - a !== s) return "時間が合わない";
+        const want = [Math.floor(a / 60), a % 60, Math.floor(b / 60), b % 60, ...s >= 60 ? [Math.floor(s / 60), s % 60] : [s]].join("　");
+        return pr.answer.display === want ? null : "時刻の答えが合わない";
+      }
+    };
+
+    // ----- 行き方を調べる(乗りかえ) -----
+    const STA = ["みどり駅", "さくら駅", "中央駅", "みなと駅", "ひかり駅", "あおば駅"];
+    const PLACES = ["水族館", "動物園", "図書館", "プール", "博物館", "公園"];
+    const kTravel = {
+      id: "t.kTravel",
+      instruction: null,
+      defaults: { asks: ["total"] },
+      levels: lv({ asks: ["total"] }, { asks: ["total", "back"] }, { asks: ["back", "wait"] }),
+      generate(rng, p, ctx) {
+        const [s1, s2] = rng.shuffle(STA.slice()).slice(0, 2), place = rng.pick(PLACES);
+        const dep = rng.int(96, 126) * 5;
+        const walk = rng.int(1, 3) * 5, w1 = rng.int(0, 2) * 2 + 2, ride = rng.int(3, 9) * 5 + rng.pick([0, 2, 4]), w2 = rng.int(1, 3) * 2, bus = rng.int(2, 5) * 5;
+        const t1 = dep + walk, t2 = t1 + w1, t3 = t2 + ride, t4 = t3 + w2, t5 = t4 + bus;
+        const rows = [["家", tmA(dep), "→", tmA(t1), s1, "徒歩"], [s1, tmA(t2), "→", tmA(t3), s2, "電車"], [`${s2}前`, tmA(t4), "→", tmA(t5), place, "バス"]];
+        const fig = htable(["出発地", "出発時刻", "", "到着時刻", "到着地", "手段"], rows);
+        const total = t5 - dep;
+        const ask = pickAsk(rng, p, ctx);
+        const head = `${place}に行きます。下の表は、乗りかえアプリで調べた行き方です。[[br]]`;
+        if (ask === "total") return P({ key: `ktv:t:${dep}:${walk}:${w1}:${ride}:${w2}:${bus}`, text: head + `家を出てから${place}に着くまで、全部で何分かかりますか。`, figure: fig, lines: true, ans: SA(`${tmA(t5)}－${tmA(dep)}＝${total}${fun(total)}`, dur(total)), meta: { dep, t5, ask, val: total } });
+        if (ask === "wait") {
+          const wt = w1 + w2;
+          return P({ key: `ktv:w:${dep}:${walk}:${w1}:${ride}:${w2}:${bus}`, text: head + "乗りかえのために駅やバス停で待つ時間は、合わせて何分ですか。", figure: fig, lines: true, ans: SA(`${w1}＋${w2}＝${wt}`, `${wt}${fun(wt)}`), meta: { ask, w1, w2, val: wt, t: [dep, t1, t2, t3, t4, t5] } });
+        }
+        const home = rng.int(34, 38) * 30, leave = home - total;
+        return P({ key: `ktv:b:${dep}:${walk}:${w1}:${ride}:${w2}:${bus}:${home}`, text: head + `帰りも同じ時間(${total}${fun(total)})かかるとします。家に${tm(home)}に着くには、${place}を何時何分に出発すればよいですか。`, figure: fig, lines: true, ans: SA(`${tm(home)}－${total}${fun(total)}＝${tmA(leave)}`, tmA(leave)), meta: { dep, t5, ask, home, val: leave } });
+      },
+      verify(pr) {
+        const m = pr.meta;
+        if (m.ask === "total") return m.t5 - m.dep === m.val ? null : "時間が合わない";
+        if (m.ask === "wait") return m.t[2] - m.t[1] + m.t[4] - m.t[3] === m.val ? null : "待ち時間が合わない";
+        return m.home - (m.t5 - m.dep) === m.val ? null : "出発時刻が合わない";
+      }
+    };
+
+    // ----- 時間の たし算・ひき算 -----
+    const HM = (h, m) => `${h}{時間|じかん}${String(m).padStart(2, "0")}${fun(m || 10)}`;
+    const kHMcalc = {
+      id: "t.kHMcalc",
+      instruction: "計算しましょう。",
+      defaults: { mode: "easy" },
+      levels: lv({ mode: "easy" }, { mode: "carry" }, { mode: "days" }),
+      generate(rng, p, ctx) {
+        for (let t = 0; t < 300; t++) {
+          const sub = p.mode !== "days" && rng.chance(0.45);
+          const a = rng.int(p.mode === "days" ? 10 : 5, p.mode === "days" ? 40 : 55) * 60 + rng.int(1, 59), b = rng.int(1, 30) * 60 + rng.int(1, 59);
+          const am = a % 60, bm = b % 60;
+          if (sub && a <= b) continue;
+          const carry = sub ? am < bm : am + bm >= 60;
+          if (p.mode === "easy" && carry) continue;
+          if (p.mode === "carry" && !carry && rng.chance(0.7)) continue;
+          const r = sub ? a - b : a + b;
+          if (p.mode === "days" && r < 24 * 60) continue;
+          const left = `${HM(Math.floor(a / 60), am)}${sub ? "－" : "＋"}${HM(Math.floor(b / 60), bm)}`;
+          if (p.mode === "days") {
+            const d = Math.floor(r / 1440), h = Math.floor((r % 1440) / 60), m = r % 60;
+            return { key: `khm:${a}:${b}:d`, text: K(`${left}＝${BX(12)}{日|にち}と${BX(14)}{時間|じかん}${BX(14)}${fun(m || 10)}`), answer: { display: `${d}　${h}　${m}` }, workspace: { type: "none" }, noAnswerBox: true, meta: { a, b, sub, r }, cols: 1 };
+          }
+          return { key: `khm:${a}:${b}:${sub}`, text: K(`${left}＝${BX(16)}{時間|じかん}${BX(14)}${fun(r % 60 || 10)}`), answer: { display: `${Math.floor(r / 60)}　${r % 60}` }, workspace: { type: "none" }, noAnswerBox: true, meta: { a, b, sub, r }, cols: 1 };
+        }
+        throw new Error("時間の計算が作れない");
+      },
+      verify(pr) {
+        const { a, b, sub, r } = pr.meta;
+        if ((sub ? a - b : a + b) !== r) return "計算が合わない";
+        const d = pr.answer.display.split("　").map(Number);
+        const back = d.length === 3 ? d[0] * 1440 + d[1] * 60 + d[2] : d[0] * 60 + d[1];
+        return back === r && d[d.length - 1] < 60 ? null : "答えが合わない";
+      }
+    };
+
+    // ----- 起きる時刻・家を出る時刻 -----
+    const kWake = {
+      id: "t.kWake",
+      instruction: null,
+      defaults: { asks: ["diff", "after"] },
+      levels: lv({ asks: ["diff", "after"] }, { asks: ["diff", "after", "before"] }, { asks: ["after", "before", "diff"] }),
+      generate(rng, p, ctx) {
+        const ask = pickAsk(rng, p, ctx), name = rng.pick(NAMES);
+        const step = p.asks.length === 2 ? 5 : 1;
+        for (let t = 0; t < 200; t++) {
+          if (ask === "diff") {
+            const a = rng.int(72, 96) * 5, b = a - rng.int(2, 11) * 5;
+            if (Math.floor(a / 60) === Math.floor(b / 60) && rng.chance(0.7)) continue;
+            return P({ key: `kwk:d:${a}:${b}`, text: `${name}さんは、昨日は${tm(a)}に起きました。今日は部活動の朝練習があるので、${tm(b)}に起きました。今日は、昨日より何分早く起きましたか。`, lines: true, ans: SA(`${tmA(a)}－${tmA(b)}＝${a - b}${fun(a - b)}`, `${a - b}${fun(a - b)}`), meta: { ask, a, b, val: a - b } });
+          }
+          if (ask === "after") {
+            const a = rng.int(330 / step, 450 / step) * step, n = rng.int(4, 11) * 5;
+            if (Math.floor(a / 60) === Math.floor((a + n) / 60) && rng.chance(0.6)) continue;
+            return P({ key: `kwk:a:${a}:${n}`, text: `朝${tm(a)}に起きて、${n}${fun(n)}後に家を出ました。家を出た時刻は何時何分ですか。`, lines: true, ans: SA(`${tmA(a)}＋${n}${fun(n)}＝${tmA(a + n)}`, tmA(a + n)), meta: { ask, a, n, val: a + n } });
+          }
+          const g = rng.int(96, 102) * 5, n = rng.int(3, 11) * 5;
+          if (Math.floor(g / 60) === Math.floor((g - n) / 60) && rng.chance(0.6)) continue;
+          return P({ key: `kwk:b:${g}:${n}`, text: `家から学校まで${n}${fun(n)}かかります。${tm(g)}に学校に着くには、家を何時何分に出ればよいですか。`, lines: true, ans: SA(`${tmA(g)}－${n}${fun(n)}＝${tmA(g - n)}`, tmA(g - n)), meta: { ask, g, n, val: g - n } });
+        }
+        throw new Error("起きる時刻の問題が作れない");
+      },
+      verify(pr) {
+        const m = pr.meta;
+        const want = m.ask === "diff" ? m.a - m.b : m.ask === "after" ? m.a + m.n : m.g - m.n;
+        return want === m.val && want > 0 ? null : "時刻が合わない";
+      }
+    };
+
+    // ----- 友達との待ち合わせ(時刻表) -----
+    const kMeet = {
+      id: "t.kMeet",
+      instruction: null,
+      defaults: { step: 10 },
+      levels: lv({ step: 10 }, { step: 5 }, { step: 5 }),
+      generate(rng, p) {
+        for (let t = 0; t < 300; t++) {
+          const start = rng.int(600 / p.step, 900 / p.step) * p.step, prep = rng.pick([10, 15, 20]), bus = rng.int(5, 11) * 5, walk = rng.int(1, 3) * 5 + (p.step === 5 ? rng.pick([0, 3]) : 0);
+          const meet = start - prep, latest = meet - bus;
+          const H = Math.floor(latest / 60);
+          const tt = {};
+          for (let h = H - 1; h <= H + 1; h++) tt[h] = rng.shuffle([...Array(12).keys()].map((x) => x * 5)).slice(0, rng.int(2, 3)).sort((a, b) => a - b);
+          const deps = Object.entries(tt).flatMap(([h, ms]) => ms.map((m) => Number(h) * 60 + m)).filter((x) => x <= latest);
+          if (!deps.length) continue;
+          const ride = Math.max(...deps);
+          if (latest - ride > 30) continue;
+          const leave = ride - walk;
+          const fig = htable(["時", "平日", "土曜・休日"], Object.entries(tt).map(([h, ms]) => [h, rng.shuffle([...Array(12).keys()].map((x) => String(x * 5).padStart(2, "0"))).slice(0, 3).sort().join(" "), ms.map((m) => String(m).padStart(2, "0")).join(" ")]));
+          return P({
+            key: `kmt:${start}:${prep}:${bus}:${walk}:${JSON.stringify(tt)}`,
+            text: `土曜日に、友達と映画を見に行きます。映画は${tm(start)}に始まります。映画館では、映画が始まる${prep}${fun(prep)}前に待ち合わせます。家からバス停まで歩いて${walk}${fun(walk)}、バスに乗って映画館まで${bus}${fun(bus)}かかります。下のバス停の時刻表(土曜・休日)を見て、それぞれの時刻を書きましょう。[[br]]Ⓐ待ち合わせる時刻　${BX(34)}[[br]]Ⓑ乗るバスの時刻(待ち合わせに間に合う、いちばんおそいバス)　${BX(34)}[[br]]Ⓒ家を出る時刻　${BX(34)}`,
+            noBox: true,
+            figure: fig,
+            ans: [tmA(meet), tmA(ride), tmA(leave)].join("　"),
+            meta: { start, prep, bus, walk, tt, meet, ride, leave }
+          });
+        }
+        throw new Error("待ち合わせの問題が作れない");
+      },
+      verify(pr) {
+        const m = pr.meta;
+        const deps = Object.entries(m.tt).flatMap(([h, ms]) => ms.map((x) => Number(h) * 60 + x)).filter((x) => x + m.bus <= m.start - m.prep);
+        return m.meet === m.start - m.prep && m.ride === Math.max(...deps) && m.leave === m.ride - m.walk ? null : "待ち合わせの時刻が合わない";
+      }
+    };
+
+    // ----- バス代と昼食代 -----
+    const kBusFare = {
+      id: "t.kBusFare",
+      instruction: null,
+      defaults: { two: false },
+      levels: lv({ two: false }, { two: true }, { two: true }),
+      generate(rng, p) {
+        for (let t = 0; t < 200; t++) {
+          const fares = [];
+          let f = rng.int(46, 56) * 10;
+          for (let i = 1; i <= 8; i++) {
+            fares.push(f);
+            f -= rng.int(3, 7) * 10;
+          }
+          if (fares[7] < 120) continue;
+          const k = rng.int(1, 8), movie = rng.pick([800, 1000, 1200, 1500]), money = rng.pick([2500, 3000, 3500, 4000]);
+          const fare = fares[k - 1], lunch = money - (fare * 2 + movie);
+          if (lunch < 300) continue;
+          const fig = htable(["整理券", "運賃(円)", "整理券", "運賃(円)"], [0, 1, 2, 3].map((i) => [i + 1, fares[i], i + 5, fares[i + 4]]));
+          if (!p.two) return P({ key: `kbf1:${fares.join(",")}:${k}`, text: `バスに乗るとき、「${k}」と書かれた整理券を取りました。下の運賃表を見て、映画館の前でおりるときに払う運賃はいくらですか。`, figure: fig, ans: `${fare}円`, meta: { fares, k, fare } });
+          return P({ key: `kbf:${fares.join(",")}:${k}:${movie}:${money}`, text: `小遣いが${money}円あります。バスで映画を見に行きます。バスに乗るとき、「${k}」と書かれた整理券を取りました。帰りも同じ区間に乗るので、運賃は行きと同じです。映画代は${movie}円です。下の運賃表を見て、昼食にいくら使えるかを求めましょう。`, figure: fig, lines: true, ans: SA(`${money}－(${fare}＋${movie}＋${fare})＝${lunch}`, `${lunch}円`), meta: { fares, k, fare, movie, money, lunch } });
+        }
+        throw new Error("運賃の問題が作れない");
+      },
+      verify(pr) {
+        const m = pr.meta;
+        if (m.fares[m.k - 1] !== m.fare) return "運賃が合わない";
+        if (m.lunch === void 0) return hasAns(pr, `${m.fare}円`);
+        return m.money - m.fare * 2 - m.movie === m.lunch ? hasAns(pr, `${m.lunch}円`) : "昼食代が合わない";
+      }
+    };
+
+    // ----- 時間の単位 -----
+    const kUnitTime = {
+      id: "t.kUnitTime",
+      instruction: "□に当てはまる数を書きましょう。",
+      defaults: { types: ["h2m", "d2h"] },
+      levels: lv({ types: ["h2m", "d2h", "m2h", "w2d"] }, { types: ["h2m", "d2h", "m2hm", "hm2m"] }, { types: ["m2hm", "h2dh", "hm2m"] }),
+      generate(rng, p, ctx) {
+        const ty = Number.isInteger(ctx?.index) ? p.types[ctx.index % p.types.length] : rng.pick(p.types);
+        let text, ans, v;
+        if (ty === "h2m") {
+          v = rng.int(1, 12);
+          text = `${v}{時間|じかん}＝${BX(16)}{分|ふん}`;
+          ans = `${v * 60}`;
+        } else if (ty === "m2h") {
+          v = rng.int(2, 12);
+          text = `${v * 60}${fun(v * 60)}＝${BX(16)}{時間|じかん}`;
+          ans = `${v}`;
+        } else if (ty === "w2d") {
+          v = rng.int(1, 8);
+          text = `${v}{週間|しゅうかん}＝${BX(16)}{日|にち}`;
+          ans = `${v * 7}`;
+        } else if (ty === "d2h") {
+          v = rng.int(1, 10);
+          text = `${v}{日|にち}＝${BX(16)}{時間|じかん}`;
+          ans = `${v * 24}`;
+        } else if (ty === "m2hm") {
+          v = rng.int(61, 299);
+          if (v % 60 === 0) v++;
+          text = `${v}${fun(v)}＝${BX(16)}{時間|じかん}${BX(16)}${fun(v % 60 || 10)}`;
+          ans = `${Math.floor(v / 60)}　${v % 60}`;
+        } else if (ty === "h2dh") {
+          v = rng.int(25, 95);
+          if (v % 24 === 0) v++;
+          text = `${v}{時間|じかん}＝${BX(16)}{日|にち}${BX(16)}{時間|じかん}`;
+          ans = `${Math.floor(v / 24)}　${v % 24}`;
+        } else {
+          const h = rng.int(1, 4), m = rng.int(1, 59);
+          v = h * 60 + m;
+          text = `${h}{時間|じかん}${m}${fun(m)}＝${BX(16)}${fun(v)}`;
+          ans = `${v}`;
+        }
+        return { key: `kut:${ty}:${v}`, text, answer: { display: ans }, workspace: { type: "none" }, noAnswerBox: true, meta: { ty, v } };
+      },
+      verify(pr) {
+        const { ty, v } = pr.meta, d = pr.answer.display.split("　").map(Number);
+        const ok = ty === "m2h" ? d[0] === v : ty === "w2d" ? d[0] === v * 7 : ty === "h2m" ? d[0] === v * 60 : ty === "d2h" ? d[0] === v * 24 : ty === "m2hm" ? d[0] * 60 + d[1] === v && d[1] < 60 : ty === "h2dh" ? d[0] * 24 + d[1] === v && d[1] < 24 : d[0] === v;
+        return ok ? null : "単位のなおし方が合わない";
+      }
+    };
+
+    // ----- 何分後・何分前の時刻(時計) -----
+    const kClockAfter = {
+      id: "t.kClockAfter",
+      instruction: null,
+      defaults: { step: 5, before: false },
+      levels: lv({ step: 5, before: false }, { step: 5, before: true }, { step: 1, before: true }),
+      generate(rng, p) {
+        for (let t = 0; t < 200; t++) {
+          const a = rng.int(60 / p.step, (11 * 60 + 55) / p.step) * p.step, n = rng.int(2, 11) * 5 + (p.step === 1 ? rng.int(1, 4) : 0);
+          const before = p.before && rng.chance(0.5), b = before ? a - n : a + n;
+          if (b < 60 || b >= 12 * 60 + 60) continue;
+          if (Math.floor(a / 60) === Math.floor(b / 60) && rng.chance(0.5)) continue;
+          return P({
+            key: `kca:${a}:${n}:${before}`,
+            text: `時計は午後の時刻です。この時刻の${n}${fun(n)}${before ? "前" : "後"}は、午後何時何分ですか。`,
+            figure: { type: "clocks", clocks: [{ t: a }] },
+            ans: `{午後|ごご}${tmA(b)}`,
+            meta: { a, n, before, b }
+          });
+        }
+        throw new Error("時計の問題が作れない");
+      },
+      verify(pr) {
+        const { a, n, before, b } = pr.meta;
+        return (before ? a - n : a + n) === b ? hasAns(pr, `${Math.floor(b / 60)}時`) : "時刻が合わない";
+      }
+    };
+
+    // ----- ICカードにチャージ -----
+    const SHOP = [["イヤホン", 1500, 3980], ["ノート", 150, 480], ["ケーキ", 300, 650], ["くつ", 2500, 5980], ["本", 600, 1800], ["コーヒー", 250, 520], ["Tシャツ", 990, 2490], ["かばん", 1980, 4980]];
+    const kCharge = {
+      id: "t.kCharge",
+      instruction: null,
+      defaults: { n: 2 },
+      levels: lv({ n: 2 }, { n: 3 }, { n: 3 }),
+      generate(rng, p) {
+        for (let t = 0; t < 200; t++) {
+          const its = rng.shuffle(SHOP.slice()).slice(0, p.n).map(([nm, lo, hi]) => [nm, rng.int(lo / 10, hi / 10) * 10]);
+          const total = sum(its.map((x) => x[1])), bal = rng.int(3, 30) * 100;
+          if (total <= bal) continue;
+          const need = total - bal, ch = Math.ceil(need / 1000) * 1000;
+          return P({
+            key: `kch:${its.flat().join(",")}:${bal}`,
+            text: `ショッピングセンターで、${its.map(([n, v]) => `${n}(${v}円)`).join("と")}を買います。ICカードには${bal}円分入っています。ICカードで払うには、少なくともいくらチャージすればよいですか。チャージは1000円単位でします。`,
+            lines: true,
+            ans: SA(`${its.map((x) => x[1]).join("＋")}－${bal}＝${need}`, `${ch}円`),
+            meta: { its, bal, ch }
+          });
+        }
+        throw new Error("チャージの問題が作れない");
+      },
+      verify(pr) {
+        const { its, bal, ch } = pr.meta, need = sum(its.map((x) => x[1])) - bal;
+        return ch % 1000 === 0 && ch >= need && ch - need < 1000 ? hasAns(pr, `${ch}円`) : "チャージが合わない";
+      }
+    };
+
+    // ----- 財布のお金で払う(お釣りが少なくなるように) -----
+    const DEN = [1000, 500, 100, 50, 10, 5, 1];
+    function bestPay(have, price) {
+      let best = null;
+      const rec = (i, used) => {
+        if (i === DEN.length) {
+          const tot = sum(used.map((n, j) => n * DEN[j]));
+          if (tot >= price && (best === null || tot < best)) best = tot;
+          return;
+        }
+        for (let n = 0; n <= have[i]; n++) rec(i + 1, [...used, n]);
+      };
+      rec(0, []);
+      return best;
+    }
+    const GOODS = ["くつ", "ラーメン", "トートバッグ", "ハンバーガーセット", "ぼうし", "Tシャツ", "文房具", "おかし"];
+    const kWallet = {
+      id: "t.kWallet",
+      instruction: null,
+      defaults: { coins: 7, small: false },
+      levels: lv({ coins: 6, small: false }, { coins: 8, small: true }, { coins: 10, small: true }),
+      generate(rng, p) {
+        for (let t = 0; t < 500; t++) {
+          const have = DEN.map((v) => v === 1000 ? rng.int(1, 3) : v === 1 || v === 5 ? (p.small ? rng.int(0, 2) : 0) : rng.int(0, 4));
+          const n = sum(have);
+          if (n < p.coins - 2 || n > p.coins + 1) continue;
+          const total = sum(have.map((c, i) => c * DEN[i]));
+          const price = rng.int(Math.ceil(total * 0.3), total - 1);
+          if (!p.small && price % 10) continue;
+          const pay = bestPay(have, price);
+          if (pay === null || pay - price >= 500) continue;
+          const list = DEN.flatMap((v, i) => Array(have[i]).fill(v));
+          const W = wallet(list, 40, 1, 128);
+          const g = rng.pick(GOODS);
+          const items = [round(1, 3, 34, 20, 3, { w: 0.5, fill: "white" }), T(18, 11, g, g.length > 5 ? 3.2 : 4), T(18, 19.5, `${price}円`, 5, { bold: true }), ...W.items];
+          return P({
+            key: `kwl:${have.join(",")}:${price}`,
+            text: `財布の中のお金を使って、お釣りが少なくなるように支払います。支払う金額とお釣りを書きましょう。[[br]]支払う金額　${BX(26)}円　　お釣り　${BX(22)}円`,
+            noBox: true,
+            figure: draw(170, Math.max(25, W.h + 2), items),
+            ans: `${pay}　${pay - price}`,
+            meta: { have, price, pay }
+          });
+        }
+        throw new Error("財布の問題が作れない");
+      },
+      verify(pr) {
+        const { have, price, pay } = pr.meta;
+        return bestPay(have, price) === pay ? hasAns(pr, pay, pay - price) : "支払いが合わない";
+      }
+    };
+
+    // ----- レストラン(割り勘) -----
+    const MENU = [["ラーメン", 650, 850], ["チャーハン", 600, 780], ["オムライス", 750, 900], ["カレーライス", 700, 880], ["ハンバーグ", 850, 1100], ["中華丼", 700, 850], ["オニオンサラダ", 350, 520], ["パスタ", 800, 980]];
+    const DRINK = [["ウーロン茶", 200, 250], ["オレンジジュース", 220, 300], ["コーラ", 200, 280]];
+    const SHARE = [["ぎょうざ", 390, 600], ["フライドポテト", 390, 570], ["からあげ", 450, 690], ["ピザ", 900, 1500]];
+    const kSplit = {
+      id: "t.kSplit",
+      instruction: null,
+      defaults: { mode: "share" },
+      levels: lv({ mode: "share" }, { mode: "one" }, { mode: "two" }),
+      generate(rng, p) {
+        for (let t = 0; t < 300; t++) {
+          const names = rng.shuffle(NAMES.slice()).slice(0, 3);
+          const own = names.map(() => {
+            const [m, lo, hi] = rng.pick(MENU), [d, dl, dh] = rng.pick(DRINK);
+            return [[m, rng.int(lo / 10, hi / 10) * 10], [d, rng.int(dl / 10, dh / 10) * 10]];
+          });
+          const ns = p.mode === "two" ? 2 : 1;
+          const sh = rng.shuffle(SHARE.slice()).slice(0, ns).map(([nm, lo, hi]) => [nm, rng.int(Math.ceil(lo / 30), Math.floor(hi / 30)) * 30]);
+          const per = sum(sh.map((x) => x[1] / 3));
+          if (p.mode === "share") {
+            const [nm, v] = sh[0];
+            return P({ key: `ksp:s:${nm}:${v}`, text: `レストランで、${nm}(${v}円)を3人で分けて食べました。${nm}の代金を3人で割り勘にすると、1人いくらですか。`, lines: true, ans: SA(`${v}÷3＝${v / 3}`, `${v / 3}円`), meta: { sh, own: [], who: -1, val: v / 3 } });
+          }
+          const who = rng.int(0, 2);
+          const fig = htable(["", "食べたもの・飲んだもの", "金額(円)"], [...names.flatMap((nm, i) => own[i].map(([it, v], j) => [j === 0 ? `${nm}さん` : "", it, v])), ...sh.map(([it, v], j) => [j === 0 ? "3人で分けた" : "", it, v])]);
+          const tot = sum(own[who].map((x) => x[1])) + per;
+          const shiki = `${own[who].map((x) => x[1]).join("＋")}${sh.map(([, v]) => `＋${v}÷3`).join("")}＝${tot}`;
+          return P({ key: `ksp:${p.mode}:${JSON.stringify(own)}:${JSON.stringify(sh)}:${who}`, text: `3人でレストランに行きました。下の表は、それぞれが注文したものです。自分のものは自分で払い、「3人で分けた」ものは3人で割り勘にします。${names[who]}さんが払う金額はいくらですか。`, figure: fig, lines: true, ans: SA(shiki, `${tot}円`), meta: { sh, own, who, val: tot } });
+        }
+        throw new Error("割り勘の問題が作れない");
+      },
+      verify(pr) {
+        const { sh, own, who, val } = pr.meta;
+        if (sh.some(([, v]) => v % 3)) return "割り切れない";
+        const want = (who < 0 ? 0 : sum(own[who].map((x) => x[1]))) + sum(sh.map(([, v]) => v / 3));
+        return want === val ? hasAns(pr, `${val}円`) : "割り勘が合わない";
+      }
+    };
+
+    // ----- カタログや広告 -----
+    const FURN = [["木の本棚(5段)", [60, 90], [25, 35], [150, 190]], ["テレビ台", [80, 150], [35, 45], [35, 55]], ["パソコン机", [80, 120], [45, 60], [70, 75]], ["カラーボックス(3段)", [40, 45], [28, 30], [85, 90]], ["衣装ケース", [40, 45], [50, 75], [20, 30]]];
+    function adFig(v) {
+      const W = 150;
+      return draw(W, 34, [
+        round(0.5, 0.5, W - 1, 33, 3, { w: 0.6, fill: "white" }),
+        rect(6, 5, 22, 25, { w: 0.5, fill: "#e8e8e8" }), line(6, 13.3, 28, 13.3, 0.4), line(6, 21.6, 28, 21.6, 0.4),
+        T(34, 9.5, v.name, 5, { anchor: "start", bold: true }),
+        T(34, 16.5, `サイズ:{幅|はば}${v.w}cm × {奥行|おくゆ}き${v.d}cm × {高|たか}さ${v.h}cm`, 3.7, { anchor: "start" }),
+        T(34, 23.5, `価格:${v.price}円(税込・送料無料)`, 4, { anchor: "start", bold: true }),
+        T(34, 30, `お届け:ご注文の日から${v.days}日後に到着`, 3.7, { anchor: "start" })
+      ]);
+    }
+    const kFit = {
+      id: "t.kFit",
+      instruction: null,
+      defaults: { asks: ["fit", "date", "two"] },
+      levels: lv({ asks: ["size", "two"] }, { asks: ["fit", "date", "two"] }, { asks: ["fit", "date", "rest"] }),
+      generate(rng, p, ctx) {
+        const [name, wr, dr, hr] = rng.pick(FURN);
+        const v = { name, w: rng.int(wr[0], wr[1]), d: rng.int(dr[0], dr[1]), h: rng.int(hr[0], hr[1]), price: rng.int(198, 1598) * 10 - 20, days: rng.int(2, 9) };
+        const ask = pickAsk(rng, p, ctx);
+        const head = "次の広告を見て答えましょう。[[br]]";
+        if (ask === "size") return P({ key: `kft:s:${JSON.stringify(v)}`, text: head + `${name}の幅は何cmですか。`, figure: adFig(v), ans: `${v.w}cm`, meta: { v, ask } });
+        if (ask === "two") return P({ key: `kft:2:${JSON.stringify(v)}`, text: head + `${name}を2つ買うと、合計でいくらになりますか。`, figure: adFig(v), lines: true, ans: SA(`${v.price}×2＝${v.price * 2}`, `${v.price * 2}円`), meta: { v, ask } });
+        if (ask === "fit") {
+          const gap = v.w + rng.pick([-6, -4, -3, -2, 2, 3, 5, 8]);
+          const ok = v.w <= gap;
+          return P({ key: `kft:f:${JSON.stringify(v)}:${gap}`, text: head + `部屋のかべとたなの間に、幅${gap}cmのすき間があります。この${name}を、このすき間に置くことができますか。`, figure: adFig(v), labels: ["{答|こた}え", "{理由|りゆう}"], ans: `{答|こた}え ${ok ? "{置|お}けます" : "{置|お}けません"}　{理由|りゆう} {幅|はば}${v.w}cmは、すき{間|ま}の${gap}cmより${ok ? "{小|ちい}さい" : "{大|おお}きい"}から`, meta: { v, ask, gap, ok } });
+        }
+        if (ask === "rest") {
+          const room = v.w + rng.int(10, 80);
+          return P({ key: `kft:r:${JSON.stringify(v)}:${room}`, text: head + `幅${room}cmのかべぎわに、この${name}を置きます。となりに残るすき間の幅は何cmですか。`, figure: adFig(v), lines: true, ans: SA(`${room}－${v.w}＝${room - v.w}`, `${room - v.w}cm`), meta: { v, ask, room } });
+        }
+        const m = rng.int(1, 12), d = rng.int(1, 28), dt = new Date(2026, m - 1, d + v.days);
+        return P({ key: `kft:d:${JSON.stringify(v)}:${m}:${d}`, text: head + `${md(m, d)}に注文すると、${name}は何月何日に届きますか。`, figure: adFig(v), ans: md(dt.getMonth() + 1, dt.getDate()), meta: { v, ask, m, d, val: [dt.getMonth() + 1, dt.getDate()] } });
+      },
+      verify(pr) {
+        const m = pr.meta, v = m.v;
+        if (m.ask === "size") return hasAns(pr, `${v.w}cm`);
+        if (m.ask === "two") return hasAns(pr, `${v.price * 2}円`);
+        if (m.ask === "fit") return (v.w <= m.gap) === m.ok ? hasAns(pr, m.ok ? "置けます" : "置けません") : "置けるかが合わない";
+        if (m.ask === "rest") return hasAns(pr, `${m.room - v.w}cm`);
+        const dt = new Date(2026, m.m - 1, m.d);
+        dt.setDate(dt.getDate() + v.days);
+        return dt.getMonth() + 1 === m.val[0] && dt.getDate() === m.val[1] ? null : "届く日が合わない";
+      }
+    };
+
+    // ----- 収納(たなに箱を並べる) -----
+    const kShelf = {
+      id: "t.kShelf",
+      instruction: null,
+      defaults: { rows: false },
+      levels: lv({ rows: false, exact: true }, { rows: false, exact: false }, { rows: true, exact: false }),
+      generate(rng, p) {
+        for (let t = 0; t < 200; t++) {
+          const w = rng.pick([12, 15, 18, 20, 24, 25, 26, 28, 30, 35]), n = rng.int(2, 7), rest = p.exact ? 0 : rng.int(1, w - 1), W = w * n + rest;
+          if (W > 180) continue;
+          if (!p.rows) return P({
+            key: `ksh:${w}:${W}`,
+            text: p.exact ? `内側の幅が${W}cmのたなに、幅${w}cmの箱を横に並べます。箱は何個並べられますか。` : `内側の幅が${W}cmのたなに、幅${w}cmの箱を横に並べます。箱は何個並べられて、何cm余りますか。[[br]]${BX(14)}個並べられて、${BX(16)}cm余ります。`,
+            noBox: !p.exact,
+            lines: p.exact,
+            ans: p.exact ? SA(`${W}÷${w}＝${n}`, `${n}{個|こ}`) : `${n}　${rest}`,
+            meta: { w, W, n, rest }
+          });
+          const dan = rng.int(2, 5);
+          return P({ key: `ksh2:${w}:${W}:${dan}`, text: `内側の幅が${W}cmで、${dan}段のたながあります。それぞれの段に、幅${w}cmの箱を横に並べます。たな全体で、箱は何個入りますか。`, lines: true, ans: SA(`${W}÷${w}＝${n}${rest ? `あまり${rest}` : ""}、${n}×${dan}＝${n * dan}`, `${n * dan}{個|こ}`), meta: { w, W, n, rest, dan } });
+        }
+        throw new Error("収納の問題が作れない");
+      },
+      verify(pr) {
+        const { w, W, n, rest, dan } = pr.meta;
+        if (Math.floor(W / w) !== n || W % w !== rest) return "個数が合わない";
+        return dan ? hasAns(pr, `${n * dan}個`) : hasAns(pr, n);
+      }
+    };
+
+    kurashiGens.push(kClockSpan, kTravel, kHMcalc, kWake, kMeet, kBusFare, kUnitTime, kClockAfter, kCharge, kWallet, kSplit, kFit, kShelf);
+  })();
+  // ===== くらしの数学 Ⅳ 生活を豊かに・Ⅴ 将来の生活に向けて =====
+  (() => {
+    const { BX, K, plain, fun, md, nin, tm, dur, NAMES, sum, comma, SA, lv, P, hasAns, T, rect, abox, line, round, table, draw, htable } = kurashiLib;
+    const pickAsk = (rng, p, ctx) => Number.isInteger(ctx?.index) ? p.asks[ctx.index % p.asks.length] : rng.pick(p.asks);
+    const tmA = (t) => `${Math.floor(t / 60) % 24}{時|じ}${t % 60 ? `${t % 60}${fun(t % 60)}` : ""}`;
+
+    // ----- 1か月の小遣いを小分けにする -----
+    const kAllowance = {
+      id: "t.kAllowance",
+      instruction: null,
+      defaults: { mode: "third" },
+      levels: lv({ mode: "third" }, { mode: "both" }, { mode: "week" }),
+      generate(rng, p) {
+        if (p.mode === "week") {
+          const per = rng.int(10, 40) * 10, w = rng.pick([4, 5]);
+          const total = per * 7 * w + rng.int(0, 9) * 100;
+          const rest = total - per * 7 * w;
+          return P({ key: `kal:w:${total}:${per}`, text: `1か月の小遣いが${total}円あります。1日に${per}円ずつ使うと、${w}週間(${w * 7}日)で何円使いますか。また、何円残りますか。`, labels: ["使う金額", "残る金額"], ans: `{使|つか}う{金額|きんがく} ${per * 7 * w}円　{残|のこ}る{金額|きんがく} ${rest}円`, meta: { total, per, w } });
+        }
+        const ten = rng.int(10, 40) * 100, total = ten * 3;
+        if (p.mode === "third") return P({ key: `kal:t:${total}`, text: `毎月${total}円の小遣いをもらいます。1か月を30日として、10日ずつ3つに分けて使うことにします。10日間で何円使えますか。`, lines: true, ans: SA(`${total}÷3＝${ten}`, `${ten}円`), meta: { total, ten } });
+        return P({ key: `kal:b:${total}`, text: `毎月${total}円の小遣いをもらいます。1か月を30日として、10日ずつ3つに分けて使うことにします。[[br]]10日間で${BX(24)}円使えます。1日あたりでは${BX(20)}円使えます。`, ans: `${ten}　${ten / 10}`, noBox: true, meta: { total, ten } });
+      },
+      verify(pr) {
+        const m = pr.meta;
+        if (m.w) return hasAns(pr, `${m.per * 7 * m.w}円`, `${m.total - m.per * 7 * m.w}円`);
+        return m.total / 3 === m.ten && Number.isInteger(m.ten / 10) ? hasAns(pr, m.ten) : "小分けが合わない";
+      }
+    };
+
+    // ----- 欲しい物を買っていく -----
+    const WANTS = [["ゲームソフト", 2480, 5980], ["本", 600, 1500], ["ランチ", 800, 1500], ["映画", 1200, 1900], ["Tシャツ", 1290, 2490], ["イヤホン", 980, 2980], ["マンガ本", 480, 700], ["カラオケ", 600, 1200]];
+    const kWants = {
+      id: "t.kWants",
+      instruction: null,
+      defaults: { n: 2, last: false },
+      levels: lv({ n: 2, last: false }, { n: 3, last: false }, { n: 4, last: true }),
+      generate(rng, p) {
+        for (let t = 0; t < 300; t++) {
+          const money = rng.int(30, 80) * 100;
+          const its = rng.shuffle(WANTS.slice()).slice(0, p.n).map(([nm, lo, hi]) => [nm, rng.int(lo / 10, hi / 10) * 10]);
+          let rest = money;
+          const rests = its.map(([, v]) => (rest -= v));
+          if (!p.last && rest <= 0) continue;
+          if (p.last && (rests[p.n - 2] <= 0 || rest >= 0)) continue;
+          const list = its.map(([n, v]) => `${n}(${v}円)`).join("、");
+          if (!p.last) return P({ key: `kwn:${money}:${its.flat().join(",")}`, text: `小遣いが${money}円あります。${list}を、この順に買います。全部買うと、残りは何円ですか。`, lines: true, ans: SA(`${money}－${its.map((x) => x[1]).join("－")}＝${rest}`, `${rest}円`), meta: { money, its, val: rest } });
+          const last = its[p.n - 1];
+          return P({ key: `kwn2:${money}:${its.flat().join(",")}`, text: `小遣いが${money}円あります。${list}を、この順に買おうと思います。お金が足りなくなるのは、どれを買うときですか。また、何円足りませんか。`, labels: ["買えない物", "足りない金額"], ans: `{買|か}えない{物|もの} ${last[0]}　{足|た}りない{金額|きんがく} ${-rest}円`, meta: { money, its, val: rest } });
+        }
+        throw new Error("欲しい物の問題が作れない");
+      },
+      verify(pr) {
+        const { money, its, val } = pr.meta;
+        if (money - sum(its.map((x) => x[1])) !== val) return "残りが合わない";
+        return val > 0 ? hasAns(pr, `${val}円`) : hasAns(pr, `${-val}円`, its[its.length - 1][0]);
+      }
+    };
+
+    // ----- 支出を項目に分ける -----
+    const CAT = {
+      食費: [["おにぎり", 120, 180], ["ハンバーガー", 300, 450], ["お茶", 130, 160], ["ラーメン", 650, 900], ["パン", 150, 250], ["ジュース", 130, 180]],
+      被服費: [["Tシャツ", 990, 1980], ["くつ下", 300, 600], ["帽子", 980, 1980], ["ジャンパー", 2480, 4980], ["パーカー", 1980, 3980]],
+      交通費: [["電車の運賃", 160, 420], ["バスの運賃", 180, 260]],
+      娯楽費: [["映画", 1200, 1900], ["カラオケ", 600, 1200], ["ボウリング", 600, 900], ["遊園地", 2500, 4800], ["マンガ本", 480, 700]],
+      通信費: [["携帯電話代", 2200, 4800]]
+    };
+    const CATR = { 食費: "{食費|しょくひ}", 被服費: "{被服費|ひふくひ}", 交通費: "{交通費|こうつうひ}", 娯楽費: "{娯楽費|ごらくひ}", 通信費: "{通信費|つうしんひ}" };
+    const kCategory = {
+      id: "t.kCategory",
+      instruction: null,
+      defaults: { asks: ["cat"] },
+      levels: lv({ asks: ["cat"] }, { asks: ["cat", "most"] }, { asks: ["most", "two"] }),
+      generate(rng, p, ctx) {
+        for (let t = 0; t < 300; t++) {
+          const cats = Object.keys(CAT);
+          const its = [];
+          cats.forEach((c) => {
+            const n = c === "通信費" ? rng.int(0, 1) : rng.int(1, c === "食費" ? 3 : 2);
+            rng.shuffle(CAT[c].slice()).slice(0, n).forEach(([nm, lo, hi]) => its.push({ c, nm, v: rng.int(lo / 10, hi / 10) * 10 }));
+          });
+          const tot = Object.fromEntries(cats.map((c) => [c, sum(its.filter((x) => x.c === c).map((x) => x.v))]));
+          const ask = pickAsk(rng, p, ctx);
+          const order = rng.shuffle(its.slice());
+          const fig = htable(["使ったもの", "金額(円)", "使ったもの", "金額(円)"], Array.from({ length: Math.ceil(order.length / 2) }, (_, i) => [order[2 * i].nm, order[2 * i].v, order[2 * i + 1]?.nm || "", order[2 * i + 1]?.v || ""]));
+          const head = "下の表は、ある月に使ったお金です。支出の項目は、食費(食べ物・飲み物)、被服費(服・くつ・帽子など)、交通費(電車・バス)、娯楽費(遊び・しゅみ)、通信費(電話)です。[[br]]";
+          if (ask === "cat") {
+            const c = rng.pick(cats.filter((x) => its.filter((y) => y.c === x).length >= 2));
+            if (!c) continue;
+            const xs = its.filter((y) => y.c === c);
+            return P({ key: `kcg:c:${JSON.stringify(order)}:${c}`, text: head + `${CATR[c]}は、合計で何円ですか。`, figure: fig, lines: true, ans: SA(`${xs.map((x) => x.v).join("＋")}＝${tot[c]}`, `${tot[c]}円`), meta: { its, ask, c, val: tot[c] } });
+          }
+          if (ask === "most") {
+            const vals = cats.map((c) => tot[c]);
+            if (vals.filter((v) => v === Math.max(...vals)).length !== 1) continue;
+            const c = cats[vals.indexOf(Math.max(...vals))];
+            return P({ key: `kcg:m:${JSON.stringify(order)}`, text: head + "いちばん多くお金を使った項目は何ですか。また、その合計は何円ですか。", figure: fig, labels: ["項目", "合計"], ans: `{項目|こうもく} ${CATR[c]}　{合計|ごうけい} ${tot[c]}円`, meta: { its, ask, c, val: tot[c] } });
+          }
+          const [a, b] = rng.shuffle(cats.filter((c) => tot[c] > 0)).slice(0, 2);
+          if (!b || tot[a] === tot[b]) continue;
+          const [hi, lo] = tot[a] > tot[b] ? [a, b] : [b, a];
+          return P({ key: `kcg:2:${JSON.stringify(order)}:${hi}:${lo}`, text: head + `${CATR[hi]}は、${CATR[lo]}より何円多いですか。`, figure: fig, lines: true, ans: SA(`${tot[hi]}－${tot[lo]}＝${tot[hi] - tot[lo]}`, `${tot[hi] - tot[lo]}円`), meta: { its, ask, hi, lo, val: tot[hi] - tot[lo] } });
+        }
+        throw new Error("支出の項目の問題が作れない");
+      },
+      verify(pr) {
+        const m = pr.meta, T2 = (c) => sum(m.its.filter((x) => x.c === c).map((x) => x.v));
+        if (m.ask === "cat") return T2(m.c) === m.val ? hasAns(pr, `${m.val}円`) : "合計が合わない";
+        if (m.ask === "most") return Object.keys(CAT).every((c) => c === m.c || T2(c) < T2(m.c)) ? hasAns(pr, m.c, `${m.val}円`) : "いちばん多い項目が合わない";
+        return T2(m.hi) - T2(m.lo) === m.val ? hasAns(pr, `${m.val}円`) : "差が合わない";
+      }
+    };
+
+    // ----- 家計簿(残高) -----
+    const LEDGER = [["食費", "ハンバーガー", 340], ["食費", "ラーメン", 780], ["娯楽費", "映画", 1800], ["被服費", "ジャンパー", 2750], ["交通費", "バス代", 230], ["娯楽費", "カラオケ", 900], ["食費", "おにぎり", 150], ["被服費", "Tシャツ", 1200], ["交通費", "電車代", 310], ["娯楽費", "マンガ本", 550]];
+    const kLedger = {
+      id: "t.kLedger",
+      instruction: null,
+      defaults: { n: 3, income2: false },
+      levels: lv({ n: 3, income2: false }, { n: 4, income2: false }, { n: 5, income2: true }),
+      generate(rng, p) {
+        for (let t = 0; t < 300; t++) {
+          const start = rng.int(30, 80) * 100, m = rng.int(1, 12);
+          const outs = rng.shuffle(LEDGER.slice()).slice(0, p.n).map(([c, n, v]) => ({ c, n, v: Math.max(100, v + rng.int(-5, 5) * 10) }));
+          const rows = [{ d: 1, c: "", n: "小遣い", inc: start }];
+          let d = 1;
+          outs.forEach((o) => {
+            d += rng.int(1, 5);
+            rows.push({ d, c: o.c, n: o.n, out: o.v });
+          });
+          if (p.income2) {
+            const at = rng.int(2, rows.length - 1);
+            rows.splice(at, 0, { d: rows[at - 1].d, c: "", n: "お手伝い", inc: rng.int(3, 10) * 100 });
+          }
+          let bal = 0;
+          rows.forEach((r) => (r.bal = bal += (r.inc || 0) - (r.out || 0)));
+          if (bal < 0 || rows.some((r) => r.bal < 0)) continue;
+          const cells = [["日付", "項目", "ことがら", "収入(円)", "支出(円)", "残高(円)"], ...rows.map((r, i) => [`${m}/${r.d}`, r.c, r.n, r.inc || "", r.out || "", i === 0 ? r.bal : { ans: true }])];
+          const tb = table(0.5, 0.5, [18, 22, 36, 26, 26, 28], [8, ...rows.map(() => 9)], cells.map((row, ri) => row.map((c) => typeof c === "object" ? c : { s: c === "" ? "" : K(String(c)), size: ri === 0 ? 3.5 : 4 })), { head: 1 });
+          return P({
+            key: `kld:${JSON.stringify(rows)}`,
+            text: "下の表は、小遣いの使い方を記録した家計簿(小遣い帳)です。残高(残っているお金)を計算して、表の□に書きましょう。",
+            figure: draw(157, tb.h + 1, tb.items),
+            ans: rows.slice(1).map((r) => r.bal).join("　"),
+            noBox: true,
+            meta: { rows }
+          });
+        }
+        throw new Error("家計簿の問題が作れない");
+      },
+      verify(pr) {
+        let b = 0;
+        const want = pr.meta.rows.map((r) => (b += (r.inc || 0) - (r.out || 0))).slice(1).join("　");
+        return pr.answer.display === want ? null : "残高が合わない";
+      }
+    };
+
+    // ----- 荷物を送る(宅配便) -----
+    const FEE = [[60, 940], [80, 1240], [100, 1560], [120, 1890]];
+    const DISC = [100, 150, 60];
+    const feeOf = (s) => FEE.find(([L]) => s <= L)?.[1];
+    const kParcel = {
+      id: "t.kParcel",
+      instruction: null,
+      defaults: { asks: ["size"] },
+      levels: lv({ asks: ["table", "size"] }, { asks: ["size", "disc"] }, { asks: ["disc", "two"] }),
+      generate(rng, p, ctx) {
+        const fig = { type: "multi", items: [htable(["A＋B＋Cの合計", "料金(同じ都道府県へ)"], FEE.map(([L, f]) => [`${L}cm以内`, `${f}円`])), htable(["窓口への持ち込み割引", "割引の金額"], DISC.map((d, i) => [`会社${"①②③"[i]}`, `${d}円`]))] };
+        const ask = pickAsk(rng, p, ctx);
+        const head = "宅配便の料金表です。箱のたて・よこ・高さ(A・B・C)の合計で料金が決まります。[[br]]";
+        const dims = () => {
+          for (;;) {
+            const a = rng.int(15, 50), b = rng.int(10, 40), c = rng.int(5, 35), s = a + b + c;
+            if (s <= 120 && !FEE.some(([L]) => L === s)) return [a, b, c, s];
+          }
+        };
+        if (ask === "table") {
+          const s = rng.pick([45, 55, 60, 70, 75, 80, 90, 95, 100, 110, 120]);
+          return P({ key: `kpc:t:${s}`, text: head + `同じ都道府県へ送るとき、A＋B＋Cの合計が${s}cmの荷物の料金はいくらですか。`, figure: fig, ans: `${feeOf(s)}円`, meta: { ask, s, val: feeOf(s) } });
+        }
+        if (ask === "size") {
+          const [a, b, c, s] = dims();
+          return P({ key: `kpc:s:${a}:${b}:${c}`, text: head + `A＝${a}cm、B＝${b}cm、C＝${c}cmの箱を、同じ都道府県へ送ります。料金はいくらですか。`, figure: fig, lines: true, ans: SA(`${a}＋${b}＋${c}＝${s}(cm)`, `${feeOf(s)}円`), meta: { ask, dims: [a, b, c], val: feeOf(s) } });
+        }
+        if (ask === "disc") {
+          const [a, b, c, s] = dims(), k = rng.int(0, 2), v = feeOf(s) - DISC[k];
+          return P({ key: `kpc:d:${a}:${b}:${c}:${k}`, text: head + `A＝${a}cm、B＝${b}cm、C＝${c}cmの箱を、会社${"①②③"[k]}の窓口に持ち込んで、同じ都道府県へ送ります。料金はいくらですか。`, figure: fig, lines: true, ans: SA(`${a}＋${b}＋${c}＝${s}(cm)、${feeOf(s)}－${DISC[k]}＝${v}`, `${v}円`), meta: { ask, dims: [a, b, c], k, val: v } });
+        }
+        const x = dims(), y = dims(), k = rng.int(0, 2), v = feeOf(x[3]) + feeOf(y[3]) - DISC[k] * 2;
+        return P({ key: `kpc:2:${x.join(",")}:${y.join(",")}:${k}`, text: head + `合計${x[3]}cmの箱と、合計${y[3]}cmの箱を、会社${"①②③"[k]}の窓口に持ち込んで、同じ都道府県へ送ります。割引は箱1つごとにあります。料金は全部でいくらですか。`, figure: fig, lines: true, ans: SA(`${feeOf(x[3])}＋${feeOf(y[3])}－${DISC[k]}×2＝${v}`, `${v}円`), meta: { ask, s2: [x[3], y[3]], k, val: v } });
+      },
+      verify(pr) {
+        const m = pr.meta;
+        const want = m.ask === "table" ? feeOf(m.s) : m.ask === "size" ? feeOf(sum(m.dims)) : m.ask === "disc" ? feeOf(sum(m.dims)) - DISC[m.k] : feeOf(m.s2[0]) + feeOf(m.s2[1]) - 2 * DISC[m.k];
+        return want === m.val ? hasAns(pr, `${want}円`) : "料金が合わない";
+      }
+    };
+
+    // ----- 電気(契約アンペア) -----
+    const AMP = [["エアコン(暖房)", 65], ["エアコン(冷房)", 55], ["冷蔵庫", 25], ["パソコン", 15], ["テレビ", 20], ["掃除機", 100], ["電子レンジ", 150], ["炊飯器", 130], ["アイロン", 140], ["ヘアドライヤー", 120], ["電気ケトル", 130], ["こたつ", 50]];
+    const a1 = (n) => n % 10 ? (n / 10).toFixed(1) : String(n / 10);
+    const kAmp = {
+      id: "t.kAmp",
+      instruction: null,
+      defaults: { n: 3, judge: false },
+      levels: lv({ n: 3, judge: false }, { n: 4, judge: true }, { n: 5, judge: true }),
+      generate(rng, p) {
+        for (let t = 0; t < 300; t++) {
+          const its = rng.shuffle(AMP.slice()).slice(0, p.n);
+          if (its.filter((x) => /エアコン/.test(x[0])).length > 1) continue;
+          const tot = sum(its.map((x) => x[1]));
+          const fig = htable(["電気機器", "アンペアの目安", "電気機器", "アンペアの目安"], Array.from({ length: 6 }, (_, i) => [AMP[i][0], `${a1(AMP[i][1])}A`, AMP[i + 6][0], `${a1(AMP[i + 6][1])}A`]));
+          const list = its.map((x) => x[0]).join("と");
+          if (!p.judge) return P({ key: `kam:${its.map((x) => x[0]).join(",")}`, text: `契約アンペアは、同時に使える電気の量を表します(アンペアは「A」で表します)。${list}を同時に使うと、全部で何Aになりますか。下の目安の表を見て計算しましょう。`, figure: fig, lines: true, ans: SA(its.map((x) => a1(x[1])).join("＋") + "＝" + a1(tot), `${a1(tot)}A`), meta: { its, tot } });
+          const con = rng.pick([20, 30, 40, 50]);
+          if (Math.abs(con * 10 - tot) < 5) continue;
+          const ok = tot <= con * 10;
+          return P({ key: `kam2:${its.map((x) => x[0]).join(",")}:${con}`, text: `${con}Aで契約している家で、${list}を同時に使います。全部で何Aになりますか。また、ブレーカーが落ちずに使えますか。下の目安の表を見て答えましょう。`, figure: fig, labels: ["合計", "使えるか"], ans: `{合計|ごうけい} ${its.map((x) => a1(x[1])).join("＋")}＝${a1(tot)}　${a1(tot)}A　{使|つか}えるか ${ok ? "{使|つか}える" : "{使|つか}えない"}`, meta: { its, tot, con, ok } });
+        }
+        throw new Error("アンペアの問題が作れない");
+      },
+      verify(pr) {
+        const m = pr.meta;
+        if (sum(m.its.map((x) => x[1])) !== m.tot) return "合計が合わない";
+        if (m.con && (m.tot <= m.con * 10) !== m.ok) return "使えるかが合わない";
+        return hasAns(pr, `${a1(m.tot)}A`);
+      }
+    };
+
+    // ----- 部屋を借りるときの初期費用 -----
+    const kRent = {
+      id: "t.kRent",
+      instruction: null,
+      defaults: { extra: false },
+      levels: lv({ extra: false, simple: true }, { extra: false }, { extra: true }),
+      generate(rng, p) {
+        const rent = rng.int(40, 75) * 1000, shiki = rng.int(1, 2), rei = rng.int(1, 2), chu = rng.pick([0.5, 1]);
+        if (p.simple) {
+          const n = rng.int(2, 6);
+          return P({ key: `krt:s:${rent}:${n}`, text: `家賃が1か月${rent}円の部屋を借りています。${n}か月分の家賃は、合わせていくらですか。`, lines: true, ans: SA(`${rent}×${n}＝${rent * n}`, `${rent * n}円`), meta: { rent, n, val: rent * n } });
+        }
+        const rows = [["敷金", `家賃の${shiki}か月分`, rent * shiki], ["礼金", `家賃の${rei}か月分`, rent * rei], ["仲介手数料", `家賃の${chu}か月分`, rent * chu], ["前家賃", "家賃の1か月分", rent]];
+        if (p.extra) rows.push(["火災保険料", "決まった金額", rng.pick([15000, 18000, 20000])], ["鍵交換代", "決まった金額", rng.pick([11000, 16500, 22000])]);
+        const tot = sum(rows.map((r) => r[2]));
+        return P({ key: `krt:${rent}:${shiki}:${rei}:${chu}:${p.extra}:${rows.map((r) => r[2]).join(",")}`, text: `家賃が1か月${rent}円のアパートを借ります。入居するときに、下の表のお金(初期費用)がかかります。初期費用は、全部でいくらですか。`, figure: htable(["費用", "金額の決まり"], rows.map((r) => [r[0], r[1]])), lines: true, ans: SA(rows.map((r) => r[2]).join("＋") + "＝" + tot, `${tot}円`), meta: { rent, rows, tot } });
+      },
+      verify(pr) {
+        const m = pr.meta;
+        if (m.n) return hasAns(pr, `${m.rent * m.n}円`);
+        return sum(m.rows.map((r) => r[2])) === m.tot ? hasAns(pr, `${m.tot}円`) : "初期費用が合わない";
+      }
+    };
+
+    // ----- 通勤・現場実習の行き方 -----
+    const STA = ["みどり駅", "さくら駅", "中央駅", "みなと駅", "ひかり駅", "あおば駅"];
+    const kCommute = {
+      id: "t.kCommute",
+      instruction: null,
+      defaults: { asks: ["time", "fare"] },
+      levels: lv({ asks: ["time", "fare"] }, { asks: ["time", "round", "margin"] }, { asks: ["days", "margin", "round"] }),
+      generate(rng, p, ctx) {
+        const [s1, s2] = rng.shuffle(STA.slice()).slice(0, 2);
+        const leave = rng.int(85, 100) * 5, by = rng.pick(["徒歩", "自転車"]), m1 = rng.int(1, 3) * 5, tr = rng.int(2, 8) * 5, bus = rng.int(1, 4) * 5;
+        const w1 = rng.int(0, 3) * 2 + 1, w2 = rng.int(1, 3) * 2;
+        const t1 = leave + m1, t2 = t1 + w1, t3 = t2 + tr, t4 = t3 + w2, t5 = t4 + bus;
+        const fT = rng.int(15, 45) * 10, fB = rng.int(16, 30) * 10;
+        const fig = htable(["出発地", "出発", "", "到着", "到着地", "手段", "料金"], [["家", tmA(leave), "→", tmA(t1), s1, by, "0円"], [s1, tmA(t2), "→", tmA(t3), s2, "電車", `${fT}円`], [`${s2}前`, tmA(t4), "→", tmA(t5), "実習先", "バス", `${fB}円`]]);
+        const ask = pickAsk(rng, p, ctx), one = fT + fB;
+        const head = "下の表は、ルート検索アプリで調べた、家から現場実習先までの行き方です。[[br]]";
+        if (ask === "time") return P({ key: `kcm:t:${leave}:${m1}:${tr}:${bus}:${w1}:${w2}`, text: head + "家を出てから実習先に着くまで、全部で何分かかりますか。", figure: fig, lines: true, ans: SA(`${tmA(t5)}－${tmA(leave)}＝${t5 - leave}${fun(t5 - leave)}`, `${t5 - leave}${fun(t5 - leave)}`), meta: { ask, leave, t5, val: t5 - leave } });
+        if (ask === "fare") return P({ key: `kcm:f:${fT}:${fB}`, text: head + "電車とバスの料金は、片道で合わせていくらですか。", figure: fig, lines: true, ans: SA(`${fT}＋${fB}＝${one}`, `${one}円`), meta: { ask, fT, fB, val: one } });
+        if (ask === "round") return P({ key: `kcm:r:${fT}:${fB}`, text: head + "往復すると、交通費はいくらですか。", figure: fig, lines: true, ans: SA(`(${fT}＋${fB})×2＝${one * 2}`, `${one * 2}円`), meta: { ask, fT, fB, val: one * 2 } });
+        if (ask === "days") {
+          const n = rng.int(3, 10);
+          return P({ key: `kcm:d:${fT}:${fB}:${n}`, text: head + `実習は${n}日間です。毎日往復するとき、交通費は全部でいくらですか。`, figure: fig, lines: true, ans: SA(`(${fT}＋${fB})×2×${n}＝${one * 2 * n}`, `${one * 2 * n}円`), meta: { ask, fT, fB, n, val: one * 2 * n } });
+        }
+        const start = Math.ceil((t5 + rng.int(3, 20)) / 5) * 5;
+        return P({ key: `kcm:m:${leave}:${t5}:${start}`, text: head + `実習は${tm(start)}に始まります。実習先には、始まる何分前に着きますか。`, figure: fig, lines: true, ans: SA(`${tmA(start)}－${tmA(t5)}＝${start - t5}${fun(start - t5)}`, `${start - t5}${fun(start - t5)}{前|まえ}`), meta: { ask, start, t5, val: start - t5 } });
+      },
+      verify(pr) {
+        const m = pr.meta;
+        const want = m.ask === "time" ? m.t5 - m.leave : m.ask === "fare" ? m.fT + m.fB : m.ask === "round" ? (m.fT + m.fB) * 2 : m.ask === "days" ? (m.fT + m.fB) * 2 * m.n : m.start - m.t5;
+        return want === m.val && want > 0 ? hasAns(pr, want) : "通勤の計算が合わない";
+      }
+    };
+
+    // ----- 作業速度 -----
+    const JOBS = [["クッキーの袋づめ", "袋", "ふくろ"], ["アクセサリー作り", "個", "こ"], ["部品の組み立て", "個", "こ"], ["封筒の宛名シール貼り", "枚", "まい"], ["タオルたたみ", "枚", "まい"]];
+    const ctr = (j) => `{${j[1]}|${j[2]}}`;
+    const kWork = {
+      id: "t.kWork",
+      instruction: null,
+      defaults: { asks: ["time", "count"] },
+      levels: lv({ asks: ["time", "count"] }, { asks: ["time", "count", "day", "pay"] }, { asks: ["day", "pay", "need", "two"] }),
+      generate(rng, p, ctx) {
+        const j = rng.pick(JOBS), c = ctr(j), a = rng.int(2, 6), name = rng.pick(NAMES);
+        const ask = pickAsk(rng, p, ctx);
+        const head = `${name}さんは、作業所で${j[0]}の仕事をしています。1${c}にかかる時間は、およそ${a}${fun(a)}です。`;
+        if (ask === "time") {
+          const n = rng.int(3, 15);
+          return P({ key: `kwo:t:${a}:${n}:${j[0]}`, text: head + `${n}${c}作るには、およそ何分かかりますか。`, lines: true, ans: SA(`${a}×${n}＝${a * n}`, `${a * n}${fun(a * n)}`), meta: { ask, a, n, val: a * n } });
+        }
+        if (ask === "count") {
+          const n = rng.int(5, 30), m = a * n;
+          return P({ key: `kwo:c:${a}:${m}:${j[0]}`, text: head + `${m}${fun(m)}では、およそ何${c}できますか。`, lines: true, ans: SA(`${m}÷${a}＝${n}`, `${n}${c}`), meta: { ask, a, m, val: n } });
+        }
+        const h = rng.int(4, 7), per = (h * 60) / a;
+        if (!Number.isInteger(per)) return this.generate(rng, p, ctx);
+        if (ask === "day") return P({ key: `kwo:d:${a}:${h}:${j[0]}`, text: head + `1日に${h}時間(休憩はふくみません)仕事をします。1日でおよそ何${c}できますか。`, lines: true, ans: SA(`${h}×60÷${a}＝${per}`, `${per}${c}`), meta: { ask, a, h, val: per } });
+        if (ask === "pay") {
+          const yen = rng.pick([20, 30, 40, 50, 60, 80]);
+          return P({ key: `kwo:p:${a}:${h}:${yen}:${j[0]}`, text: head + `1日に${h}時間仕事をします。1${c}につき${yen}円の工賃(給料)をもらえます。1日でおよそ何円もらえますか。`, lines: true, ans: SA(`${h}×60÷${a}＝${per}、${yen}×${per}＝${yen * per}`, `${yen * per}円`), meta: { ask, a, h, yen, val: yen * per } });
+        }
+        if (ask === "need") {
+          const b = rng.int(1, a - 1 || 1), goal = (h * 60) / b;
+          if (b >= a || !Number.isInteger(goal)) return this.generate(rng, p, ctx);
+          return P({ key: `kwo:n:${a}:${h}:${b}:${j[0]}`, text: head + `明日は忙しく、1日${h}時間で${goal}${c}作らなければなりません。1${c}あたり何分で作ればよいですか。`, lines: true, ans: SA(`${h}×60÷${goal}＝${b}`, `${b}${fun(b)}`), meta: { ask, h, goal, val: b } });
+        }
+        const k = rng.pick([2, 3]), hh = rng.int(2, 4), mine = (hh * 60) / a;
+        if (!Number.isInteger(mine)) return this.generate(rng, p, ctx);
+        return P({ key: `kwo:2:${a}:${k}:${hh}:${j[0]}`, text: head + `明日は先輩が手伝いに来てくれます。先輩は${name}さんの${k}倍の速さで作ります。2人で${hh}時間働くと、およそ何${c}できますか。`, lines: true, ans: SA(`${hh}×60÷${a}＝${mine}、${mine}＋${mine}×${k}＝${mine * (k + 1)}`, `${mine * (k + 1)}${c}`), meta: { ask, a, k, hh, val: mine * (k + 1) } });
+      },
+      verify(pr) {
+        const m = pr.meta;
+        const want = { time: m.a * m.n, count: m.m / m.a, day: m.h * 60 / m.a, pay: m.h * 60 / m.a * m.yen, need: m.h * 60 / m.goal, two: m.hh * 60 / m.a * (m.k + 1) }[m.ask];
+        return want === m.val && Number.isInteger(want) ? hasAns(pr, want) : "作業の計算が合わない";
+      }
+    };
+
+    // ----- 勤務時間 -----
+    const kShift = {
+      id: "t.kShift",
+      instruction: null,
+      defaults: { asks: ["hours"] },
+      levels: lv({ asks: ["hours", "out"] }, { asks: ["hours", "rate", "out"] }, { asks: ["rate", "flex", "week"] }),
+      generate(rng, p, ctx) {
+        const ask = pickAsk(rng, p, ctx), name = rng.pick(NAMES);
+        const s = rng.int(16, 20) * 30, br = rng.pick([45, 60]), work = rng.int(5, 8) * 60, e = s + work + br;
+        const job = rng.pick(["お弁当屋さん", "パン工場", "スーパー", "クリーニング工場", "物流センター"]);
+        if (ask === "hours") return P({ key: `ksf:h:${s}:${e}:${br}`, text: `${name}さんは、${job}で働いています。勤務時間は${tm(s, true)}から${tm(e, true)}までで、途中に${br}${fun(br)}の休憩があります。休憩をのぞいて、1日に何時間働いていますか。`, lines: true, ans: SA(`${tmA(e)}－${tmA(s)}－${br}${fun(br)}＝${work / 60}{時間|じかん}`, `${work / 60}{時間|じかん}`), meta: { ask, s, e, br, val: work } });
+        if (ask === "out") return P({ key: `ksf:o:${s}:${work}:${br}`, text: `${name}さんは、${job}で働いています。${tm(s, true)}から働き始めて、休憩は${br}${fun(br)}、働く時間は休憩をのぞいて${work / 60}時間です。仕事が終わるのは何時何分ですか。`, lines: true, ans: SA(`${tmA(s)}＋${work / 60}{時間|じかん}＋${br}${fun(br)}＝${tmA(e)}`, tm(e, true)), meta: { ask, s, e, br, val: work } });
+        if (ask === "rate") {
+          const per = rng.int(10, 30), n = per * work / 60;
+          return P({ key: `ksf:r:${work}:${n}`, text: `${name}さんは、${job}で1日に${work / 60}時間(休憩はのぞく)働きます。1日に${n}個の商品を仕上げるには、1時間におよそ何個仕上げればよいですか。`, lines: true, ans: SA(`${n}÷${work / 60}＝${per}`, `${per}{個|こ}`), meta: { ask, n, work, val: per } });
+        }
+        if (ask === "week") {
+          const d = rng.pick([3, 4, 5]);
+          return P({ key: `ksf:w:${work}:${d}`, text: `${name}さんは、休憩をのぞいて1日${work / 60}時間、1週間に${d}日働きます。1週間で何時間働きますか。`, lines: true, ans: SA(`${work / 60}×${d}＝${(work / 60) * d}`, `${(work / 60) * d}{時間|じかん}`), meta: { ask, work, d, val: work * d } });
+        }
+        const st = rng.int(14, 20) * 30, w2 = 7 * 60, b2 = 60;
+        return P({ key: `ksf:f:${st}`, text: `ある会社では、1日に7時間働き、1時間の休憩をとれば、朝7時から10時までの間で何時に出社してもかまいません。${tm(st)}に出社すると、何時何分に退社することになりますか。`, lines: true, ans: SA(`${tmA(st)}＋7{時間|じかん}＋1{時間|じかん}＝${tmA(st + w2 + b2)}`, tmA(st + w2 + b2)), meta: { ask, st, val: st + w2 + b2 } });
+      },
+      verify(pr) {
+        const m = pr.meta;
+        if (m.ask === "hours" || m.ask === "out") return m.e - m.s - m.br === m.val ? null : "勤務時間が合わない";
+        if (m.ask === "rate") return m.n / (m.work / 60) === m.val ? hasAns(pr, `${m.val}個`) : "1時間の個数が合わない";
+        if (m.ask === "week") return m.work * m.d === m.val ? null : "1週間の時間が合わない";
+        return m.st + 480 === m.val ? null : "退社時刻が合わない";
+      }
+    };
+
+    // ----- 求人票 -----
+    const kJob = {
+      id: "t.kJob",
+      instruction: null,
+      defaults: { asks: ["hours", "days", "year"] },
+      levels: lv({ asks: ["hours", "days"] }, { asks: ["hours", "days", "year"] }, { asks: ["year", "month", "days"] }),
+      generate(rng, p, ctx) {
+        const s = rng.int(16, 19) * 30, br = rng.pick([45, 60]), work = rng.pick([7, 7.5, 8]) * 60, e = s + work + br;
+        const pay = rng.int(150, 200) * 1000, hol = rng.pick([105, 110, 115, 120, 125]);
+        const co = rng.pick(["〇〇物流株式会社", "〇〇食品株式会社", "〇〇クリーン株式会社", "〇〇製作所"]);
+        const fig = htable(["求人票", ""], [["会社名", co], ["就業時間", `${tmA(s)}〜${tmA(e)}(休憩${br}${fun(br)})`], ["基本給", `月額 ${comma(pay)}円`], ["年間休日", `${hol}日`], ["年次有給休暇", "入社6か月後 10日"]]);
+        const ask = pickAsk(rng, p, ctx);
+        const head = "下の求人票を見て答えましょう。[[br]]";
+        const wh = work / 60;
+        if (ask === "hours") return P({ key: `kjb:h:${s}:${e}:${br}`, text: head + "休憩をのぞいて、1日に何時間働きますか。", figure: fig, lines: true, ans: SA(`${tmA(e)}－${tmA(s)}－${br}${fun(br)}＝${wh}{時間|じかん}`, `${wh}{時間|じかん}`), meta: { ask, s, e, br, val: work } });
+        if (ask === "days") return P({ key: `kjb:d:${hol}`, text: head + "1年を365日とすると、1年間に出勤する日は何日ですか(年次有給休暇は考えません)。", figure: fig, lines: true, ans: SA(`365－${hol}＝${365 - hol}`, `${365 - hol}{日|にち}`), meta: { ask, hol, val: 365 - hol } });
+        if (ask === "year") return P({ key: `kjb:y:${pay}`, text: head + "基本給の1年分(12か月分)は何円ですか。", figure: fig, lines: true, ans: SA(`${pay}×12＝${pay * 12}`, `${comma(pay * 12)}円`), meta: { ask, pay, val: pay * 12 } });
+        const d = rng.int(19, 22);
+        return P({ key: `kjb:m:${s}:${e}:${br}:${d}`, text: head + `ある月に${d}日出勤しました。この月に働いた時間は、休憩をのぞいて全部で何時間ですか。`, figure: fig, lines: true, ans: SA(`${wh}×${d}＝${wh * d}`, `${wh * d}{時間|じかん}`), meta: { ask, s, e, br, d, val: (work * d) / 60 } });
+      },
+      verify(pr) {
+        const m = pr.meta;
+        if (m.ask === "hours") return m.e - m.s - m.br === m.val ? null : "時間が合わない";
+        if (m.ask === "days") return hasAns(pr, `${365 - m.hol}日`);
+        if (m.ask === "year") return hasAns(pr, comma(m.pay * 12));
+        return ((m.e - m.s - m.br) * m.d) / 60 === m.val ? hasAns(pr, `${m.val}時間`) : "働いた時間が合わない";
+      }
+    };
+
+    // ----- 年次有給休暇(1日＝8時間) -----
+    const dh = (h) => `${Math.floor(h / 8)}{日|にち}${h % 8 ? `${h % 8}{時間|じかん}` : ""}`;
+    const kLeave = {
+      id: "t.kLeave",
+      instruction: null,
+      defaults: { hours: false },
+      levels: lv({ hours: false }, { hours: true }, { hours: true, more: true }),
+      generate(rng, p) {
+        for (let t = 0; t < 200; t++) {
+          const start = rng.pick([10, 12, 15, 20]) * 8, n = p.more ? 4 : 3;
+          const takes = [];
+          let mo = 4, dd = rng.int(5, 25);
+          for (let i = 0; i < n; i++) {
+            const h = p.hours && rng.chance(0.6) ? rng.int(1, 7) : rng.int(1, 3) * 8;
+            takes.push({ m: mo, d: dd, h });
+            mo += rng.int(1, 2);
+            dd = rng.int(1, 28);
+          }
+          const used = sum(takes.map((x) => x.h)), rest = start - used;
+          if (rest <= 0) continue;
+          const fig = htable(["取った日", "取った年休"], takes.map((x) => [`${x.m}月${x.d}日`, x.h % 8 ? `${x.h}時間` : `${x.h / 8}日`]));
+          return P({ key: `klv:${start}:${JSON.stringify(takes)}`, text: `あやかさんの会社では、1年目は${start / 8}日の年次有給休暇(年休)が取れます。年休は1時間単位でも取れます。勤務時間は1日8時間なので、8時間で1日分と数えます。下の表のように年休を取りました。[[br]]今までに取った年休の合計(累計)と、残っている年休(残日数)を、それぞれ何日何時間かで書きましょう。`, figure: fig, labels: ["累計", "残日数"], ans: `{累計|るいけい} ${dh(used)}　{残日数|ざんにっすう} ${dh(rest)}`, meta: { start, takes, used, rest } });
+        }
+        throw new Error("年休の問題が作れない");
+      },
+      verify(pr) {
+        const { start, takes, used, rest } = pr.meta;
+        return sum(takes.map((x) => x.h)) === used && start - used === rest ? hasAns(pr, plain(dh(used)), plain(dh(rest))) : "年休の計算が合わない";
+      }
+    };
+
+    // ----- 給与明細 -----
+    const SLIP_R = { 勤怠: ["{勤|きん}", "{怠|たい}"], 支給: ["{支|し}", "{給|きゅう}"], 控除: ["{控|こう}", "{除|じょ}"], 合計: ["{合|ごう}", "{計|けい}"] };
+    function slipFig(v, hide) {
+      const h = (k) => hide === k ? "？" : comma(v[k]);
+      const ot = `${Math.floor(v.ot / 60)}:${String(v.ot % 60).padStart(2, "0")}`;
+      const secs = [
+        ["勤怠", [["出勤日数", "欠勤日数", "有給日数", "残業時間", ""], [v.days, 0, v.paid, ot, ""]]],
+        ["支給", [["基本給", "時間外手当", "通勤手当", "住居手当", "総支給額"], [h("base"), h("otPay"), h("commute"), h("house"), h("gross")]]],
+        ["控除", [["健康保険", "厚生年金", "雇用保険", "所得税", "住民税"], [comma(v.hi), comma(v.pen), comma(v.emp), comma(v.inc), comma(v.res)], ["", "", "", "", "総控除額"], ["", "", "", "", h("ded")]]],
+        ["合計", [["", "", "", "", "差引支給額"], ["", "", "", "", h("net")]]]
+      ];
+      const items = [T(78, 6, `${v.y}{年|ねん}${v.m}{月|がつ}　{給与明細書|きゅうよめいさいしょ}`, 4.4, { bold: true })];
+      let y = 9;
+      for (const [label, rows] of secs) {
+        const hs = rows.map((_, i) => i % 2 === 0 ? 5.5 : 7.5), H = sum(hs);
+        items.push(rect(0.5, y, 9, H, { w: 0.6, fill: "#555" }), ...SLIP_R[label].map((ch, i) => T(5, y + H / 2 + 1.5 + (i - 0.5) * 4.2, ch, 3.6, { color: "#fff", bold: true })));
+        const cells = rows.map((r, i) => r.map((c) => ({ s: c === "" ? "" : K(String(c)), size: i % 2 === 0 ? 2.9 : 3.8, ...i % 2 === 0 ? { fill: "#e3e3e3" } : { anchor: "end" } })));
+        items.push(...table(9.5, y, [29, 29, 29, 29, 29], hs, cells, { head: 0 }).items);
+        y += H + 2;
+      }
+      return draw(156, y, items);
+    }
+    const kPayslip = {
+      id: "t.kPayslip",
+      instruction: null,
+      defaults: { asks: ["days", "base", "net"] },
+      levels: lv({ asks: ["days", "base", "net"] }, { asks: ["net", "allow", "gross"] }, { asks: ["ot", "net", "gross", "ded"] }),
+      generate(rng, p, ctx) {
+        const name = rng.pick(NAMES), ask = pickAsk(rng, p, ctx);
+        const base = rng.int(150, 190) * 1000, rate = rng.int(130, 180) * 10, otH = rng.pick([60, 90, 120, 150, 180, 240, 300]);
+        const otPay = Math.round(rate * otH / 60), commute = rng.int(30, 120) * 100, house = rng.pick([0, 5000, 8000, 10000]);
+        const gross = base + otPay + commute + house;
+        const hi = Math.round(gross * 0.05 / 10) * 10 + rng.int(0, 9), pen = Math.round(gross * 0.0915), emp = Math.round(gross * 0.006), inc = rng.int(25, 45) * 100 + rng.int(0, 99), res = rng.int(0, 60) * 100;
+        const ded = hi + pen + emp + inc + res, net = gross - ded;
+        const v = { y: 2026, m: rng.int(1, 12), days: rng.int(18, 22), paid: rng.int(0, 2), ot: otH, base, otPay, commute, house, gross, hi, pen, emp, inc, res, ded, net };
+        const hide = { net: "net", gross: "gross", ded: "ded" }[ask];
+        const head = `これは、${v.m}月に${name}さんが会社から受け取った給与明細書です。[[br]]`;
+        const Q = {
+          days: [`${name}さんは、この月に何日出勤しましたか。`, `${v.days}{日|にち}`, false],
+          base: [`${name}さんの基本給はいくらですか。`, `${comma(base)}円`, false],
+          net: ["実際に受け取れる金額(差引支給額)は、総支給額から総控除額を引いて求めます。差引支給額はいくらですか。", SA(`${comma(gross)}－${comma(ded)}＝${comma(net)}`, `${comma(net)}円`), true],
+          gross: ["総支給額は、支給の欄の金額をすべて足して求めます。総支給額はいくらですか。", SA(`${[base, otPay, commute, house].map(comma).join("＋")}＝${comma(gross)}`, `${comma(gross)}円`), true],
+          ded: ["総控除額は、控除の欄の金額をすべて足して求めます。総控除額はいくらですか。", SA(`${[hi, pen, emp, inc, res].map(comma).join("＋")}＝${comma(ded)}`, `${comma(ded)}円`), true],
+          allow: ["通勤手当と住居手当を合わせると、いくらですか。", SA(`${comma(commute)}＋${comma(house)}＝${comma(commute + house)}`, `${comma(commute + house)}円`), true],
+          ot: [`${name}さんは、この月に${Math.floor(otH / 60)}時間${otH % 60 ? `${otH % 60}分` : ""}の残業をしました。残業1時間あたりの時間外手当はいくらですか。`, SA(`${comma(otPay)}÷${otH / 60}＝${comma(rate)}`, `${comma(rate)}円`), true]
+        }[ask];
+        if (ask === "allow" && !house) return this.generate(rng, p, ctx);
+        return P({ key: `kps:${ask}:${JSON.stringify(v)}`, text: head + Q[0], figure: slipFig(v, hide ? hide : null), lines: Q[2], ans: Q[1], meta: { v, ask, rate }, softKey: ask });
+      },
+      verify(pr) {
+        const { v, ask, rate } = pr.meta;
+        if (v.base + v.otPay + v.commute + v.house !== v.gross || v.hi + v.pen + v.emp + v.inc + v.res !== v.ded || v.gross - v.ded !== v.net) return "明細の計算が合わない";
+        const want = { days: `${v.days}日`, base: comma(v.base), net: comma(v.net), gross: comma(v.gross), ded: comma(v.ded), allow: comma(v.commute + v.house), ot: comma(rate) }[ask];
+        if (ask === "ot" && rate * v.ot / 60 !== v.otPay) return "時間外手当が合わない";
+        return hasAns(pr, want);
+      }
+    };
+
+    kurashiGens.push(kAllowance, kWants, kCategory, kLedger, kParcel, kAmp, kRent, kCommute, kWork, kShift, kJob, kLeave, kPayslip);
+  })();
+  // ===== くらしの数学を、特別支援の段階(高等部のボタン「くらし」= GRADES[28])に入れる =====
+  // from の 3つめは { label: 小単元名({漢字|かな} 可), kinds: 種類 }。単元名(name)・内容(domain)も {漢字|かな} を使える。
+  tokushi.push(...kurashiGens);
+  (() => {
+    const W = ["word", "test"], D = ["drill", "test"], F = ["figure", "test"];
+    const u = (name, domain, ...from) => ({ name, domain, from: from.map(([id, label, kinds]) => [id, null, { label, kinds }]) });
+    const D1 = "Ⅰ {自分|じぶん}の{身|み}の{回|まわ}りのこと", D2 = "Ⅱ {毎日|まいにち}の{生活|せいかつ}", D3 = "Ⅲ {楽|たの}しむ({余暇|よか})", D4 = "Ⅳ {生活|せいかつ}を{豊|ゆた}かに", D5 = "Ⅴ {将来|しょうらい}の{生活|せいかつ}に{向|む}けて";
+    tokushiStages.push({
+      key: 28, name: "くらしの数学", ruby: "くらしの{数学|すうがく}", short: "", btn: "くらし", part: "高等部", styleGrade: 6,
+      note: "買い物・料理・予定・時間・お金の使い方・荷物・電気・通勤・仕事・給与明細など、くらしや働く場面の数学(数や場面は毎回かわります)",
+      units: [
+        u("{健康的|けんこうてき}な{生活|せいかつ}", D1, ["t.kCalorie", "1{日|にち}の{摂取|せっしゅ}カロリー", W], ["t.kSleep", "{睡眠|すいみん}{時間|じかん}", W]),
+        u("{身体計測|しんたいけいそく}の{結果|けっか}", D1, ["t.kGrowth", "{身長|しんちょう}と{体重|たいじゅう}の{記録|きろく}", W]),
+        u("サイズについて{知|し}ろう", D1, ["t.kSize", "サイズ{表|ひょう}", W]),
+        u("スポーツテスト", D1, ["t.kJump", "{記録|きろく}をくらべる", W], ["t.kStopwatch", "ストップウォッチ", D]),
+        u("{天気予報|てんきよほう}", D2, ["t.kWeather", "{週間天気予報|しゅうかんてんきよほう}", W]),
+        u("{季節|きせつ}と{気温|きおん}", D2, ["t.kTemp", "1{日|にち}の{気温|きおん}", W]),
+        u("{買|か}い{物|もの}をしよう", D2, ["t.kReceipt", "レシート", F], ["t.kPoint", "ポイントカード", W], ["t.kCanBuy", "{現金|げんきん}とICカード", W], ["t.kInstall", "{分割払|ぶんかつばら}い", W]),
+        u("{調理|ちょうり}をしよう", D2, ["t.kRecipe", "レシピの{分量|ぶんりょう}", W], ["t.kDiscount", "{割引|わりびき}", W], ["t.kKcal", "カロリー", W], ["t.kLabel", "{食品表示|しょくひんひょうじ}ラベル", W]),
+        u("{週|しゅう}の{予定|よてい}・{年間|ねんかん}の{予定|よてい}", D2, ["t.kCalendar", "{手帳|てちょう}(カレンダー)", W]),
+        u("{遊|あそ}びに{行|い}こう", D3, ["t.kClockSpan", "{時計|とけい}とたった{時間|じかん}", F], ["t.kTravel", "{行|い}き{方|かた}を{調|しら}べる", W], ["t.kHMcalc", "{時間|じかん}の{計算|けいさん}", D], ["t.kWake", "{起|お}きる{時刻|じこく}・{出|で}る{時刻|じこく}", W]),
+        u("{友達|ともだち}との{待|ま}ち{合|あ}わせ", D3, ["t.kMeet", "{待|ま}ち{合|あ}わせの{時刻|じこく}", W], ["t.kBusFare", "バス{代|だい}と{昼食代|ちゅうしょくだい}", W]),
+        u("ショッピングセンターに{行|い}こう", D3, ["t.kUnitTime", "{時間|じかん}の{単位|たんい}", D], ["t.kClockAfter", "{何分後|なんぷんご}・{何分前|なんぷんまえ}", F], ["t.kCharge", "ICカードのチャージ", W], ["t.kWallet", "{財布|さいふ}のお{金|かね}で{払|はら}う", F]),
+        u("レストランへ{行|い}こう", D3, ["t.kSplit", "{割|わ}り{勘|かん}", W]),
+        u("カタログや{広告|こうこく}", D3, ["t.kFit", "{広告|こうこく}を{読|よ}む", W]),
+        u("{物|もの}を{整理|せいり}して{収納|しゅうのう}しよう", D3, ["t.kShelf", "たなに{箱|はこ}を{並|なら}べる", W]),
+        u("1か{月|げつ}の{生活費|せいかつひ}", D4, ["t.kAllowance", "{小遣|こづか}いを{小分|こわ}けにする", W], ["t.kWants", "{欲|ほ}しい{物|もの}を{買|か}う", W]),
+        u("{計画的|けいかくてき}な{支出|ししゅつ}", D4, ["t.kCategory", "{支出|ししゅつ}の{項目|こうもく}", W], ["t.kLedger", "{小遣|こづか}い{帳|ちょう}", F]),
+        u("{荷物|にもつ}を{送|おく}ろう", D4, ["t.kParcel", "{宅配便|たくはいびん}の{料金|りょうきん}", W]),
+        u("{住居|じゅうきょ}", D4, ["t.kAmp", "{契約|けいやく}アンペア", W], ["t.kRent", "{家賃|やちん}と{初期費用|しょきひよう}", W]),
+        u("{現場実習|げんばじっしゅう}", D5, ["t.kCommute", "{実習先|じっしゅうさき}への{行|い}き{方|かた}", W]),
+        u("{作業速度|さぎょうそくど}", D5, ["t.kWork", "{作業|さぎょう}の{速|はや}さ", W], ["t.kShift", "{勤務時間|きんむじかん}", W]),
+        u("{求人票|きゅうじんひょう}", D5, ["t.kJob", "{求人票|きゅうじんひょう}を{読|よ}む", W], ["t.kLeave", "{年次有給休暇|ねんじゆうきゅうきゅうか}", W]),
+        u("{給与明細|きゅうよめいさい}", D5, ["t.kPayslip", "{給与明細書|きゅうよめいさいしょ}", W])
+      ]
+    });
+  })();
 
   // add/yoji
   // 幼児向けプリント(3〜6さい)。すらぷり・ちびむすドリルのつくりを参考に、1まいの問題を少なく、絵と字を大きく。
@@ -48385,10 +50487,10 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       level,
       levelLabel: LEVELS[level].label,
       seed,
-      title: subTopic ? `${UNIT_RUBY[unit.id] || unit.rubyName || unit.name} ${topicNo}　${topicRuby(subTopic.label)}` : KINDS9[kind].sheetLabel ? `${UNIT_RUBY[unit.id] || unit.rubyName || unit.name}　${KINDS9[kind].sheetLabel}` : UNIT_RUBY[unit.id] || unit.rubyName || unit.name,
+      title: subTopic ? `${UNIT_RUBY[unit.id] || unit.rubyName || unit.name} ${topicNo}　${subTopic.rubyLabel || topicRuby(subTopic.label)}` : KINDS9[kind].sheetLabel ? `${UNIT_RUBY[unit.id] || unit.rubyName || unit.name}　${KINDS9[kind].sheetLabel}` : UNIT_RUBY[unit.id] || unit.rubyName || unit.name,
       unitTitle: (UNIT_RUBY[unit.id] || unit.rubyName || unit.name) + (subTopic ? ` ${topicNo}` : ""),
       // 特別支援の段階のプリントにも、段階の名前(何学部何段階)は書かない
-      sheetLabel: subTopic ? topicRuby(subTopic.label) : KINDS9[kind].sheetLabel || "",
+      sheetLabel: subTopic ? subTopic.rubyLabel || topicRuby(subTopic.label) : KINDS9[kind].sheetLabel || "",
       stage: gradeData.stage || 0,
       topicNo: subTopic ? topicNo : 0,
       answerStyle: kind === "yoji" ? "filled" : null,
@@ -48437,8 +50539,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   // 学年の名前(10〜15 は高校の科目)
   var KOU_NAMES = { 10: "数学Ⅰ", 11: "数学A", 12: "数学Ⅱ", 13: "数学B", 14: "数学Ⅲ", 15: "数学C" };
   var KOU_SHORT = { 10: "Ⅰ", 11: "A", 12: "Ⅱ", 13: "B", 14: "Ⅲ", 15: "C" };
-  // 21〜27 は特別支援学校(知的障害)の段階
-  var STAGE_NAMES = { 21: "小学部1段階", 22: "小学部2段階", 23: "小学部3段階", 24: "中学部1段階", 25: "中学部2段階", 26: "高等部1段階", 27: "高等部2段階" };
+  // 21〜27 は特別支援学校(知的障害)の段階。28 は高等部の「くらしの数学」(生活の場面の数学)
+  var STAGE_NAMES = { 21: "小学部1段階", 22: "小学部2段階", 23: "小学部3段階", 24: "中学部1段階", 25: "中学部2段階", 26: "高等部1段階", 27: "高等部2段階", 28: "くらしの数学" };
   var isStage = (g3) => Number(g3) >= 21;
   var gradeNameOf = (g3) => (g3 = Number(g3), g3 >= 21 ? STAGE_NAMES[g3] || `段階${g3}` : g3 === 0 ? "ようじ" : g3 >= 10 ? KOU_NAMES[g3] : g3 >= 7 ? `中${g3 - 6}` : `${g3}年`);
   function coverageSummary(grades, exclude = /* @__PURE__ */ new Set()) {
@@ -54576,6 +56678,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       }
       return null;
     };
+    const noRuby = (x) => String(x ?? "").replace(/\{([^{}|]+)\|[^{}]*\}/g, "$1");
     const withLevels = (tp, lv2) => lv2 ? { ...tp, levels: Object.fromEntries(["basic", "normal", "challenge"].map((k) => [k, { ...tp.levels?.[k] || {}, ...lv2[k] || {} }])) } : tp;
     for (const st of tokushiStages) {
       const units = st.units.map((su, i) => {
@@ -54584,7 +56687,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
         for (const [ref, lv2, opt] of su.from) {
           if (/^t\./.test(ref)) {
             const o = typeof opt === "string" ? { label: opt } : opt || {};
-            topics.push(withLevels({ label: o.label || su.name, generator: ref, kinds: o.kinds || ["yoji"] }, lv2));
+            const lab = o.label || su.name, plain = noRuby(lab);
+            topics.push(withLevels({ label: plain, ...plain !== lab ? { rubyLabel: lab } : {}, generator: ref, kinds: o.kinds || ["yoji"], ...o.weight ? { weight: o.weight } : {} }, lv2));
             continue;
           }
           const [uid, no] = ref.split(":");
@@ -54596,9 +56700,10 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           if (!no && su.from.length === 1 && src.per) props = { per: src.per, starts: src.starts, defaultCount: src.defaultCount };
           else if (!no && su.from.length === 1 && src.starts) props = { starts: src.starts };
         }
-        return { id: `s${st.key}-${String(i + 1).padStart(2, "0")}`, order: i + 1, name: su.name, domain: su.domain, topics, ...props, ...su.unitProps || {} };
+        const nm = noRuby(su.name);
+        return { id: `s${st.key}-${String(i + 1).padStart(2, "0")}`, order: i + 1, name: nm, ...nm !== su.name ? { rubyName: su.name } : {}, domain: noRuby(su.domain), topics, ...props, ...su.unitProps || {} };
       });
-      GRADES[st.key] = { grade: st.styleGrade, stage: st.key, stageName: st.name, stageRuby: st.ruby || st.name, part: st.part, short: st.short, note: st.note, units };
+      GRADES[st.key] = { grade: st.styleGrade, stage: st.key, stageName: st.name, stageRuby: st.ruby || st.name, part: st.part, short: st.short, btn: st.btn, note: st.note, units };
     }
   }
   var $ = (id) => document.getElementById(id);
@@ -55110,10 +57215,10 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   function renderHome() {
     homeEl.className = `home g${homeGrade}`;
     const stageMode = isStage(homeGrade);
-    const hgBtn = (g3) => `<button type="button" class="hg g${g3}${g3 === homeGrade ? " on" : ""}" data-grade="${g3}" aria-pressed="${g3 === homeGrade}"${GRADES[g3] ? "" : " disabled"}>${g3 >= 21 ? `${GRADES[g3]?.short ?? ""}<span class="stg">段階</span>` : g3 === 0 ? '<span class="yj">ようじ</span>' : g3 >= 10 ? `<small>数</small>${KOU_SHORT[g3]}` : g3 >= 7 ? `<small>中</small>${g3 - 6}` : `${g3}<small>年</small>`}</button>`;
+    const hgBtn = (g3) => `<button type="button" class="hg g${g3}${g3 === homeGrade ? " on" : ""}" data-grade="${g3}" aria-pressed="${g3 === homeGrade}"${GRADES[g3] ? "" : " disabled"}>${g3 >= 21 ? GRADES[g3]?.btn ? `<span class="yj">${GRADES[g3].btn}</span>` : `${GRADES[g3]?.short ?? ""}<span class="stg">段階</span>` : g3 === 0 ? '<span class="yj">ようじ</span>' : g3 >= 10 ? `<small>数</small>${KOU_SHORT[g3]}` : g3 >= 7 ? `<small>中</small>${g3 - 6}` : `${g3}<small>年</small>`}</button>`;
     $("homeStep1").textContent = stageMode ? "段階" : "学年";
     $("tkBanner").className = `tk-banner${stageMode ? " back" : ""}`;
-    $("tkBanner").innerHTML = stageMode ? '<span class="tk-badge">学年べつ</span><span class="tk-main"><b>学年べつ(ようじ・小学校・中学・高校)に もどる</b><small>ふつうの学年・単元のプリントは こちら</small></span><span class="tk-go">◀</span>' : '<span class="tk-badge">特別支援</span><span class="tk-main"><b>特別支援学校 各段階のプリントは こちら！</b><small>知的障害の特別支援学校の学習指導要領(算数・数学)の段階に合わせています。小学部1〜3段階・中学部1・2段階・高等部1・2段階</small></span><span class="tk-go">▶</span>';
+    $("tkBanner").innerHTML = stageMode ? '<span class="tk-badge">学年べつ</span><span class="tk-main"><b>学年べつ(ようじ・小学校・中学・高校)に もどる</b><small>ふつうの学年・単元のプリントは こちら</small></span><span class="tk-go">◀</span>' : '<span class="tk-badge">特別支援</span><span class="tk-main"><b>特別支援学校 各段階のプリントは こちら！</b><small>知的障害の特別支援学校の学習指導要領(算数・数学)の段階に合わせています。小学部1〜3段階・中学部1・2段階・高等部1・2段階・くらしの数学</small></span><span class="tk-go">▶</span>';
     $("homeGrades").innerHTML = (stageMode ? [["小学部", (g3) => g3 >= 21 && g3 <= 23], ["中学部", (g3) => g3 >= 24 && g3 <= 25], ["高等部", (g3) => g3 >= 26]] : [["ようじ・小学校", (g3) => g3 <= 6], ["中学", (g3) => g3 >= 7 && g3 <= 9], ["高校", (g3) => g3 >= 10 && g3 < 21]]).map(([cap, f]) => [cap, GRADE_KEYS.filter(f)]).filter(([, gs]) => gs.length).map(([cap, gs]) => `<div class="hg-group"><span class="hg-cap">${cap}</span><div class="hg-btns">${gs.map(hgBtn).join("")}</div></div>`).join("");
     $("homeAges").textContent = homeGrade === 0 ? "★☆☆ 3〜4さい　★★☆ 4〜5さい　★★★ 5〜6さい" : stageMode ? `${gradeName(homeGrade)}:${GRADES[homeGrade]?.note || ""}` : "";
     $("homeAges").classList.toggle("stage-note", stageMode);

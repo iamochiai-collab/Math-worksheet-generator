@@ -21,3 +21,5 @@ jobs:
         run: git diff --exit-code docs/index.html
       - name: 問題の検査
         run: node tools/test/generators.js build/test.html all 60
+      - name: くらしの数学の検査
+        run: node tools/test/kurashi.js build/test.html

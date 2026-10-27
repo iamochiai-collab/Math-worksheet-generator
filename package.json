@@ -10,7 +10,8 @@
     "test": "npm run build && node tools/test/generators.js build/test.html all 120",
     "test:layout": "npm run build && node tools/test/layout.js docs/index.html",
     "test:clip": "npm run build && node tools/test/clip.js build/test.html",
-    "test:sub": "npm run build && node tools/test/subunits.js docs/index.html"
+    "test:sub": "npm run build && node tools/test/subunits.js docs/index.html",
+    "test:kurashi": "npm run build && node tools/test/kurashi.js build/test.html"
   },
   "devDependencies": {
     "playwright": "^1.47.0"

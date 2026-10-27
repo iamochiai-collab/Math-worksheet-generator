@@ -109,7 +109,7 @@ body[data-view="home"] .panel, body[data-view="home"] .preview { display: none; 
 body[data-view="print"] .home { display: none; }
 .g0 { --gc: #c9457f; } .g7 { --gc: #3d6f8f; } .g8 { --gc: #5a5f9e; } .g9 { --gc: #7a4f6e; } .g1 { --gc: #c8453b; } .g2 { --gc: #c9731e; } .g3 { --gc: #3b8a4c; }
 .g4 { --gc: #23837f; } .g5 { --gc: #2f67b1; } .g6 { --gc: #7150a6; }
-.g21, .g22, .g23 { --gc: #b0476b; } .g24, .g25 { --gc: #3b7d5a; } .g26, .g27 { --gc: #4a5fa0; }
+.g21, .g22, .g23 { --gc: #b0476b; } .g24, .g25 { --gc: #3b7d5a; } .g26, .g27 { --gc: #4a5fa0; } .g28 { --gc: #b8641c; }
 .tk-banner { display: flex; align-items: center; gap: 12px; width: 100%; margin: 14px 0 0; padding: 12px 16px; border-radius: 14px; border: 2px solid #e7a3bd; background: linear-gradient(90deg, #fff4f8, #fff); color: #6b2340; font: inherit; text-align: left; cursor: pointer; box-shadow: 0 2px 0 rgba(176,71,107,.15); }
 .tk-banner:hover, .tk-banner:focus-visible { background: #ffe9f1; }
 .tk-banner .tk-badge { flex: none; background: #b0476b; color: #fff; font-weight: bold; font-size: 13px; padding: 5px 10px; border-radius: 999px; }
@@ -619,7 +619,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   <summary>使い方</summary>
   <ol>
     <li><b>作り方</b> 学年 → 単元 → 種類 → 難易度 → 問題数を選んで「作成」。下に A4 の形で出ます。「印刷」で印刷の画面が開きます。</li>
-    <li><b>特別支援学校の段階</b> メニューの「特別支援学校 各段階のプリントは こちら！」をおすと、知的障害の特別支援学校の学習指導要領(算数・数学)の段階(小学部1〜3段階・中学部1・2段階・高等部1・2段階)でえらべます。段階の内容(A 数と計算、B 図形 など)ごとに、問題を少なめ・字を大きめにしたプリントができます。小学部1・2段階は、ある・ない、おなじものをむすぶ、なかまあつめ、おおきい・ちいさい(1もんに 1つの くらべ) などの絵のプリントです。お金は、小学部2段階(1円・10円)→3段階(いくらかな・ぜんぶで いくら・ちょうど はらう)→中学部1段階(1000円まで・おつり)→2段階(おさつ・2つ買ったときのおつり)と少しずつ広げています。</li>
+    <li><b>特別支援学校の段階</b> メニューの「特別支援学校 各段階のプリントは こちら！」をおすと、知的障害の特別支援学校の学習指導要領(算数・数学)の段階(小学部1〜3段階・中学部1・2段階・高等部1・2段階)でえらべます。段階の内容(A 数と計算、B 図形 など)ごとに、問題を少なめ・字を大きめにしたプリントができます。小学部1・2段階は、ある・ない、おなじものをむすぶ、なかまあつめ、おおきい・ちいさい(1もんに 1つの くらべ) などの絵のプリントです。お金は、小学部2段階(1円・10円)→3段階(いくらかな・ぜんぶで いくら・ちょうど はらう)→中学部1段階(1000円まで・おつり)→2段階(おさつ・2つ買ったときのおつり)と少しずつ広げています。高等部の「くらし」(くらしの数学)は、買い物・料理・予定・時間・お金の使い方・荷物・電気・通勤・仕事・給与明細など、毎日のくらしや働くときの場面の問題です(数や場面は毎回かわります)。</li>
     <li><b>小単元</b> 小学校は、単元の中の小単元(たとえば「折れ線グラフと表」の「2本の折れ線グラフ」)だけのプリントも作れます。メニューの単元の「小単元をえらぶ」から、または上の「小単元」でえらびます。見出しは「単元名 番号」と「◎ 小単元名」になります。「まとめて作る」と組み合わせると、同じ小単元のプリントを何まいも作れます。</li>
     <li><b>作り直しとシード番号</b> 「作り直し」を押すと別の問題になります。プリント左下の「No.」がシード番号(星の中の数字はページの番号)で、同じ番号・同じ設定なら同じプリントになります(先生用と児童用、やり直し用などに)。</li>
     <li><b>解答</b> 問題のページのあとに付きます。「答えのページ」が「プリントに書きこむ」のときは、問題のプリントと同じページに答えをオレンジの字で書きこんだ形になります(1ページずつ対応)。「答えだけの一覧」にすると、答えを短くまとめたページになります。「解答をつける」を外すと付きません。</li>
@@ -33110,10 +33110,10 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       level,
       levelLabel: LEVELS[level].label,
       seed,
-      title: subTopic ? `${UNIT_RUBY[unit.id] || unit.rubyName || unit.name} ${topicNo}　${topicRuby(subTopic.label)}` : KINDS9[kind].sheetLabel ? `${UNIT_RUBY[unit.id] || unit.rubyName || unit.name}　${KINDS9[kind].sheetLabel}` : UNIT_RUBY[unit.id] || unit.rubyName || unit.name,
+      title: subTopic ? `${UNIT_RUBY[unit.id] || unit.rubyName || unit.name} ${topicNo}　${subTopic.rubyLabel || topicRuby(subTopic.label)}` : KINDS9[kind].sheetLabel ? `${UNIT_RUBY[unit.id] || unit.rubyName || unit.name}　${KINDS9[kind].sheetLabel}` : UNIT_RUBY[unit.id] || unit.rubyName || unit.name,
       unitTitle: (UNIT_RUBY[unit.id] || unit.rubyName || unit.name) + (subTopic ? ` ${topicNo}` : ""),
       // 特別支援の段階のプリントにも、段階の名前(何学部何段階)は書かない
-      sheetLabel: subTopic ? topicRuby(subTopic.label) : KINDS9[kind].sheetLabel || "",
+      sheetLabel: subTopic ? subTopic.rubyLabel || topicRuby(subTopic.label) : KINDS9[kind].sheetLabel || "",
       stage: gradeData.stage || 0,
       topicNo: subTopic ? topicNo : 0,
       answerStyle: kind === "yoji" ? "filled" : null,
@@ -33162,8 +33162,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   // 学年の名前(10〜15 は高校の科目)
   var KOU_NAMES = { 10: "数学Ⅰ", 11: "数学A", 12: "数学Ⅱ", 13: "数学B", 14: "数学Ⅲ", 15: "数学C" };
   var KOU_SHORT = { 10: "Ⅰ", 11: "A", 12: "Ⅱ", 13: "B", 14: "Ⅲ", 15: "C" };
-  // 21〜27 は特別支援学校(知的障害)の段階
-  var STAGE_NAMES = { 21: "小学部1段階", 22: "小学部2段階", 23: "小学部3段階", 24: "中学部1段階", 25: "中学部2段階", 26: "高等部1段階", 27: "高等部2段階" };
+  // 21〜27 は特別支援学校(知的障害)の段階。28 は高等部の「くらしの数学」(生活の場面の数学)
+  var STAGE_NAMES = { 21: "小学部1段階", 22: "小学部2段階", 23: "小学部3段階", 24: "中学部1段階", 25: "中学部2段階", 26: "高等部1段階", 27: "高等部2段階", 28: "くらしの数学" };
   var isStage = (g3) => Number(g3) >= 21;
   var gradeNameOf = (g3) => (g3 = Number(g3), g3 >= 21 ? STAGE_NAMES[g3] || `段階${g3}` : g3 === 0 ? "ようじ" : g3 >= 10 ? KOU_NAMES[g3] : g3 >= 7 ? `中${g3 - 6}` : `${g3}年`);
   function coverageSummary(grades, exclude = /* @__PURE__ */ new Set()) {
@@ -39317,6 +39317,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       }
       return null;
     };
+    const noRuby = (x) => String(x ?? "").replace(/\{([^{}|]+)\|[^{}]*\}/g, "$1");
     const withLevels = (tp, lv2) => lv2 ? { ...tp, levels: Object.fromEntries(["basic", "normal", "challenge"].map((k) => [k, { ...tp.levels?.[k] || {}, ...lv2[k] || {} }])) } : tp;
     for (const st of tokushiStages) {
       const units = st.units.map((su, i) => {
@@ -39325,7 +39326,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
         for (const [ref, lv2, opt] of su.from) {
           if (/^t\./.test(ref)) {
             const o = typeof opt === "string" ? { label: opt } : opt || {};
-            topics.push(withLevels({ label: o.label || su.name, generator: ref, kinds: o.kinds || ["yoji"] }, lv2));
+            const lab = o.label || su.name, plain = noRuby(lab);
+            topics.push(withLevels({ label: plain, ...plain !== lab ? { rubyLabel: lab } : {}, generator: ref, kinds: o.kinds || ["yoji"], ...o.weight ? { weight: o.weight } : {} }, lv2));
             continue;
           }
           const [uid, no] = ref.split(":");
@@ -39337,9 +39339,10 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           if (!no && su.from.length === 1 && src.per) props = { per: src.per, starts: src.starts, defaultCount: src.defaultCount };
           else if (!no && su.from.length === 1 && src.starts) props = { starts: src.starts };
         }
-        return { id: `s${st.key}-${String(i + 1).padStart(2, "0")}`, order: i + 1, name: su.name, domain: su.domain, topics, ...props, ...su.unitProps || {} };
+        const nm = noRuby(su.name);
+        return { id: `s${st.key}-${String(i + 1).padStart(2, "0")}`, order: i + 1, name: nm, ...nm !== su.name ? { rubyName: su.name } : {}, domain: noRuby(su.domain), topics, ...props, ...su.unitProps || {} };
       });
-      GRADES[st.key] = { grade: st.styleGrade, stage: st.key, stageName: st.name, stageRuby: st.ruby || st.name, part: st.part, short: st.short, note: st.note, units };
+      GRADES[st.key] = { grade: st.styleGrade, stage: st.key, stageName: st.name, stageRuby: st.ruby || st.name, part: st.part, short: st.short, btn: st.btn, note: st.note, units };
     }
   }
   var $ = (id) => document.getElementById(id);
@@ -39851,10 +39854,10 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   function renderHome() {
     homeEl.className = `home g${homeGrade}`;
     const stageMode = isStage(homeGrade);
-    const hgBtn = (g3) => `<button type="button" class="hg g${g3}${g3 === homeGrade ? " on" : ""}" data-grade="${g3}" aria-pressed="${g3 === homeGrade}"${GRADES[g3] ? "" : " disabled"}>${g3 >= 21 ? `${GRADES[g3]?.short ?? ""}<span class="stg">段階</span>` : g3 === 0 ? '<span class="yj">ようじ</span>' : g3 >= 10 ? `<small>数</small>${KOU_SHORT[g3]}` : g3 >= 7 ? `<small>中</small>${g3 - 6}` : `${g3}<small>年</small>`}</button>`;
+    const hgBtn = (g3) => `<button type="button" class="hg g${g3}${g3 === homeGrade ? " on" : ""}" data-grade="${g3}" aria-pressed="${g3 === homeGrade}"${GRADES[g3] ? "" : " disabled"}>${g3 >= 21 ? GRADES[g3]?.btn ? `<span class="yj">${GRADES[g3].btn}</span>` : `${GRADES[g3]?.short ?? ""}<span class="stg">段階</span>` : g3 === 0 ? '<span class="yj">ようじ</span>' : g3 >= 10 ? `<small>数</small>${KOU_SHORT[g3]}` : g3 >= 7 ? `<small>中</small>${g3 - 6}` : `${g3}<small>年</small>`}</button>`;
     $("homeStep1").textContent = stageMode ? "段階" : "学年";
     $("tkBanner").className = `tk-banner${stageMode ? " back" : ""}`;
-    $("tkBanner").innerHTML = stageMode ? '<span class="tk-badge">学年べつ</span><span class="tk-main"><b>学年べつ(ようじ・小学校・中学・高校)に もどる</b><small>ふつうの学年・単元のプリントは こちら</small></span><span class="tk-go">◀</span>' : '<span class="tk-badge">特別支援</span><span class="tk-main"><b>特別支援学校 各段階のプリントは こちら！</b><small>知的障害の特別支援学校の学習指導要領(算数・数学)の段階に合わせています。小学部1〜3段階・中学部1・2段階・高等部1・2段階</small></span><span class="tk-go">▶</span>';
+    $("tkBanner").innerHTML = stageMode ? '<span class="tk-badge">学年べつ</span><span class="tk-main"><b>学年べつ(ようじ・小学校・中学・高校)に もどる</b><small>ふつうの学年・単元のプリントは こちら</small></span><span class="tk-go">◀</span>' : '<span class="tk-badge">特別支援</span><span class="tk-main"><b>特別支援学校 各段階のプリントは こちら！</b><small>知的障害の特別支援学校の学習指導要領(算数・数学)の段階に合わせています。小学部1〜3段階・中学部1・2段階・高等部1・2段階・くらしの数学</small></span><span class="tk-go">▶</span>';
     $("homeGrades").innerHTML = (stageMode ? [["小学部", (g3) => g3 >= 21 && g3 <= 23], ["中学部", (g3) => g3 >= 24 && g3 <= 25], ["高等部", (g3) => g3 >= 26]] : [["ようじ・小学校", (g3) => g3 <= 6], ["中学", (g3) => g3 >= 7 && g3 <= 9], ["高校", (g3) => g3 >= 10 && g3 < 21]]).map(([cap, f]) => [cap, GRADE_KEYS.filter(f)]).filter(([, gs]) => gs.length).map(([cap, gs]) => `<div class="hg-group"><span class="hg-cap">${cap}</span><div class="hg-btns">${gs.map(hgBtn).join("")}</div></div>`).join("");
     $("homeAges").textContent = homeGrade === 0 ? "★☆☆ 3〜4さい　★★☆ 4〜5さい　★★★ 5〜6さい" : stageMode ? `${gradeName(homeGrade)}:${GRADES[homeGrade]?.note || ""}` : "";
     $("homeAges").classList.toggle("stage-note", stageMode);

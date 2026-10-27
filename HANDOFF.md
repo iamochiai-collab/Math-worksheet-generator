@@ -28,10 +28,12 @@
   - `buildSheet()` … 問題を作る(`topicNo` で小単元、`gradeData.stage` で特別支援の段階)
   - `sheetHtml()` … プリントのHTML。答えの書きこみは `keyFills/lineKeys/keyFigure`、四角に私用文字の目じるしを入れてあとで答えを入れる
   - `paginate()` … ページ分け。答えのページは問題のページを写して(`keyed`)作る。`fitKeys/fitWide` ではみ出しを直す
-  - 特別支援の段階は `tokushiStages` を `GRADES[21〜27]` に入れる(`gradeData.grade` は漢字・字の大きさ用の近い学年)
+  - 特別支援の段階は `tokushiStages` を `GRADES[21〜27]` に入れる(`gradeData.grade` は漢字・字の大きさ用の近い学年)。28 は高等部の「くらしの数学」(メニューのボタンは「くらし」= `btn`)
 - `src/generators/<名前>/*.js` … 問題の部品(chu1〜3・kou0〜kouC・g3MergeTables・g4LineGraph・tokushi・yoji)。フォルダ名の順につながる。各フォルダは `var <フォルダ名> = [...]` が必要
   - `g3MergeTables/` … 3年「ぼうグラフと表」5「1つの表にまとめよう」(3〜4つの表を二次元表にまとめ、ア・イの意味を答える)。`topics.json` で g3-06 の小単元をおきかえている
   - `tokushi/part1.js` … 特別支援の絵・お金の部品と、段階ごとの単元のならび(`from: [["単元id" か "単元id:小単元番号" か "t.○○", ★ごとのしぼりこみ, 名前や種類]]`)
+  - `tokushi/part2〜6.js` … 高等部「くらしの数学」(GRADES[28]、23単元・43の部品 `t.k○○`)。part2 は共通の道具(`kurashiLib`:ふりがな辞書 DICT と `K()`、表・お金・答えの四角 `BX()`)と「Ⅰ 自分の身の回りのこと」、part3 は「Ⅱ 毎日の生活」、part4 は「Ⅲ 楽しむ」、part5 は「Ⅳ 生活を豊かに」「Ⅴ 将来の生活に向けて」、part6 で段階に入れる。単元名・小単元名は {漢字|かな} で書ける(`rubyName`・`rubyLabel`)
+  - くらしの数学の文は K() で辞書からふりがなをつける。新しいことばを使ったら `node tools/test/kurashi.js` で「ふりがなのない漢字: なし」になるまで DICT に足す
 - `assets/icon/*.png` … サイトのアイコン(`{{ICON:icon32}}` などで head に入る。build で docs/apple-touch-icon.png・favicon.png もコピー)
 - `assets/money/*.webp` … お金の絵(`{{MONEY:coin10}}` などで data URI になる)。`assets/chara/` … メニューのキャラクター
 - `tools/build.py` … 1ファイルにまとめる → `docs/index.html`(公開用)と `build/test.html`(検査用、`window.__T` あり)
@@ -41,7 +43,8 @@
 python3 tools/build.py
 node tools/test/generators.js build/test.html all 120      # 答えが合うか・重複・漢字(0 failures になること)
 node tools/test/layout.js docs/index.html 結果.json 4,5,6    # はみ出し・番号のずれ・番号のかさなり(学年をしぼれる。21〜27 は特別支援)
-node tools/test/subunits.js docs/index.html 結果.json 1,2,3  # 小単元ごと(21〜27 も可)
+node tools/test/subunits.js docs/index.html 結果.json 1,2,3  # 小単元ごと(21〜28 も可)
+node tools/test/kurashi.js build/test.html                  # くらしの数学:ふりがなのない漢字・いちばん多い問題数で作れるか
 node tools/test/firstopen.js docs/index.html                # メニューから開いたときと「作成」で同じになるか
 node tools/test/render.js build/test.html 単元id 種類 難易度 問題数 シード 出力名-   # 画像にして目で見る
 ```
