@@ -71,7 +71,7 @@ import shutil
 shutil.copyfile(root / 'assets' / 'icon' / 'icon180.png', root / 'docs' / 'apple-touch-icon.png')
 shutil.copyfile(root / 'assets' / 'icon' / 'icon32.png', root / 'docs' / 'favicon.png')
 (root / 'docs' / 'index.html').write_text(s, encoding='utf-8')
-hook = '  window.__T = { generators, GRADES, buildSheet, makeRng, topicParams, getGenerator, kanji_default, renderText, makeKanjiPolicy, sheetHtml, paginate, ansify, HINTS, topicRuby, topicKinds };\n})();\n\n</script>'
+hook = '  window.__T = { generators, GRADES, buildSheet, makeRng, topicParams, getGenerator, kanji_default, renderText, makeKanjiPolicy, sheetHtml, paginate, ansify, HINTS, topicRuby, topicKinds, filledSheet, pageFill };\n})();\n\n</script>'
 end = '})();\n\n</script>'
 assert s.count(end) == 1
 (root / 'build').mkdir(exist_ok=True)

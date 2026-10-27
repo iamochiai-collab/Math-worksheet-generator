@@ -26,9 +26,9 @@ const { chromium } = require('playwright');
         }
       }
       // いちばん多い問題数で作ってみる
-      for (const kind of ['drill', 'word', 'figure', 'test']) {
+      for (const kind of ['drill', 'word', 'figure', 'test', 'record']) {
         if (!unit.topics.some(t => t.kinds.includes(kind))) continue;
-        const counts = { drill: 30, word: 6, figure: 6, test: null }[kind];
+        const counts = { drill: 30, word: 10, figure: 10, test: null, record: null }[kind];
         for (const level of ['basic', 'normal', 'challenge']) for (const seed of [1, 2, 3]) {
           try { T.buildSheet({ gradeData: g, unitId: unit.id, kind, level, count: counts, seed }); }
           catch (e) { out.build.push(`${unit.id} ${kind} ${level} ${seed}: ${e.message}`); }

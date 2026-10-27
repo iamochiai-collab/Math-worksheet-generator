@@ -183,6 +183,8 @@ body[data-view="print"] .home { display: none; }
 .uk { font: inherit; font-size: 13.5px; line-height: 1.3; padding: 7px 10px; border-radius: 7px; border: 1px solid #b9bfcc; background: #f5f6f9; color: #1f2a40; cursor: pointer; }
 .uk:hover, .uk:focus-visible { background: #2b3a55; border-color: #2b3a55; color: #fff; }
 .uk.k-test { background: #fff; border-color: #2b3a55; color: #2b3a55; font-weight: bold; }
+.uk.k-record { background: #fff7ee; border-color: #b8641c; color: #8a4a12; }
+.uk.k-record:hover, .uk.k-record:focus-visible { background: #b8641c; color: #fff; }
 .uk.k-test:hover, .uk.k-test:focus-visible { background: #2b3a55; color: #fff; }
 .ucard.off { opacity: 0.55; }
 .usubs { margin-top: 6px; border-top: 1px dashed #d5d7de; padding-top: 6px; }
@@ -47309,7 +47311,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       始まる: "{始|はじ}まる", 土曜: "どよう", 区間: "くかん", 文房具: "ぶんぼうぐ", 払い: "{払|はら}い", 飲んだ: "{飲|の}んだ", 台: "だい", 木: "き", 衣装: "いしょう", 残る: "{残|のこ}る", 全体: "ぜんたい", 順: "じゅん", 思います: "{思|おも}います",
       足りなく: "{足|た}りなく", 服: "ふく", 電話: "でんわ", 帳: "ちょう", 代: "だい", 量: "りょう", 機器: "きき", 借りて: "{借|か}りて", 費用: "ひよう", 決まった: "{決|き}まった", 検索: "けんさく", 先: "さき", 部品: "ぶひん", 組み立て: "{組|く}み{立|た}て",
       封筒: "ふうとう", 宛名: "あてな", 貼り: "{貼|は}り", 工賃: "こうちん", 作: "つく", 物流: "ぶつりゅう", 屋: "や", 仕上げ: "{仕上|しあ}げ", 入社: "にゅうしゃ", 考えません: "{考|かんが}えません", 製作所: "せいさくしょ", 働いた: "{働|はたら}いた", 年目: "ねんめ",
-      取り: "{取|と}り", 取った: "{取|と}った", 引いて: "{引|ひ}いて", 欄: "らん", 表します: "{表|あらわ}します", 合計: "ごうけい", 入れ: "{入|い}れ", 見る: "{見|み}る", 読む: "{読|よ}む", 買え: "{買|か}え", 切れ: "{切|ぎ}れ", 出れば: "{出|で}れば", 書かれた: "{書|か}かれた", 使える: "{使|つか}える", 飲み: "{飲|の}み", 残って: "{残|のこ}って", 名: "めい", 足して: "{足|た}して", 買お: "{買|か}お", 下がった: "{下|さ}がった", 日数: "にっすう", 出勤日数: "しゅっきんにっすう", 欠勤日数: "けっきんにっすう", 有給日数: "ゆうきゅうにっすう"
+      取り: "{取|と}り", 取った: "{取|と}った", 引いて: "{引|ひ}いて", 欄: "らん", 表します: "{表|あらわ}します", 合計: "ごうけい", 入れ: "{入|い}れ", 見る: "{見|み}る", 読む: "{読|よ}む", 買え: "{買|か}え", 切れ: "{切|ぎ}れ", 出れば: "{出|で}れば", 書かれた: "{書|か}かれた", 使える: "{使|つか}える", 飲み: "{飲|の}み", 残って: "{残|のこ}って", 名: "めい", 足して: "{足|た}して", 買お: "{買|か}お", 書き: "{書|か}き", 気づいた: "{気|き}づいた", 眠れた: "{眠|ねむ}れた", 例: "れい", 過ごし: "{過|す}ごし", 帯: "おび", 高校生: "こうこうせい", 目もり: "{目|め}もり", 思い出して: "{思|おも}い{出|だ}して", 調べ: "{調|しら}べ", 測って: "{測|はか}って", 測りましょう: "{測|はか}りましょう", 折れ線: "{折|お}れ{線|せん}", 実線: "じっせん", 点線: "てんせん", 囲み: "{囲|かこ}み", 囲んで: "{囲|かこ}んで", 囲もう: "{囲|かこ}もう", 規格: "きかく", 少し: "{少|すこ}し", 種目: "しゅもく", 投げ: "{投|な}げ", 握力: "あくりょく", 上体起こし: "{上体起|じょうたいお}こし", 反復: "はんぷく", 持久走: "じきゅうそう", 住んで: "{住|す}んで", 地域: "ちいき", 服装: "ふくそう", 考え: "{考|かんが}え", 行事: "ぎょうじ", 内容: "ないよう", 川原: "かわら", 花火大会: "はなびたいかい", 届く: "{届|とど}く", 話し合って: "{話|はな}し{合|あ}って", 気を: "{気|き}を", 楽しみ: "{楽|たの}しみ", 今月: "こんげつ", 休館日: "きゅうかんび", 注意: "ちゅうい", 開いて: "{開|あ}いて", 営業: "えいぎょう", 大きさ: "{大|おお}きさ", 電化製品: "でんかせいひん", 置いたら: "{置|お}いたら", 参考: "さんこう", 平たい: "{平|ひら}たい", 配置: "はいち", 続けて: "{続|つづ}けて", 枠: "わく", 記号: "きごう", 向き: "{向|む}き", 変えて: "{変|か}えて", 決断: "けつだん", 買い: "{買|か}い", 絶対: "ぜったい", 選んで: "{選|えら}んで", 集めて: "{集|あつ}めて", 郵便: "ゆうびん", 手紙: "てがみ", 定形郵便物: "ていけいゆうびんぶつ", 速達: "そくたつ", 足す: "{足|た}す", 近く: "{近|ちか}く", お知らせ: "お{知|し}らせ", 小さければ: "{小|ちい}さければ", 番号: "ばんごう", 日本: "にほん", 週間分: "しゅうかんぶん", 電話番号: "でんわばんごう", 知らせ: "{知|し}らせ", 測る: "{測|はか}る", 回目: "かいめ", 点: "てん", 持ち物: "{持|も}ち{物|もの}", 花火: "はなび", 上がる: "{上|あ}がる", 出して: "{出|だ}して", 変わる: "{変|か}わる", 記入: "きにゅう", 書こう: "{書|か}こう", 下がった: "{下|さ}がった", 日数: "にっすう", 出勤日数: "しゅっきんにっすう", 欠勤日数: "けっきんにっすう", 有給日数: "ゆうきゅうにっすう"
     });
     const PRE = [[/(?<![\d０-９])1人分/g, "{1人分|ひとりぶん}"], [/(?<![\d０-９])2人分/g, "{2人分|ふたりぶん}"], [/(?<![\d０-９{])1人(?!分)/g, "{1人|ひとり}"], [/(?<![\d０-９{])2人(?!分)/g, "{2人|ふたり}"], [/か月分/g, "か{月分|げつぶん}"], [/か月/g, "か{月|げつ}"], [/(ある|この|その)月/g, "$1{月|つき}"], [/最後の日/g, "{最後|さいご}の{日|ひ}"], [/大きく伸/g, "{大|おお}きく{伸|の}"]];
     const MAXK = 8;
@@ -49298,38 +49300,283 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
 
     kurashiGens.push(kAllowance, kWants, kCategory, kLedger, kParcel, kAmp, kRent, kCommute, kWork, kShift, kJob, kLeave, kPayslip);
   })();
-  // ===== くらしの数学を、特別支援の段階(高等部のボタン「くらし」= GRADES[28])に入れる =====
+  // ===== くらしの数学:記録シート(自分の記録・自分で調べて書く) =====
+  // 答えが人によってちがうので、答えのページには「自分で書く」と出す(収納のパズルなどは れい の答え)。
+  // 種類は "record"(記録シート)。1まいに 1つずつ、その単元の記録シートをぜんぶ出す。
+  (() => {
+    const { K, NAMES, sum, lv, P, T, rect, abox, line, round, table, draw } = kurashiLib;
+    const SELF = "{自分|じぶん}の{記録|きろく}を{書|か}きます", SELF2 = "{自分|じぶん}で{調|しら}べて{書|か}きます", SELF3 = "{自分|じぶん}で{考|かんが}えて{書|か}きます";
+    const L = lv({}, {}, {});
+    // 書くための線(ことば ＿＿＿＿ たんい)
+    const wline = (x, y, w, label, unit = "", size = 4) => {
+      // ふりがなの漢字は かなで出ることもあるので、長いほう(よみ)で はばを見る
+      const len = (t) => [...K(t).replace(/\{([^|{}]+)\|([^{}]*)\}/g, (m, a, b) => b.length > a.length ? b : a)].length;
+      const lw = label ? len(label) * size * 0.98 + 3 : 0, uw = unit ? len(unit) * size + 2 : 0;
+      const x1 = Math.min(x + lw, x + w - uw - 16);
+      return [...label ? [T(x, y, label, size, { anchor: "start" })] : [], line(x1, y + 1.2, x + w - uw, y + 1.2, 0.4), ...unit ? [T(x + w, y, unit, size, { anchor: "end" })] : []];
+    };
+    // 方眼(グラフ用)
+    const gridLines = (x, y, cols, rows, cw, rh, strongEvery = 0) => {
+      const it = [];
+      for (let i = 0; i <= cols; i++) it.push(line(x + i * cw, y, x + i * cw, y + rows * rh, i === 0 || i === cols ? 0.5 : 0.2));
+      for (let j = 0; j <= rows; j++) it.push(line(x, y + j * rh, x + cols * cw, y + j * rh, j === 0 || j === rows || (strongEvery && j % strongEvery === 0) ? 0.45 : 0.18));
+      return it;
+    };
+    const rec = (id, text, figure, ans = SELF, extra = {}) => ({
+      id,
+      instruction: null,
+      defaults: {},
+      levels: L,
+      generate() {
+        const pr = P({ key: `rec:${id}`, text, figure: typeof figure === "function" ? figure() : figure, ans, noBox: true, meta: {} });
+        if (extra.answerFigure) pr.answer.figure = extra.answerFigure();
+        return pr;
+      },
+      verify: () => null
+    });
+    const cellRow = (n, s = "") => Array(n).fill(s);
+
+    // ----- Ⅰ-1 健康的な生活 -----
+    const rWeek = rec("t.rWeek", "1週間、毎日の生活を記録しましょう。起きた時刻・寝た時刻・睡眠時間・朝の体温を、下の表に書きます。", () => {
+      const tb = table(0.5, 0.5, [36, ...Array(7).fill(19)], [9, 15, 15, 15, 15], [["", ..."月火水木金土日".split("").map((w) => ({ s: `{${w}|${{ 月: "げつ", 火: "か", 水: "すい", 木: "もく", 金: "きん", 土: "ど", 日: "にち" }[w]}}`, size: 4 }))], [{ s: "起きた時刻", size: 3.6 }, ...cellRow(7, ":")], [{ s: "寝た時刻", size: 3.6 }, ...cellRow(7, ":")], [{ s: "睡眠時間", size: 3.6 }, ...cellRow(7, "")], [{ s: "体温(℃)", size: 3.6 }, ...cellRow(7, ".")]], { head: 1, headCol: 1 });
+      const y = tb.h + 10;
+      return draw(170, y + 24, [...tb.items, T(1, y, "気づいたこと(よく眠れた日、体温が高かった日など)", 3.8, { anchor: "start" }), ...wline(1, y + 10, 168, ""), ...wline(1, y + 20, 168, "")]);
+    });
+    const BAND_EX = [[0, 6.5, "睡眠", 1], [6.5, 7.5, "ごはん", 0], [7.5, 9, "しゅくだい", 1], [9, 12, "部活動", 0], [12, 13, "ごはん", 1], [13, 16, "ゲーム", 0], [16, 17.5, "さんぽ", 1], [17.5, 18.5, "てつだい", 0], [18.5, 19.5, "ごはん", 1], [19.5, 21, "テレビ", 0], [21, 22, "おふろ", 1], [22, 24, "睡眠", 0]];
+    const band = (y, segs, ticks) => {
+      const x0 = 4, W = 162, k = W / 24, H = 14, it = [];
+      for (const [a, b, s, sh] of segs) {
+        it.push(rect(x0 + a * k, y, (b - a) * k, H, { w: 0.3, fill: sh ? "#d6d6d6" : "#f0f0f0" }));
+        if (s) {
+          const w = (b - a) * k, ch = [...s];
+          if (w >= ch.length * 3.6 + 1) it.push(T(x0 + (a + b) / 2 * k, y + H / 2 + 1.3, s, 3.4));
+          else ch.forEach((c, i) => it.push(T(x0 + (a + b) / 2 * k, y + 3.6 + i * (H - 3) / Math.max(1, ch.length - 0.4), c, 3, {})));
+        }
+      }
+      for (let h = 0; h <= 24; h++) it.push(line(x0 + h * k, y + H, x0 + h * k, y + H + (h % 6 ? 1.2 : 2.2), 0.3));
+      for (const h of ticks) it.push(T(x0 + h * k, y - 1.5, `${h}:00`, 2.9));
+      it.push(rect(x0, y, W, H, { w: 0.6 }));
+      return it;
+    };
+    const rHoliday = rec("t.rHoliday", "(例)を見て、自分の休日の過ごし方を、下の帯に書き入れましょう。また、寝た時刻・起きた時刻・睡眠時間を書きましょう。", () => draw(170, 92, [
+      T(85, 5, "(例)ある高校生の休日の過ごし方", 3.6), ...band(11, BAND_EX.map((s) => [...s]), [0, 6, 9, 12, 16, 19, 22, 24]),
+      T(85, 41, "わたしの休日の過ごし方", 3.8, { bold: true }), ...band(47, [[0, 24, "", 0]], [0, 3, 6, 9, 12, 15, 18, 21, 24]),
+      ...[...Array(48).keys()].map((i) => line(4 + (i / 2) * 6.75, 47, 4 + (i / 2) * 6.75, 61, 0.15, { dash: "dot" })),
+      ...wline(4, 76, 52, "寝た時刻", ""), ...wline(60, 76, 52, "起きた時刻", ""), ...wline(116, 76, 52, "睡眠時間", ""), T(4, 88, "＊帯の1目もりは30分です。", 3, { anchor: "start" })
+    ]));
+    const rMenu = rec("t.rMenu", "昨日食べたものを思い出して、カロリーを調べ、表に書きましょう。食品のパッケージやインターネットで調べられます。", () => {
+      const tb = table(0.5, 0.5, [28, 100, 41], [9, 26, 26, 26, 18, 12], [["", "食べたもの", "カロリー(kcal)"], [{ s: "朝食" }, "", ""], [{ s: "昼食" }, "", ""], [{ s: "夕食" }, "", ""], [{ s: "おやつ" }, "", ""], [{ s: "合計", bold: true }, { s: "", fill: "#f4f4f4" }, ""]], { head: 1, headCol: 1 });
+      return draw(170, tb.h + 22, [...tb.items, T(1, tb.h + 10, "1日の合計は、{約|やく}", 4, { anchor: "start" }), line(38, tb.h + 11, 90, tb.h + 11, 0.4), T(92, tb.h + 10, "kcalでした。", 4, { anchor: "start" })]);
+    });
+
+    // ----- Ⅰ-2 身体計測の結果 -----
+    const rGrowth = rec("t.rGrowth", "自分の身長と体重を測って表に書き、折れ線グラフに表しましょう。グラフの目もりの数は、自分の記録に合わせて書きます。", () => {
+      const tb = table(0.5, 0.5, [30, 28, 28, 28, 28, 28], [9, 12, 12], [["", "4月", "6月", "9月", "12月", "3月"], [{ s: "身長(cm)", size: 3.6 }, ...cellRow(5)], [{ s: "体重(kg)", size: 3.6 }, ...cellRow(5)]], { head: 1, headCol: 1 });
+      const gy = tb.h + 12, gx = 22, cw = 26, rh = 3.2;
+      const it = [...tb.items, ...gridLines(gx, gy, 5, 40, cw, rh, 5), T(gx - 2, gy - 3, "(cm)", 3, { anchor: "end" }), T(gx + 5 * cw + 2, gy - 3, "(kg)", 3, { anchor: "start" })];
+      for (let j = 0; j <= 40; j += 5) it.push(line(gx - 12, gy + j * rh, gx - 2, gy + j * rh, 0.25, { dash: "dot" }), line(gx + 5 * cw + 2, gy + j * rh, gx + 5 * cw + 12, gy + j * rh, 0.25, { dash: "dot" }));
+      ["4月", "6月", "9月", "12月", "3月"].forEach((m, i) => it.push(T(gx + (i + 0.5) * cw, gy + 40 * rh + 5, m, 3.4)));
+      it.push(T(1, gy + 40 * rh + 12, "＊身長は ━━(実線)、体重は - - -(点線)でかきましょう。", 3.2, { anchor: "start" }));
+      return draw(170, gy + 40 * rh + 15, it);
+    });
+
+    // ----- Ⅰ-3 サイズについて知ろう -----
+    const SZ_M = [["S", "80〜88", "68〜76"], ["M", "88〜96", "76〜84"], ["L", "96〜104", "84〜94"], ["LL", "104〜112", "94〜104"], ["3L", "112〜120", "104〜114"]];
+    const SZ_W = [["S", "72〜80", "58〜64"], ["M", "79〜87", "64〜70"], ["L", "86〜94", "69〜77"], ["LL", "93〜101", "77〜85"], ["3L", "100〜108", "85〜93"]];
+    const rSize = rec("t.rSize", "自分の胸囲(チェスト・バスト)とウエストを測りましょう。下のサイズ表で、自分に合うところを○で囲み、自分のサイズを書きましょう。", () => {
+      const head = [["サイズ", "チェスト", "ウエスト", "サイズ", "バスト", "ウエスト"]];
+      const tb = table(0.5, 22, [20, 32, 32, 20, 32, 32], [9, 12, 12, 12, 12, 12], [...head, ...SZ_M.map((r, i) => [...r, ...SZ_W[i]])], { head: 1 });
+      const cap = [T(42.5, 19, "メンズ(男性用)", 3.6, { bold: true }), T(126.5, 19, "レディース(女性用)", 3.6, { bold: true })];
+      return draw(170, 22 + tb.h + 26, [...wline(1, 8, 80, "胸囲", "cm"), ...wline(88, 8, 80, "ウエスト", "cm"), T(169, 14, "(単位:cm)", 3, { anchor: "end" }), ...cap, ...tb.items, ...wline(60, 22 + tb.h + 14, 108, "自分のサイズは", "です。"), T(1, 22 + tb.h + 22, "＊JIS(日本の規格)のサイズ表をもとにしています。お店によって少しちがうことがあります。", 2.9, { anchor: "start" })]);
+    });
+
+    // ----- Ⅰ-4 スポーツテスト -----
+    const rSport = rec("t.rSport", "スポーツテストで、自分の記録を測って表に書きましょう。2回測るものは、よいほうの記録に○をつけます。", () => {
+      const rows = [["ハンドボール投げ", "m", "m"], ["立ち幅跳び", "m　　cm", "m　　cm"], ["50m走", "秒", ""], ["握力(右)", "kg", "kg"], ["握力(左)", "kg", "kg"], ["上体起こし", "回", ""], ["反復横とび", "点", "点"], ["持久走・シャトルラン", "", ""]];
+      const tb = table(0.5, 0.5, [52, 40, 40, 37], [9, ...Array(rows.length).fill(14)], [["種目", "1回目", "2回目", "前の記録"], ...rows.map(([n, a, b]) => [{ s: n, size: 3.6 }, { s: a, anchor: "end", size: 3.4 }, { s: b, anchor: "end", size: 3.4 }, ""])], { head: 1, headCol: 1 });
+      return draw(170, tb.h + 26, [...tb.items, T(1, tb.h + 10, "前の記録とくらべて、のびた種目", 3.8, { anchor: "start" }), ...wline(1, tb.h + 21, 168, "")]);
+    });
+
+    // ----- Ⅱ-1 天気予報 -----
+    const rWeather = rec("t.rWeather", "自分の住んでいる地域の、今週の天気予報を調べて、表に書きましょう。また、明日の持ち物や服装を考えましょう。", () => {
+      const tb = table(0.5, 0.5, [30, ...Array(7).fill(20)], [9, 9, 16, 11, 11, 11], [["", ...cellRow(7, "　月　日")].map((x) => x ? { s: x, size: 3 } : ""), [{ s: "曜日", size: 3.6 }, ...cellRow(7)], [{ s: "天気", size: 3.6 }, ...cellRow(7)], [{ s: "最高気温(℃)", size: 3.2 }, ...cellRow(7)], [{ s: "最低気温(℃)", size: 3.2 }, ...cellRow(7)], [{ s: "降水確率(%)", size: 3.2 }, ...cellRow(7)]], { head: 1, headCol: 1 });
+      const y = tb.h + 12;
+      return draw(170, y + 42, [...tb.items, ...wline(1, y, 168, "明日の持ち物:"), ...wline(1, y + 12, 168, "明日の服装:"), ...wline(1, y + 24, 168, "そう考えた理由:"), ...wline(1, y + 36, 168, "")]);
+    });
+
+    // ----- Ⅱ-2 季節と気温 -----
+    const rEvent = rec("t.rEvent", "自分が住んでいる地域の行事(イベント)を調べて、表に書きましょう。", () => {
+      const tb = table(0.5, 0.5, [32, 50, 87], [9, 15, ...Array(5).fill(22)], [["日にち", "行事(イベント)", "内容"], [{ s: "(例)8月15日", size: 3.4 }, { s: "川原の花火大会", size: 3.6 }, { s: "夜7時から川原で花火が上がる。\n屋台も出て、家族や友達と見に行く。", size: 3.2, anchor: "start" }], ...Array(5).fill(cellRow(3))], { head: 1 });
+      return draw(170, tb.h + 2, tb.items);
+    }, SELF2);
+    const rTemp = rec("t.rTemp", "校庭の日なたで、1時間ごとに気温を測って表に書きましょう。また、折れ線グラフに表しましょう。", () => {
+      const tb = table(0.5, 0.5, [30, ...Array(7).fill(19.8)], [9, 13], [["時刻(時)", "9", "10", "11", "12", "13", "14", "15"], [{ s: "気温(℃)", size: 3.6 }, ...cellRow(7)]], { head: 1, headCol: 1 });
+      const gy = tb.h + 12, gx = 18, cw = 21, rh = 4.2, it = [...tb.items, ...gridLines(gx, gy, 7, 35, cw, rh, 5), T(gx - 3, gy - 3, "(℃)", 3, { anchor: "end" })];
+      for (let j = 0; j <= 35; j += 5) it.push(T(gx - 2, gy + (35 - j) * rh + 1.2, j, 3.2, { anchor: "end" }));
+      for (let i = 0; i < 7; i++) it.push(T(gx + (i + 0.5) * cw, gy + 35 * rh + 5, 9 + i, 3.4));
+      it.push(T(gx + 3.5 * cw, gy + 35 * rh + 11, "時刻(時)", 3.4));
+      return draw(170, gy + 35 * rh + 13, it);
+    });
+
+    // ----- Ⅱ-3 買い物をしよう -----
+    const rNetShop = rec("t.rNetShop", "インターネットで買い物をするとしたら、どんなものを買ってみたいですか。値段や送料、届く日も調べて、表に書きましょう。", () => {
+      const tb = table(0.5, 0.5, [64, 32, 32, 41], [9, ...Array(6).fill(17), 12], [["買ってみたいもの", "値段", "送料", "届くまでの日数"], ...Array(6).fill([{ s: "" }, { s: "円", anchor: "end" }, { s: "円", anchor: "end" }, { s: "日", anchor: "end" }]), [{ s: "合計", bold: true }, { s: "円", anchor: "end" }, { s: "円", anchor: "end" }, { s: "", fill: "#f4f4f4" }]], { head: 1 });
+      return draw(170, tb.h + 2, tb.items);
+    }, SELF2);
+    const rNetCare = rec("t.rNetCare", "インターネットで買い物をするときに、気をつけなければならないことを考えて、書きましょう。友達とも話し合ってみましょう。", () => draw(170, 120, [
+      round(0.5, 0.5, 169, 119, 3, { w: 0.5 }), T(5, 9, "気をつけること", 4, { anchor: "start", bold: true }), ...[0, 1, 2, 3, 4, 5, 6, 7].flatMap((i) => [T(5, 24 + i * 12.5, "・", 4, { anchor: "start" }), line(10, 25 + i * 12.5, 164, 25 + i * 12.5, 0.3, { dash: "dot" })])
+    ]), "({例|れい}){信頼|しんらい}できるお{店|みせ}か{確|たし}かめる/{値段|ねだん}と{送料|そうりょう}・{届|とど}く{日|ひ}を{確|たし}かめる/{個人情報|こじんじょうほう}やパスワードを{守|まも}る/{買|か}いすぎない");
+
+    // ----- Ⅱ-5 週の予定・年間の予定 -----
+    const rCalendar = rec("t.rCalendar", "今月のカレンダー(手帳)を作って、自分の予定を書き入れましょう。日にちも自分で書きます。", () => {
+      const head = ["日", "月", "火", "水", "木", "金", "土"].map((w) => ({ s: `{${w}|${{ 日: "にち", 月: "げつ", 火: "か", 水: "すい", 木: "もく", 金: "きん", 土: "ど" }[w]}}`, size: 4 }));
+      const tb = table(0.5, 14, Array(7).fill(24), [8, ...Array(6).fill(22)], [head, ...Array(6).fill(cellRow(7))], { head: 1 });
+      const y = 14 + tb.h + 10;
+      return draw(170, y + 26, [line(2, 10, 20, 10, 0.4), T(22, 9, "年", 4.4, { anchor: "start" }), line(30, 10, 44, 10, 0.4), T(46, 9, "月", 4.4, { anchor: "start" }), ...tb.items, T(1, y, "今月、いちばん楽しみな予定", 3.8, { anchor: "start" }), ...wline(1, y + 12, 168, ""), T(1, y + 22, "＊仕事・学校・遊び・病院など、いろいろな予定を書いてみよう。", 3.2, { anchor: "start" })]);
+    });
+
+    // ----- Ⅲ-1 遊びに行こう -----
+    const rTrip = rec("t.rTrip", "行きたい場所(目的地)を決めて、必要なことを調べて書きましょう。インターネット(地図アプリなど)で調べられます。", () => {
+      const top = [...wline(1, 7, 168, "目的地:"), ...wline(1, 19, 80, "休館日(休みの日):", "曜日"), T(88, 19, "(第2月曜日などもあるので注意)", 2.9, { anchor: "start" }), ...wline(1, 31, 110, "開いている時間(営業時間):", "〜"), ...wline(112, 31, 30, ""), ...wline(1, 43, 80, "料金:", "円"), ...wline(88, 43, 80, "着きたい時刻:", "")];
+      const rows = [["家", "", ":", "→", ":", "", ""], ...Array(3).fill(["", "", ":", "→", ":", "", ""]), [{ s: "", fill: "#f4f4f4" }, { s: "", fill: "#f4f4f4" }, { s: "", fill: "#f4f4f4" }, { s: "", fill: "#f4f4f4" }, { s: "合計", bold: true }, { s: "", fill: "#f4f4f4" }, { s: "分", anchor: "end" }]];
+      const tb = table(0.5, 52, [26, 22, 21, 8, 21, 40, 31], [10, ...Array(5).fill(13)], [["出発地", "手段", "出発時刻", "", "到着時刻", "到着地", "かかる時間"], ...rows.map((r, i) => i < 4 ? r.map((c, j) => j === 6 ? { s: "分", anchor: "end" } : c) : r)], { head: 1 });
+      const y = 52 + tb.h + 11;
+      return draw(170, y + 15, [...top, ...tb.items, ...wline(1, y, 168, "家に18時に着くには、目的地を出る時刻は"), T(169, y + 9, "(帰りも同じ時間がかかるとします。)", 3, { anchor: "end" })]);
+    }, SELF2);
+
+    // ----- Ⅲ-5 カタログや広告 -----
+    const rRoom = rec("t.rRoom", "部屋に、どのように、どのくらいの大きさの家具や電化製品を置いたらよいか、(例)を参考にして、右のマスにかいてみましょう。1マスは50cm×50cmです。", () => {
+      const c = 7, ex = [[0, 0, 2, 2, "冷蔵庫"], [2, 0, 5, 1.4, "キッチン"], [4, 2.6, 2.6, 2, "ダイニング"], [2, 6, 4.5, 1.8, "ソファ"], [2.6, 8.6, 3, 1.4, "テーブル"], [0, 10.4, 3, 1.6, "パソコン机"], [4, 10.6, 3, 1.4, "テレビ台"]];
+      const it = [T(1, 5, "(例)", 3.6, { anchor: "start" }), ...gridLines(1, 8, 7, 12, c, c)];
+      for (const [x, y, w, h, s] of ex) it.push(rect(1 + x * c, 8 + y * c, w * c, h * c, { w: 0.5, fill: "#d0d0d0" }), T(1 + (x + w / 2) * c, 8 + (y + h / 2) * c + 1.2, s, 2.6));
+      it.push(...gridLines(62, 8, 9, 15, 12, 12));
+      return draw(172, 8 + 15 * 12 + 2, it);
+    }, SELF3);
+
+    // ----- Ⅲ-6 物を整理して収納しよう(パズル。答えは れい) -----
+    const BLK = [["ア", 4, 5, 0, 0], ["イ", 4, 3, 0, 5], ["ウ", 4, 4, 4, 0], ["エ", 4, 2, 4, 4], ["オ", 2, 2, 4, 6], ["カ", 2, 2, 6, 6]];
+    const blockPic = (x, y, w, h, s, cell = 3.6) => {
+      const it = [rect(x, y, w * cell, h * cell, { w: 0.5, fill: "#e4e4e4" })];
+      for (let i = 0; i < w; i++) for (let j = 0; j < h; j++) it.push({ t: "circle", cx: x + (i + 0.5) * cell, cy: y + (j + 0.5) * cell, r: cell * 0.3, w: 0.25, fill: "white" });
+      return it;
+    };
+    const boxGrid = (filled) => {
+      const x0 = 37, y0 = 44, c = 12, it = [];
+      for (const [s, w, h, x, y] of BLK) if (filled || s === "ア") {
+        it.push(rect(x0 + x * c, y0 + y * c, w * c, h * c, { w: filled ? 1 : 0.8, fill: s === "ア" ? "#cfcfcf" : "#ececec" }));
+        it.push(T(x0 + (x + w / 2) * c, y0 + (y + h / 2) * c + 2.5, s === "ア" && !filled ? "(例)ア" : s, 7, { bold: true, ...filled && s !== "ア" ? { color: "#ef7d00" } : {} }));
+      }
+      it.push(...gridLines(x0, y0, 8, 8, c, c));
+      let x = 4;
+      for (const [s, w, h] of BLK) {
+        it.push(T(x + w * 1.8, 6, `${w}cm×${h}cm`, 2.8), ...blockPic(x, 9, w, h, s), T(x + w * 1.8, 9 + h * 3.6 + 5, s, 4.4, { bold: true }));
+        x += w * 3.6 + 10;
+      }
+      it.push(T(85, y0 + 8 * c + 7, "1マス＝1cm×1cm(箱の大きさ 8cm×8cm)", 3.2));
+      return draw(170, y0 + 8 * c + 10, it);
+    };
+    const rBlocks = rec("t.rBlocks", "平たい箱に、ア〜カのブロックをすべて収納します。どのように配置したらよいですか。(例)に続けて、マスにそれぞれの枠と記号を書きましょう。ブロックは向きを変えてもかまいません。", () => boxGrid(false), "({例|れい})の{答|こた}え。ほかの{並|なら}べ{方|かた}でも、すき{間|ま}なく{入|はい}っていれば{正解|せいかい}です。", { answerFigure: () => boxGrid(true) });
+
+    // ----- Ⅳ-1 1か月の生活費 -----
+    const rWantList = rec("t.rWantList", "自分の欲しい物を、表に書き出してみましょう。今の気持ちと決断は、当てはまるものを○で囲みます。値段は2つのお店でくらべて、買いたいほうを○で囲みましょう。", () => {
+      const row = [{ s: "" }, { s: "絶対欲しい\n欲しい", size: 3.3 }, { s: "　　　店　　　　　円\n　　　店　　　　　円", size: 3.3, anchor: "start" }, { s: "買う\n貯金して買う\nあきらめる", size: 3.1 }];
+      const tb = table(0.5, 0.5, [40, 30, 62, 37], [11, ...Array(5).fill(22)], [["欲しい物", "今の気持ち", "値段のくらべ", "決断"], ...Array(5).fill(row)], { head: 1 });
+      return draw(170, tb.h + 2, tb.items);
+    }, SELF3);
+    const rWantCalc = rec("t.rWantCalc", "前の表で「絶対欲しい」にした物の値段を書いて、小遣いから順に引いていきましょう。残りのお金がなくなったら買えません。", () => {
+      const it = [];
+      const rowAt = (y, a, n) => [T(1, y + 9, n, 4.4, { anchor: "start" }), T(18, y + 1, a, 3, {}), rect(8, y + 3, 28, 10, { w: 0.5 }), T(39, y + 10, "円", 3.6, { anchor: "start" }), T(48, y + 10, "−", 5), T(80, y + 1, "(欲しい物)", 3), rect(56, y + 3, 48, 10, { w: 0.9 }), T(107, y + 10, "円", 3.6, { anchor: "start" }), T(116, y + 10, "＝", 5), T(140, y + 1, "(残ったお金)", 3), rect(124, y + 3, 32, 10, { w: 0.5 }), T(159, y + 10, "円", 3.6, { anchor: "start" })];
+      ["①", "②", "③", "④", "⑤"].forEach((n, i) => it.push(...rowAt(4 + i * 22, i ? "(残ったお金)" : "(小遣い)", n)));
+      return draw(170, 4 + 5 * 22 + 2, it);
+    }, SELF3);
+
+    // ----- Ⅳ-2 計画的な支出 -----
+    const ILLUST = [["カラオケ", 900], ["おにぎり", 150], ["スマホ代", 2800], ["水族館", 2400], ["ラーメン", 780], ["くつ下", 500], ["バス代", 230], ["電車代", 260], ["パーカー", 3200], ["ジュース", 130], ["Tシャツ", 1500], ["マンガ本", 550]];
+    const rPlan = rec("t.rPlan", "小遣い5000円をこえないように、下の中から使いたい物を選んで、表に書きましょう。残高(残っているお金)も計算します。", () => {
+      const it = [];
+      ILLUST.forEach(([n, v], i) => {
+        const x = 0.5 + (i % 6) * 28.2, y = 0.5 + Math.floor(i / 6) * 17;
+        it.push(round(x, y, 26.5, 15, 2, { w: 0.4, fill: "#f4f4f4" }), T(x + 13.25, y + 6, n, n.length > 5 ? 2.8 : 3.4), T(x + 13.25, y + 12, `${v}円`, 3.8, { bold: true }));
+      });
+      const tb = table(0.5, 38, [70, 49, 50], [9, 11, ...Array(7).fill(13)], [["使いたい物", "支出(円)", "残高(円)"], [{ s: "(はじめ)", size: 3.4 }, { s: "", fill: "#f4f4f4" }, "5000"], ...Array(7).fill(cellRow(3))], { head: 1 });
+      return draw(170, 38 + tb.h + 2, [...it, ...tb.items]);
+    }, SELF3);
+    const rLedger = rec("t.rLedger", "自分で使った1週間分のレシートを集めて、小遣い帳に書きましょう。項目は、食費・被服費・交通費・娯楽費・通信費などです。", () => {
+      const tb = table(0.5, 0.5, [18, 24, 49, 26, 26, 26], [9, ...Array(14).fill(11.5)], [["日付", "項目", "ことがら(品目)", "収入(円)", "支出(円)", "残高(円)"], ...Array(14).fill(["/", "", "", "", "", ""])], { head: 1, size: 3.6 });
+      return draw(170, tb.h + 2, tb.items);
+    });
+
+    // ----- Ⅳ-3 荷物を送ろう -----
+    const rPost = rec("t.rPost", "郵便や宅配便の料金を調べて書きましょう。郵便の料金は、日本郵便のホームページなどで調べられます(料金は変わることがあります)。", () => draw(170, 118, [
+      T(1, 6, "郵便", 4.2, { anchor: "start", bold: true }),
+      ...wline(6, 18, 162, "手紙(定形郵便物・50g以内)を送る料金", "円"), ...wline(6, 30, 162, "はがきを送る料金", "円"), ...wline(6, 42, 162, "速達にするときに足す料金(250gまで)", "円"),
+      T(1, 58, "宅配便(近くのお店やコンビニで調べよう)", 4.2, { anchor: "start", bold: true }), ...wline(6, 70, 162, "会社の名前:"),
+      ...wline(6, 82, 162, "60サイズ(A+B+Cが60cmまで)を同じ都道府県へ送る料金", "円"), ...wline(6, 94, 162, "窓口に持ち込むときの割引", "円"), ...wline(6, 106, 162, "わかったこと:")
+    ]), "{自分|じぶん}で{調|しら}べて{書|か}きます(2024{年|ねん}10{月|がつ}の{料金|りょうきん}:{手紙|てがみ}110{円|えん}・はがき85{円|えん}・{速達|そくたつ}は300{円|えん}を{足|た}す)");
+
+    // ----- Ⅳ-4 住居 -----
+    const AMPS = [["エアコン(暖房)", "6.5A"], ["エアコン(冷房)", "5.5A"], ["冷蔵庫", "2.5A"], ["パソコン", "1.5A"], ["テレビ", "2A"], ["掃除機", "10A"], ["電子レンジ", "15A"], ["炊飯器", "13A"], ["アイロン", "14A"], ["ヘアドライヤー", "12A"], ["電気ケトル", "13A"], ["こたつ", "5A"]];
+    const rAmp = rec("t.rAmp", "家で契約しているアンペアを、電気の「ご使用量のお知らせ」やアプリで調べましょう。また、同時に使いそうな電気機器のアンペアを足して、使えるかどうか確かめましょう。", () => {
+      const tb = table(0.5, 16, [52, 32, 52, 32], [8, ...Array(6).fill(8.5)], [["電気機器", "アンペアの目安", "電気機器", "アンペアの目安"], ...[0, 1, 2, 3, 4, 5].map((i) => [AMPS[i][0], AMPS[i][1], AMPS[i + 6][0], AMPS[i + 6][1]].map((s) => ({ s, size: 3.4 })))], { head: 1 });
+      const y = 16 + tb.h + 8, it = [...wline(1, 8, 100, "家で契約しているアンペア", "A"), ...tb.items, T(1, y + 2, "★記入欄(電気機器の名前とアンペアを書こう)", 3.8, { anchor: "start", bold: true })];
+      for (let i = 0; i < 5; i++) {
+        const x = 1 + (i % 3) * 57, yy = y + 8 + Math.floor(i / 3) * 30;
+        it.push(rect(x, yy, 46, 10, { w: 0.5 }), T(x + 1.5, yy + 3.5, "(電気機器)", 2.6, { anchor: "start" }), rect(x, yy + 12, 46, 10, { w: 0.5 }), T(x + 44, yy + 19, "A", 3.6, { anchor: "end" }), T(x + 51.5, yy + 13, i === 4 ? "＝" : "＋", 5));
+      }
+      it.push(rect(120, y + 50, 46, 10, { w: 0.9 }), T(164, y + 57, "A", 3.6, { anchor: "end" }));
+      it.push(T(1, y + 74, "使えるか:　使える　・　使えない　(どちらかを○で囲もう)", 4, { anchor: "start" }), T(1, y + 84, "＊合計のアンペアが、家で契約しているアンペアより小さければ使えます。", 3, { anchor: "start" }));
+      return draw(170, y + 87, it);
+    }, SELF2);
+
+    // ----- Ⅴ-1 現場実習 -----
+    const rIntern = rec("t.rIntern", "自分の現場実習先について調べて書きましょう。行き方は、ルート検索アプリを使って調べます。", () => {
+      const top = [...wline(1, 7, 168, "実習先:"), ...wline(1, 19, 82, "1日の実習が始まる時刻:"), ...wline(87, 19, 82, "到着しておきたい時刻:")];
+      const rows = [["家", ":", "→", ":", "", "", "分", "円"], ...Array(4).fill(["", ":", "→", ":", "", "", "分", "円"])].map((r) => r.map((s, j) => j >= 6 ? { s, anchor: "end" } : s));
+      const tb = table(0.5, 28, [26, 19, 7, 19, 30, 18, 22, 28], [10, ...Array(5).fill(13), 12], [["出発地", "出発時刻", "", "到着時刻", "到着地", "手段", "かかる時間", "料金"], ...rows, [{ s: "", fill: "#f4f4f4" }, { s: "", fill: "#f4f4f4" }, { s: "", fill: "#f4f4f4" }, { s: "", fill: "#f4f4f4" }, { s: "", fill: "#f4f4f4" }, { s: "合計", bold: true }, { s: "分", anchor: "end" }, { s: "円", anchor: "end" }]], { head: 1 });
+      const y = 28 + tb.h + 11;
+      return draw(170, y + 40, [...top, ...tb.items, ...wline(1, y, 168, "往復の交通費", "円"), ...wline(1, y + 12, 168, "実習が5日間のときの交通費", "円"), ...wline(1, y + 24, 168, "家を出る時刻", ""), T(1, y + 34, "＊電車が遅れたときは、実習先に電話で連絡します。電話番号も調べておこう。", 3.2, { anchor: "start" })]);
+    }, SELF2);
+
+    // ----- Ⅴ-2 作業速度 -----
+    const rFlex = rec("t.rFlex", "ある会社は、1日に7時間働き、1時間の休憩をとるならば、朝7時から10時までの間で、何時に出社してもかまわないという制度があります。もし、あなただったら、何時に出社したいですか。そうしたい理由も書きましょう。", () => draw(170, 112, [
+      round(0.5, 0.5, 169, 111, 3, { w: 0.5 }), T(6, 13, "わたしは、", 4.4, { anchor: "start" }), line(30, 14, 52, 14, 0.4), T(54, 13, "時に出社したいです。", 4.4, { anchor: "start" }), T(6, 27, "なぜなら、", 4.4, { anchor: "start" }),
+      ...[0, 1, 2, 3, 4, 5].map((i) => line(6, 40 + i * 12, 164, 40 + i * 12, 0.3, { dash: "dot" })), T(6, 108, "＊その時刻に出社すると、何時に退社することになるかも書いてみよう。", 3.2, { anchor: "start" })
+    ]), "({例|れい})8{時|じ}に{出社|しゅっしゃ}すると16{時|じ}に{退社|たいしゃ}できる。{朝|あさ}の{電車|でんしゃ}がすいていて、{夕方|ゆうがた}の{時間|じかん}を{使|つか}えるから。");
+
+    kurashiGens.push(rWeek, rHoliday, rMenu, rGrowth, rSize, rSport, rWeather, rEvent, rTemp, rNetShop, rNetCare, rCalendar, rTrip, rRoom, rBlocks, rWantList, rWantCalc, rPlan, rLedger, rPost, rAmp, rIntern, rFlex);
+  })();
+  // ===== くらしの数学を(記録シートもふくめて)、特別支援の段階(高等部のボタン「くらし」= GRADES[28])に入れる =====
   // from の 3つめは { label: 小単元名({漢字|かな} 可), kinds: 種類 }。単元名(name)・内容(domain)も {漢字|かな} を使える。
   tokushi.push(...kurashiGens);
   (() => {
-    const W = ["word", "test"], D = ["drill", "test"], F = ["figure", "test"];
+    const W = ["word", "test"], D = ["drill", "test"], F = ["figure", "test"], R = ["record"];
     const u = (name, domain, ...from) => ({ name, domain, from: from.map(([id, label, kinds]) => [id, null, { label, kinds }]) });
     const D1 = "Ⅰ {自分|じぶん}の{身|み}の{回|まわ}りのこと", D2 = "Ⅱ {毎日|まいにち}の{生活|せいかつ}", D3 = "Ⅲ {楽|たの}しむ({余暇|よか})", D4 = "Ⅳ {生活|せいかつ}を{豊|ゆた}かに", D5 = "Ⅴ {将来|しょうらい}の{生活|せいかつ}に{向|む}けて";
     tokushiStages.push({
-      key: 28, name: "くらしの数学", ruby: "くらしの{数学|すうがく}", short: "", btn: "くらし", part: "高等部", styleGrade: 6,
+      key: 28, name: "くらしの数学", ruby: "くらしの{数学|すうがく}", short: "", btn: "くらし", part: "高等部", styleGrade: 6, fill: true,
       note: "買い物・料理・予定・時間・お金の使い方・荷物・電気・通勤・仕事・給与明細など、くらしや働く場面の数学(数や場面は毎回かわります)",
       units: [
-        u("{健康的|けんこうてき}な{生活|せいかつ}", D1, ["t.kCalorie", "1{日|にち}の{摂取|せっしゅ}カロリー", W], ["t.kSleep", "{睡眠|すいみん}{時間|じかん}", W]),
-        u("{身体計測|しんたいけいそく}の{結果|けっか}", D1, ["t.kGrowth", "{身長|しんちょう}と{体重|たいじゅう}の{記録|きろく}", W]),
-        u("サイズについて{知|し}ろう", D1, ["t.kSize", "サイズ{表|ひょう}", W]),
-        u("スポーツテスト", D1, ["t.kJump", "{記録|きろく}をくらべる", W], ["t.kStopwatch", "ストップウォッチ", D]),
-        u("{天気予報|てんきよほう}", D2, ["t.kWeather", "{週間天気予報|しゅうかんてんきよほう}", W]),
-        u("{季節|きせつ}と{気温|きおん}", D2, ["t.kTemp", "1{日|にち}の{気温|きおん}", W]),
-        u("{買|か}い{物|もの}をしよう", D2, ["t.kReceipt", "レシート", F], ["t.kPoint", "ポイントカード", W], ["t.kCanBuy", "{現金|げんきん}とICカード", W], ["t.kInstall", "{分割払|ぶんかつばら}い", W]),
+        u("{健康的|けんこうてき}な{生活|せいかつ}", D1, ["t.kCalorie", "1{日|にち}の{摂取|せっしゅ}カロリー", W], ["t.kSleep", "{睡眠|すいみん}{時間|じかん}", W], ["t.rWeek", "1{週間|しゅうかん}の{生活|せいかつ}の{記録|きろく}", R], ["t.rHoliday", "{休日|きゅうじつ}の{過|す}ごし{方|かた}", R], ["t.rMenu", "{昨日|きのう}の{献立|こんだて}とカロリー", R]),
+        u("{身体計測|しんたいけいそく}の{結果|けっか}", D1, ["t.kGrowth", "{身長|しんちょう}と{体重|たいじゅう}の{記録|きろく}", W], ["t.rGrowth", "{自分|じぶん}の{身長|しんちょう}と{体重|たいじゅう}", R]),
+        u("サイズについて{知|し}ろう", D1, ["t.kSize", "サイズ{表|ひょう}", W], ["t.rSize", "{自分|じぶん}のサイズ", R]),
+        u("スポーツテスト", D1, ["t.kJump", "{記録|きろく}をくらべる", W], ["t.kStopwatch", "ストップウォッチ", D], ["t.rSport", "{自分|じぶん}の{記録|きろく}", R]),
+        u("{天気予報|てんきよほう}", D2, ["t.kWeather", "{週間天気予報|しゅうかんてんきよほう}", W], ["t.rWeather", "{今週|こんしゅう}の{天気予報|てんきよほう}を{調|しら}べる", R]),
+        u("{季節|きせつ}と{気温|きおん}", D2, ["t.kTemp", "1{日|にち}の{気温|きおん}", W], ["t.rEvent", "{地域|ちいき}の{行事|ぎょうじ}", R], ["t.rTemp", "{気温|きおん}を{測|はか}ろう", R]),
+        u("{買|か}い{物|もの}をしよう", D2, ["t.kReceipt", "レシート", F], ["t.kPoint", "ポイントカード", W], ["t.kCanBuy", "{現金|げんきん}とICカード", W], ["t.kInstall", "{分割払|ぶんかつばら}い", W], ["t.rNetShop", "インターネットで{買|か}ってみたいもの", R], ["t.rNetCare", "インターネットで{気|き}をつけること", R]),
         u("{調理|ちょうり}をしよう", D2, ["t.kRecipe", "レシピの{分量|ぶんりょう}", W], ["t.kDiscount", "{割引|わりびき}", W], ["t.kKcal", "カロリー", W], ["t.kLabel", "{食品表示|しょくひんひょうじ}ラベル", W]),
-        u("{週|しゅう}の{予定|よてい}・{年間|ねんかん}の{予定|よてい}", D2, ["t.kCalendar", "{手帳|てちょう}(カレンダー)", W]),
-        u("{遊|あそ}びに{行|い}こう", D3, ["t.kClockSpan", "{時計|とけい}とたった{時間|じかん}", F], ["t.kTravel", "{行|い}き{方|かた}を{調|しら}べる", W], ["t.kHMcalc", "{時間|じかん}の{計算|けいさん}", D], ["t.kWake", "{起|お}きる{時刻|じこく}・{出|で}る{時刻|じこく}", W]),
+        u("{週|しゅう}の{予定|よてい}・{年間|ねんかん}の{予定|よてい}", D2, ["t.kCalendar", "{手帳|てちょう}(カレンダー)", W], ["t.rCalendar", "{自分|じぶん}の{予定|よてい}", R]),
+        u("{遊|あそ}びに{行|い}こう", D3, ["t.kClockSpan", "{時計|とけい}とたった{時間|じかん}", F], ["t.kTravel", "{行|い}き{方|かた}を{調|しら}べる", W], ["t.kHMcalc", "{時間|じかん}の{計算|けいさん}", D], ["t.kWake", "{起|お}きる{時刻|じこく}・{出|で}る{時刻|じこく}", W], ["t.rTrip", "{行|い}きたい{場所|ばしょ}を{調|しら}べる", R]),
         u("{友達|ともだち}との{待|ま}ち{合|あ}わせ", D3, ["t.kMeet", "{待|ま}ち{合|あ}わせの{時刻|じこく}", W], ["t.kBusFare", "バス{代|だい}と{昼食代|ちゅうしょくだい}", W]),
         u("ショッピングセンターに{行|い}こう", D3, ["t.kUnitTime", "{時間|じかん}の{単位|たんい}", D], ["t.kClockAfter", "{何分後|なんぷんご}・{何分前|なんぷんまえ}", F], ["t.kCharge", "ICカードのチャージ", W], ["t.kWallet", "{財布|さいふ}のお{金|かね}で{払|はら}う", F]),
         u("レストランへ{行|い}こう", D3, ["t.kSplit", "{割|わ}り{勘|かん}", W]),
-        u("カタログや{広告|こうこく}", D3, ["t.kFit", "{広告|こうこく}を{読|よ}む", W]),
-        u("{物|もの}を{整理|せいり}して{収納|しゅうのう}しよう", D3, ["t.kShelf", "たなに{箱|はこ}を{並|なら}べる", W]),
-        u("1か{月|げつ}の{生活費|せいかつひ}", D4, ["t.kAllowance", "{小遣|こづか}いを{小分|こわ}けにする", W], ["t.kWants", "{欲|ほ}しい{物|もの}を{買|か}う", W]),
-        u("{計画的|けいかくてき}な{支出|ししゅつ}", D4, ["t.kCategory", "{支出|ししゅつ}の{項目|こうもく}", W], ["t.kLedger", "{小遣|こづか}い{帳|ちょう}", F]),
-        u("{荷物|にもつ}を{送|おく}ろう", D4, ["t.kParcel", "{宅配便|たくはいびん}の{料金|りょうきん}", W]),
-        u("{住居|じゅうきょ}", D4, ["t.kAmp", "{契約|けいやく}アンペア", W], ["t.kRent", "{家賃|やちん}と{初期費用|しょきひよう}", W]),
-        u("{現場実習|げんばじっしゅう}", D5, ["t.kCommute", "{実習先|じっしゅうさき}への{行|い}き{方|かた}", W]),
-        u("{作業速度|さぎょうそくど}", D5, ["t.kWork", "{作業|さぎょう}の{速|はや}さ", W], ["t.kShift", "{勤務時間|きんむじかん}", W]),
+        u("カタログや{広告|こうこく}", D3, ["t.kFit", "{広告|こうこく}を{読|よ}む", W], ["t.rRoom", "{部屋|へや}の{家具|かぐ}の{配置|はいち}", R]),
+        u("{物|もの}を{整理|せいり}して{収納|しゅうのう}しよう", D3, ["t.kShelf", "たなに{箱|はこ}を{並|なら}べる", W], ["t.rBlocks", "ブロックを{箱|はこ}に{収納|しゅうのう}", R]),
+        u("1か{月|げつ}の{生活費|せいかつひ}", D4, ["t.kAllowance", "{小遣|こづか}いを{小分|こわ}けにする", W], ["t.kWants", "{欲|ほ}しい{物|もの}を{買|か}う", W], ["t.rWantList", "{欲|ほ}しい{物|もの}リスト", R], ["t.rWantCalc", "{絶対|ぜったい}{欲|ほ}しい{物|もの}の{計算|けいさん}", R]),
+        u("{計画的|けいかくてき}な{支出|ししゅつ}", D4, ["t.kCategory", "{支出|ししゅつ}の{項目|こうもく}", W], ["t.kLedger", "{小遣|こづか}い{帳|ちょう}", F], ["t.rPlan", "5000{円|えん}で{使|つか}いたい{物|もの}", R], ["t.rLedger", "1{週間|しゅうかん}の{小遣|こづか}い{帳|ちょう}", R]),
+        u("{荷物|にもつ}を{送|おく}ろう", D4, ["t.kParcel", "{宅配便|たくはいびん}の{料金|りょうきん}", W], ["t.rPost", "{郵便|ゆうびん}・{宅配便|たくはいびん}を{調|しら}べる", R]),
+        u("{住居|じゅうきょ}", D4, ["t.kAmp", "{契約|けいやく}アンペア", W], ["t.kRent", "{家賃|やちん}と{初期費用|しょきひよう}", W], ["t.rAmp", "{家|いえ}の{契約|けいやく}アンペア", R]),
+        u("{現場実習|げんばじっしゅう}", D5, ["t.kCommute", "{実習先|じっしゅうさき}への{行|い}き{方|かた}", W], ["t.rIntern", "{自分|じぶん}の{実習先|じっしゅうさき}", R]),
+        u("{作業速度|さぎょうそくど}", D5, ["t.kWork", "{作業|さぎょう}の{速|はや}さ", W], ["t.kShift", "{勤務時間|きんむじかん}", W], ["t.rFlex", "{何時|なんじ}に{出社|しゅっしゃ}したい?", R]),
         u("{求人票|きゅうじんひょう}", D5, ["t.kJob", "{求人票|きゅうじんひょう}を{読|よ}む", W], ["t.kLeave", "{年次有給休暇|ねんじゆうきゅうきゅうか}", W]),
         u("{給与明細|きゅうよめいさい}", D5, ["t.kPayslip", "{給与明細書|きゅうよめいさいしょ}", W])
       ]
@@ -50312,6 +50559,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     drill: { label: "計算ドリル", sheetLabel: "{計算|けいさん}ドリル", counts: [10, 20, 30], defaultCount: 20 },
     word: { label: "文章題", sheetLabel: "{文章題|ぶんしょうだい}", counts: [3, 4, 5, 6], defaultCount: 4 },
     figure: { label: "図形・グラフ", sheetLabel: "{図形|ずけい}・グラフ", counts: [3, 4, 5, 6], defaultCount: 4 },
+    // 記録シート(くらしの数学):自分の記録・調べたことを書く。1まいに 1つずつ、ぜんぶ出す
+    record: { label: "記録シート", sheetLabel: "{記録|きろく}シート", counts: null, defaultCount: null },
     test: { label: "単元まとめテスト", sheetLabel: "{単元|たんげん}まとめテスト", counts: null, defaultCount: null },
     yoji: { label: "プリント", sheetLabel: "", counts: [2, 3, 4, 6], defaultCount: 3 }
   };
@@ -50465,6 +50714,12 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
         } else {
           addSpread(topics, n, pts);
         }
+      }
+    } else if (kind === "record") {
+      for (const t2 of topicsOf("record")) {
+        const s = make3(t2, 1, null);
+        s.instruction = null;
+        sections.push(s);
       }
     } else {
       addCategory(kind, count, null);
@@ -52038,6 +52293,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     const footer = `<footer class="sheet-footer"><span class="ft-no" data-seed="No.${sheet.seed}">No.${sheet.seed}</span></footer>`;
     let gc = Number.isInteger(sheet.grade) ? ` grade-${sheet.kind === "yoji" ? 0 : sheet.grade}` : "";
     if (sheet.stage) gc += " stage";
+    if (sheet.fill) gc += " fillpage";
     if (policy && policy.furigana) gc += " furi";
     const page1 = `<article class="sheet${gc}"${keyMode ? ' data-key="1"' : ""}>${header()}<main class="body">${sections}</main>${footer}</article>`;
     const page2 = withAnswers && !keyMode ? `<article class="sheet answers${sheet.answerStyle === "filled" ? " filled" : ""}${gc}">${header()}<main class="body">${answerSections}</main>${footer}</article>` : "";
@@ -52171,7 +52427,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
         }
         while (restList.firstElementChild) list2.appendChild(restList.firstElementChild);
       }
-      if (tryShrink(page, blk)) {
+      if (tryShrink(page, blk) || page.classList.contains("fillpage") && tryShrinkAll(page)) {
         queue.shift();
         continue;
       }
@@ -52283,6 +52539,19 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       if (!overflows(page)) return true;
     }
     for (const f13 of figs) f13.style.zoom = "";
+    return false;
+  }
+  // くらしの数学など:ページの図をみんな同じだけ小さくして、もう1問入れる(後半が空きすぎないように)
+  var SHRINK_ALL_MIN = 0.68;
+  function tryShrinkAll(page) {
+    const figs = [...page.querySelectorAll(".body .figure")].filter((f13) => !f13.parentElement.closest(".figure"));
+    if (!figs.length) return false;
+    const old = figs.map((f13) => f13.style.zoom);
+    for (let z = 0.96; z >= SHRINK_ALL_MIN - 1e-9; z -= 0.02) {
+      for (let i = 0; i < figs.length; i++) figs[i].style.zoom = Math.min(Number(old[i] || 1), z).toFixed(2);
+      if (!overflows(page)) return true;
+    }
+    figs.forEach((f13, i) => f13.style.zoom = old[i]);
     return false;
   }
   function renumber(pages) {
@@ -56703,7 +56972,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
         const nm = noRuby(su.name);
         return { id: `s${st.key}-${String(i + 1).padStart(2, "0")}`, order: i + 1, name: nm, ...nm !== su.name ? { rubyName: su.name } : {}, domain: noRuby(su.domain), topics, ...props, ...su.unitProps || {} };
       });
-      GRADES[st.key] = { grade: st.styleGrade, stage: st.key, stageName: st.name, stageRuby: st.ruby || st.name, part: st.part, short: st.short, btn: st.btn, note: st.note, units };
+      GRADES[st.key] = { grade: st.styleGrade, stage: st.key, stageName: st.name, stageRuby: st.ruby || st.name, part: st.part, short: st.short, btn: st.btn, fill: !!st.fill, note: st.note, units };
     }
   }
   var $ = (id) => document.getElementById(id);
@@ -56798,7 +57067,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   function refreshCounts() {
     const k = KINDS9[el.kind.value];
     if (!k || !k.counts) {
-      fill2(el.count, [{ value: "", label: "固定(100点)" }]);
+      fill2(el.count, [{ value: "", label: el.kind.value === "record" ? "ぜんぶ" : "固定(100点)" }]);
       el.count.disabled = true;
       return;
     }
@@ -56812,7 +57081,11 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     const gv = Number(el.grade.value);
     if (gv >= 10 && gv < 21 && el.kind.value === "drill") counts = [5, 10, 15, 20], def = 10;
     // 特別支援の段階は、1まいの問題を少なめに
-    if (gv >= 21) {
+    if (gv >= 21 && GRADES[gv]?.fill) {
+      // くらしの数学:ページの下があかないように、作るときに問題をふやすことがある(そのときは この数もかわる)
+      if (el.kind.value === "drill") counts = [5, 10, 15, 20, 25, 30], def = 10;
+      else counts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], def = 2;
+    } else if (gv >= 21) {
       if (el.kind.value === "drill") counts = gv <= 23 ? [4, 6, 10, 15, 20] : [5, 10, 15, 20], def = gv <= 23 ? 6 : 10;
       else if (el.kind.value === "yoji") counts = [1, 2, 3, 4], def = 2;
       else counts = [1, 2, 3, 4], def = 2;
@@ -56857,6 +57130,49 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   window.addEventListener("resize", () => {
     if (el.preview.firstElementChild) fitPreview();
   });
+  // ===== ページの下があきすぎないように、問題をふやす(gradeData.fill:くらしの数学) =====
+  // 問題のページの中身の高さ(問題のあいだのすき間はのぞく)が、本文の高さの何わりか
+  function pageFill(page) {
+    const body = page.querySelector(".body");
+    if (!body || !body.clientHeight) return 1;
+    let h = 0;
+    for (const c of body.children) {
+      let pad = 0;
+      for (const e of [c, ...c.querySelectorAll("li.item")]) pad += parseFloat(e.style.paddingBottom || 0) || 0;
+      h += c.getBoundingClientRect().height - pad;
+    }
+    return h / body.clientHeight;
+  }
+  var FILL_MIN = 0.7;
+  // measure(sheet) は 問題のページ(article)の配列を返す。最後のページが FILL_MIN より少ないときは、問題を1つずつふやしてみる
+  function filledSheet(spec, measure) {
+    let sheet = buildSheet(spec);
+    if (spec.gradeData?.fill) sheet.fill = true;
+    if (!spec.gradeData?.fill || !spec.count || spec.kind === "test" || spec.kind === "record") return sheet;
+    const m = (sh) => {
+      const ps = measure(sh);
+      return { pages: ps.length, fill: ps.length ? pageFill(ps[ps.length - 1]) : 1 };
+    };
+    let cur = m(sheet);
+    const step = spec.kind === "drill" ? 2 : 1;
+    for (let c = spec.count + step, t = 0; cur.fill < FILL_MIN && t < 8; c += step, t++) {
+      let sh;
+      try {
+        sh = buildSheet({ ...spec, count: c });
+        sh.fill = true;
+      } catch (e) {
+        break;
+      }
+      const r = m(sh);
+      if (r.pages > cur.pages + 1) break;
+      if (r.fill >= FILL_MIN || r.pages === cur.pages) {
+        sheet = sh;
+        cur = r;
+        sheet.filledCount = c;
+      }
+    }
+    return sheet;
+  }
   function render() {
     // プリントの画面が出ていないと、ページ分けや図の大きさがはかれない(図が下に落ちる)ので、先に画面を出す
     if (document.body.dataset.view !== "print") document.body.dataset.view = "print";
@@ -56866,9 +57182,15 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       if (!spec.gradeData) throw new Error("この学年はまだ準備中です");
       if (!spec.unitId) throw new Error("この学年は単元一覧まで入っていますが、問題の生成器がまだありません(準備中)");
       if (EXCLUDE.has(spec.unitId)) throw new Error("この単元は準備中です(この版では作れません)");
-      const sheet = buildSheet(spec);
       const policy = makeKanjiPolicy(kanji_default, spec.gradeData?.grade ?? spec.grade, { excludeCurrentGrade: el.excludeCurrent.checked, furigana: el.furigana.checked });
       el.preview.style.setProperty("--pvz", "1");
+      const sheet = filledSheet(spec, (sh) => {
+        el.preview.innerHTML = sheetHtml(sh, { policy, withAnswers: false, gradeLabel: `${spec.grade}年`, hints: el.hints.checked, answerMode: el.ansStyle.value, trace: el.trace.checked });
+        paginate(el.preview);
+        return [...el.preview.querySelectorAll("article.sheet")];
+      });
+      // 問題をふやしたときは、問題数のらんも合わせる
+      if (sheet.filledCount && [...el.count.options].some((o) => Number(o.value) === sheet.filledCount)) el.count.value = String(sheet.filledCount);
       el.preview.innerHTML = sheetHtml(sheet, { policy, withAnswers: el.withAnswers.checked, gradeLabel: `${spec.grade}年`, hints: el.hints.checked, answerMode: el.ansStyle.value, trace: el.trace.checked });
       paginate(el.preview);
       fitPreview();
@@ -57028,14 +57350,14 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           spec.from = (spec0.from || 1) + i * spec0.count * unit.per;
           if (spec.from > 100) break;
         }
-        let sheet = buildSheet(spec);
-        if (!title) title = fileName(renderText(sheet.title, policy));
         const render = (sh) => {
           stage.innerHTML = sheetHtml(sh, { policy, withAnswers: opt.answers !== "none", hints: el.hints.checked, answerMode: el.ansStyle.value, trace: el.trace.checked });
           paginate(stage);
           const arts = [...stage.querySelectorAll("article.sheet")];
           return [arts.filter((a) => !a.classList.contains("answers")), arts.filter((a) => a.classList.contains("answers"))];
         };
+        let sheet = filledSheet(spec, (sh) => render(sh)[0]);
+        if (!title) title = fileName(renderText(sheet.title, policy));
         let [probs, ans] = render(sheet);
         // ページ数をこえるときは、のこりのページに入る問題だけにする
         const room = n - made;
@@ -57191,7 +57513,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   var homeGrade = store.get("grade") !== null && GRADES[Number(store.get("grade"))] ? Number(store.get("grade")) : 1;
   var homeLevel = LEVELS[store.get("level")] ? store.get("level") : "basic";
   var SUB_KIND = { drill: "計算", word: "文章題", figure: "図・グラフ", yoji: "え" };
-  var KIND_SHORT = { drill: "計算ドリル", word: "文章題", figure: "図形・グラフ", test: "まとめテスト", yoji: "プリントを つくる" };
+  var KIND_SHORT = { drill: "計算ドリル", word: "文章題", figure: "図形・グラフ", record: "記録シート", test: "まとめテスト", yoji: "プリントを つくる" };
   var homeEl = $("home");
   $("versionHome").textContent = versionLabel;
   // キャラクターのせりふとポーズ

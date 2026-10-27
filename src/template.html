@@ -183,6 +183,8 @@ body[data-view="print"] .home { display: none; }
 .uk { font: inherit; font-size: 13.5px; line-height: 1.3; padding: 7px 10px; border-radius: 7px; border: 1px solid #b9bfcc; background: #f5f6f9; color: #1f2a40; cursor: pointer; }
 .uk:hover, .uk:focus-visible { background: #2b3a55; border-color: #2b3a55; color: #fff; }
 .uk.k-test { background: #fff; border-color: #2b3a55; color: #2b3a55; font-weight: bold; }
+.uk.k-record { background: #fff7ee; border-color: #b8641c; color: #8a4a12; }
+.uk.k-record:hover, .uk.k-record:focus-visible { background: #b8641c; color: #fff; }
 .uk.k-test:hover, .uk.k-test:focus-visible { background: #2b3a55; color: #fff; }
 .ucard.off { opacity: 0.55; }
 .usubs { margin-top: 6px; border-top: 1px dashed #d5d7de; padding-top: 6px; }
@@ -32935,6 +32937,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     drill: { label: "計算ドリル", sheetLabel: "{計算|けいさん}ドリル", counts: [10, 20, 30], defaultCount: 20 },
     word: { label: "文章題", sheetLabel: "{文章題|ぶんしょうだい}", counts: [3, 4, 5, 6], defaultCount: 4 },
     figure: { label: "図形・グラフ", sheetLabel: "{図形|ずけい}・グラフ", counts: [3, 4, 5, 6], defaultCount: 4 },
+    // 記録シート(くらしの数学):自分の記録・調べたことを書く。1まいに 1つずつ、ぜんぶ出す
+    record: { label: "記録シート", sheetLabel: "{記録|きろく}シート", counts: null, defaultCount: null },
     test: { label: "単元まとめテスト", sheetLabel: "{単元|たんげん}まとめテスト", counts: null, defaultCount: null },
     yoji: { label: "プリント", sheetLabel: "", counts: [2, 3, 4, 6], defaultCount: 3 }
   };
@@ -33088,6 +33092,12 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
         } else {
           addSpread(topics, n, pts);
         }
+      }
+    } else if (kind === "record") {
+      for (const t2 of topicsOf("record")) {
+        const s = make3(t2, 1, null);
+        s.instruction = null;
+        sections.push(s);
       }
     } else {
       addCategory(kind, count, null);
@@ -34661,6 +34671,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     const footer = `<footer class="sheet-footer"><span class="ft-no" data-seed="No.${sheet.seed}">No.${sheet.seed}</span></footer>`;
     let gc = Number.isInteger(sheet.grade) ? ` grade-${sheet.kind === "yoji" ? 0 : sheet.grade}` : "";
     if (sheet.stage) gc += " stage";
+    if (sheet.fill) gc += " fillpage";
     if (policy && policy.furigana) gc += " furi";
     const page1 = `<article class="sheet${gc}"${keyMode ? ' data-key="1"' : ""}>${header()}<main class="body">${sections}</main>${footer}</article>`;
     const page2 = withAnswers && !keyMode ? `<article class="sheet answers${sheet.answerStyle === "filled" ? " filled" : ""}${gc}">${header()}<main class="body">${answerSections}</main>${footer}</article>` : "";
@@ -34794,7 +34805,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
         }
         while (restList.firstElementChild) list2.appendChild(restList.firstElementChild);
       }
-      if (tryShrink(page, blk)) {
+      if (tryShrink(page, blk) || page.classList.contains("fillpage") && tryShrinkAll(page)) {
         queue.shift();
         continue;
       }
@@ -34906,6 +34917,19 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       if (!overflows(page)) return true;
     }
     for (const f13 of figs) f13.style.zoom = "";
+    return false;
+  }
+  // くらしの数学など:ページの図をみんな同じだけ小さくして、もう1問入れる(後半が空きすぎないように)
+  var SHRINK_ALL_MIN = 0.68;
+  function tryShrinkAll(page) {
+    const figs = [...page.querySelectorAll(".body .figure")].filter((f13) => !f13.parentElement.closest(".figure"));
+    if (!figs.length) return false;
+    const old = figs.map((f13) => f13.style.zoom);
+    for (let z = 0.96; z >= SHRINK_ALL_MIN - 1e-9; z -= 0.02) {
+      for (let i = 0; i < figs.length; i++) figs[i].style.zoom = Math.min(Number(old[i] || 1), z).toFixed(2);
+      if (!overflows(page)) return true;
+    }
+    figs.forEach((f13, i) => f13.style.zoom = old[i]);
     return false;
   }
   function renumber(pages) {
@@ -39342,7 +39366,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
         const nm = noRuby(su.name);
         return { id: `s${st.key}-${String(i + 1).padStart(2, "0")}`, order: i + 1, name: nm, ...nm !== su.name ? { rubyName: su.name } : {}, domain: noRuby(su.domain), topics, ...props, ...su.unitProps || {} };
       });
-      GRADES[st.key] = { grade: st.styleGrade, stage: st.key, stageName: st.name, stageRuby: st.ruby || st.name, part: st.part, short: st.short, btn: st.btn, note: st.note, units };
+      GRADES[st.key] = { grade: st.styleGrade, stage: st.key, stageName: st.name, stageRuby: st.ruby || st.name, part: st.part, short: st.short, btn: st.btn, fill: !!st.fill, note: st.note, units };
     }
   }
   var $ = (id) => document.getElementById(id);
@@ -39437,7 +39461,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   function refreshCounts() {
     const k = KINDS9[el.kind.value];
     if (!k || !k.counts) {
-      fill2(el.count, [{ value: "", label: "固定(100点)" }]);
+      fill2(el.count, [{ value: "", label: el.kind.value === "record" ? "ぜんぶ" : "固定(100点)" }]);
       el.count.disabled = true;
       return;
     }
@@ -39451,7 +39475,11 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     const gv = Number(el.grade.value);
     if (gv >= 10 && gv < 21 && el.kind.value === "drill") counts = [5, 10, 15, 20], def = 10;
     // 特別支援の段階は、1まいの問題を少なめに
-    if (gv >= 21) {
+    if (gv >= 21 && GRADES[gv]?.fill) {
+      // くらしの数学:ページの下があかないように、作るときに問題をふやすことがある(そのときは この数もかわる)
+      if (el.kind.value === "drill") counts = [5, 10, 15, 20, 25, 30], def = 10;
+      else counts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], def = 2;
+    } else if (gv >= 21) {
       if (el.kind.value === "drill") counts = gv <= 23 ? [4, 6, 10, 15, 20] : [5, 10, 15, 20], def = gv <= 23 ? 6 : 10;
       else if (el.kind.value === "yoji") counts = [1, 2, 3, 4], def = 2;
       else counts = [1, 2, 3, 4], def = 2;
@@ -39496,6 +39524,49 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   window.addEventListener("resize", () => {
     if (el.preview.firstElementChild) fitPreview();
   });
+  // ===== ページの下があきすぎないように、問題をふやす(gradeData.fill:くらしの数学) =====
+  // 問題のページの中身の高さ(問題のあいだのすき間はのぞく)が、本文の高さの何わりか
+  function pageFill(page) {
+    const body = page.querySelector(".body");
+    if (!body || !body.clientHeight) return 1;
+    let h = 0;
+    for (const c of body.children) {
+      let pad = 0;
+      for (const e of [c, ...c.querySelectorAll("li.item")]) pad += parseFloat(e.style.paddingBottom || 0) || 0;
+      h += c.getBoundingClientRect().height - pad;
+    }
+    return h / body.clientHeight;
+  }
+  var FILL_MIN = 0.7;
+  // measure(sheet) は 問題のページ(article)の配列を返す。最後のページが FILL_MIN より少ないときは、問題を1つずつふやしてみる
+  function filledSheet(spec, measure) {
+    let sheet = buildSheet(spec);
+    if (spec.gradeData?.fill) sheet.fill = true;
+    if (!spec.gradeData?.fill || !spec.count || spec.kind === "test" || spec.kind === "record") return sheet;
+    const m = (sh) => {
+      const ps = measure(sh);
+      return { pages: ps.length, fill: ps.length ? pageFill(ps[ps.length - 1]) : 1 };
+    };
+    let cur = m(sheet);
+    const step = spec.kind === "drill" ? 2 : 1;
+    for (let c = spec.count + step, t = 0; cur.fill < FILL_MIN && t < 8; c += step, t++) {
+      let sh;
+      try {
+        sh = buildSheet({ ...spec, count: c });
+        sh.fill = true;
+      } catch (e) {
+        break;
+      }
+      const r = m(sh);
+      if (r.pages > cur.pages + 1) break;
+      if (r.fill >= FILL_MIN || r.pages === cur.pages) {
+        sheet = sh;
+        cur = r;
+        sheet.filledCount = c;
+      }
+    }
+    return sheet;
+  }
   function render() {
     // プリントの画面が出ていないと、ページ分けや図の大きさがはかれない(図が下に落ちる)ので、先に画面を出す
     if (document.body.dataset.view !== "print") document.body.dataset.view = "print";
@@ -39505,9 +39576,15 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       if (!spec.gradeData) throw new Error("この学年はまだ準備中です");
       if (!spec.unitId) throw new Error("この学年は単元一覧まで入っていますが、問題の生成器がまだありません(準備中)");
       if (EXCLUDE.has(spec.unitId)) throw new Error("この単元は準備中です(この版では作れません)");
-      const sheet = buildSheet(spec);
       const policy = makeKanjiPolicy(kanji_default, spec.gradeData?.grade ?? spec.grade, { excludeCurrentGrade: el.excludeCurrent.checked, furigana: el.furigana.checked });
       el.preview.style.setProperty("--pvz", "1");
+      const sheet = filledSheet(spec, (sh) => {
+        el.preview.innerHTML = sheetHtml(sh, { policy, withAnswers: false, gradeLabel: `${spec.grade}年`, hints: el.hints.checked, answerMode: el.ansStyle.value, trace: el.trace.checked });
+        paginate(el.preview);
+        return [...el.preview.querySelectorAll("article.sheet")];
+      });
+      // 問題をふやしたときは、問題数のらんも合わせる
+      if (sheet.filledCount && [...el.count.options].some((o) => Number(o.value) === sheet.filledCount)) el.count.value = String(sheet.filledCount);
       el.preview.innerHTML = sheetHtml(sheet, { policy, withAnswers: el.withAnswers.checked, gradeLabel: `${spec.grade}年`, hints: el.hints.checked, answerMode: el.ansStyle.value, trace: el.trace.checked });
       paginate(el.preview);
       fitPreview();
@@ -39667,14 +39744,14 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           spec.from = (spec0.from || 1) + i * spec0.count * unit.per;
           if (spec.from > 100) break;
         }
-        let sheet = buildSheet(spec);
-        if (!title) title = fileName(renderText(sheet.title, policy));
         const render = (sh) => {
           stage.innerHTML = sheetHtml(sh, { policy, withAnswers: opt.answers !== "none", hints: el.hints.checked, answerMode: el.ansStyle.value, trace: el.trace.checked });
           paginate(stage);
           const arts = [...stage.querySelectorAll("article.sheet")];
           return [arts.filter((a) => !a.classList.contains("answers")), arts.filter((a) => a.classList.contains("answers"))];
         };
+        let sheet = filledSheet(spec, (sh) => render(sh)[0]);
+        if (!title) title = fileName(renderText(sheet.title, policy));
         let [probs, ans] = render(sheet);
         // ページ数をこえるときは、のこりのページに入る問題だけにする
         const room = n - made;
@@ -39830,7 +39907,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   var homeGrade = store.get("grade") !== null && GRADES[Number(store.get("grade"))] ? Number(store.get("grade")) : 1;
   var homeLevel = LEVELS[store.get("level")] ? store.get("level") : "basic";
   var SUB_KIND = { drill: "計算", word: "文章題", figure: "図・グラフ", yoji: "え" };
-  var KIND_SHORT = { drill: "計算ドリル", word: "文章題", figure: "図形・グラフ", test: "まとめテスト", yoji: "プリントを つくる" };
+  var KIND_SHORT = { drill: "計算ドリル", word: "文章題", figure: "図形・グラフ", record: "記録シート", test: "まとめテスト", yoji: "プリントを つくる" };
   var homeEl = $("home");
   $("versionHome").textContent = versionLabel;
   // キャラクターのせりふとポーズ
