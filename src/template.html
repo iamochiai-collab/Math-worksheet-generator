@@ -123,6 +123,9 @@ body[data-view="print"] .home { display: none; }
 .tk-banner.back .tk-go { color: #2b3a55; }
 .hg .stg { font-size: 13px; margin-left: 1px; }
 .home-ages.stage-note { max-width: 520px; line-height: 1.6; }
+.home-pdf { display: inline-block; margin-top: 8px; padding: 7px 14px; border: 2px solid #b8641c; border-radius: 10px; background: #fff7ee; color: #8a4a12; font-size: 14px; font-weight: bold; text-decoration: none; }
+.home-pdf:hover, .home-pdf:focus-visible { background: #b8641c; color: #fff; }
+@media print { .home-pdf { display: none; } }
 .g10 { --gc: #9a4a2c; } .g11 { --gc: #2d7a63; } .g12 { --gc: #8a3b5c; } .g13 { --gc: #44628c; } .g14 { --gc: #6b4a8f; } .g15 { --gc: #3f6d3a; }
 .home { max-width: 1100px; margin: 0 auto; padding: 26px 16px 18px; }
 /* キャラクター(画面だけ。プリントには出さない) */
@@ -39389,7 +39392,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
         const nm = noRuby(su.name);
         return { id: `s${st.key}-${String(i + 1).padStart(2, "0")}`, order: i + 1, name: nm, ...nm !== su.name ? { rubyName: su.name } : {}, domain: noRuby(su.domain), topics, ...props, ...su.unitProps || {} };
       });
-      GRADES[st.key] = { grade: st.styleGrade, stage: st.key, stageName: st.name, stageRuby: st.ruby || st.name, part: st.part, short: st.short, btn: st.btn, fill: !!st.fill, note: st.note, units };
+      GRADES[st.key] = { grade: st.styleGrade, stage: st.key, stageName: st.name, stageRuby: st.ruby || st.name, part: st.part, short: st.short, btn: st.btn, fill: !!st.fill, note: st.note, pdf: st.pdf || null, units };
     }
   }
   var $ = (id) => document.getElementById(id);
@@ -39986,6 +39989,9 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     $("homeGrades").innerHTML = (stageMode ? [["小学部", (g3) => g3 >= 21 && g3 <= 23], ["中学部", (g3) => g3 >= 24 && g3 <= 25], ["高等部", (g3) => g3 >= 26]] : [["ようじ・小学校", (g3) => g3 <= 6], ["中学", (g3) => g3 >= 7 && g3 <= 9], ["高校", (g3) => g3 >= 10 && g3 < 21]]).map(([cap, f]) => [cap, GRADE_KEYS.filter(f)]).filter(([, gs]) => gs.length).map(([cap, gs]) => `<div class="hg-group"><span class="hg-cap">${cap}</span><div class="hg-btns">${gs.map(hgBtn).join("")}</div></div>`).join("");
     $("homeAges").textContent = homeGrade === 0 ? "★☆☆ 3〜4さい　★★☆ 4〜5さい　★★★ 5〜6さい" : stageMode ? `${gradeName(homeGrade)}:${GRADES[homeGrade]?.note || ""}` : "";
     $("homeAges").classList.toggle("stage-note", stageMode);
+    // くらしの数学:まとめの PDF(62ページ・答えつき)をひらくリンク
+    const pdf = stageMode && GRADES[homeGrade]?.pdf;
+    if (pdf) $("homeAges").insertAdjacentHTML("beforeend", `<a class="home-pdf" href="${esc2(pdf.href)}" target="_blank" rel="noopener">📄 ${esc2(pdf.label)}</a>`);
     $("homeLevels").innerHTML = Object.entries(LEVELS).map(([k, v]) => `<button type="button" class="hl${k === homeLevel ? " on" : ""}" data-level="${k}" aria-pressed="${k === homeLevel}">${v.label}</button>`).join("");
     const units = GRADES[homeGrade]?.units ?? [];
     $("homeUnitsTitle").textContent = homeGrade === 0 ? "ようじの プリント" : stageMode ? `${gradeName(homeGrade)}の内容` : `${gradeName(homeGrade)}の単元`;
