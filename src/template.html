@@ -184,6 +184,8 @@ body[data-view="print"] .home { display: none; }
 .uk:hover, .uk:focus-visible { background: #2b3a55; border-color: #2b3a55; color: #fff; }
 .uk.k-test { background: #fff; border-color: #2b3a55; color: #2b3a55; font-weight: bold; }
 .uk.k-record { background: #fff7ee; border-color: #b8641c; color: #8a4a12; }
+.uk.k-matome { background: #f3f8ec; border-color: #4f7a28; color: #3d5f1f; font-weight: bold; }
+.uk.k-matome:hover, .uk.k-matome:focus-visible { background: #4f7a28; color: #fff; }
 .uk.k-record:hover, .uk.k-record:focus-visible { background: #b8641c; color: #fff; }
 .uk.k-test:hover, .uk.k-test:focus-visible { background: #2b3a55; color: #fff; }
 .ucard.off { opacity: 0.55; }
@@ -32939,6 +32941,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     figure: { label: "図形・グラフ", sheetLabel: "{図形|ずけい}・グラフ", counts: [3, 4, 5, 6], defaultCount: 4 },
     // 記録シート(くらしの数学):自分の記録・調べたことを書く。1まいに 1つずつ、ぜんぶ出す
     record: { label: "記録シート", sheetLabel: "{記録|きろく}シート", counts: null, defaultCount: null },
+    // まとめプリント(くらしの数学):単元の小単元を順に 1問ずつ(計算は数問)、記録シートもふくめて 1つのプリントにする
+    matome: { label: "まとめプリント", sheetLabel: "まとめプリント", counts: null, defaultCount: null },
     test: { label: "単元まとめテスト", sheetLabel: "{単元|たんげん}まとめテスト", counts: null, defaultCount: null },
     yoji: { label: "プリント", sheetLabel: "", counts: [2, 3, 4, 6], defaultCount: 3 }
   };
@@ -32981,7 +32985,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   }
   var UNIT_RUBY = {"g2-02": "たし{算|ざん}のひっ{算|さん}", "g2-03": "ひき{算|ざん}のひっ{算|さん}", "g2-04": "{長|なが}さのたんい", "g2-05": "３けたの{数|かず}", "g2-06": "{水|みず}のかさのたんい", "g2-07": "{時|じ}こくと{時間|じかん}", "g2-08": "{計算|けいさん}のくふう", "g2-09": "たし{算|ざん}とひき{算|ざん}のひっ{算|さん}", "g2-10": "{長方形|ちょうほうけい}と{正方形|せいほうけい}", "g2-11": "かけ{算|ざん}(1)", "g2-12": "かけ{算|ざん}(2)", "g2-13": "４けたの{数|かず}", "g2-14": "{長|なが}いものの{長|なが}さのたんい", "g2-15": "たし{算|ざん}とひき{算|ざん}", "g2-16": "{分数|ぶんすう}", "g2-17": "はこの{形|かたち}", "g3-01": "かけ{算|ざん}", "g3-02": "{時|じ}こくと{時間|じかん}のもとめ{方|かた}", "g3-03": "わり{算|ざん}", "g3-04": "たし{算|ざん}とひき{算|ざん}の{筆算|ひっさん}", "g3-05": "{長|なが}いものの{長|なが}さのはかり{方|かた}と{表|あらわ}し{方|かた}", "g3-06": "ぼうグラフと{表|ひょう}", "g3-07": "{暗算|あんざん}", "g3-08": "あまりのあるわり{算|ざん}", "g3-09": "{大|おお}きい{数|かず}のしくみ", "g3-10": "かけ{算|ざん}の{筆算|ひっさん}(1)", "g3-11": "{大|おお}きい{数|かず}のわり{算|ざん}、{分数|ぶんすう}とわり{算|ざん}", "g3-12": "{円|えん}と{球|きゅう}", "g3-13": "{小数|しょうすう}", "g3-14": "{重|おも}さのたんいとはかり{方|かた}", "g3-15": "{分数|ぶんすう}", "g3-16": "□を{使|つか}った{式|しき}", "g3-17": "かけ{算|ざん}の{筆算|ひっさん}(2)", "g3-17b": "{倍|ばい}の{計算|けいさん}", "g3-18": "{三角形|さんかくけい}と{角|かく}", "g4-01": "{大|おお}きい{数|かず}のしくみ", "g4-02": "{折|お}れ{線|せん}グラフと{表|ひょう}", "g4-03": "わり{算|ざん}の{筆算|ひっさん}(1)", "g4-04": "{角|かく}の{大|おお}きさ", "g4-05": "{小数|しょうすう}のしくみ", "g4-06": "わり{算|ざん}の{筆算|ひっさん}(2)", "g4-06b": "{倍|ばい}の{見方|みかた}", "g4-07": "がい{数|すう}の{表|あらわ}し{方|かた}と{使|つか}い{方|かた}", "g4-08": "{計算|けいさん}のきまり", "g4-09": "{垂直|すいちょく}、{平行|へいこう}と{四角形|しかくけい}", "g4-10": "{分数|ぶんすう}", "g4-11": "{変|か}わり{方|かた}{調|しら}べ", "g4-12": "{面積|めんせき}のくらべ{方|かた}と{表|あらわ}し{方|かた}", "g4-13": "{小数|しょうすう}のかけ{算|ざん}とわり{算|ざん}", "g4-14": "{直方体|ちょくほうたい}と{立方体|りっぽうたい}", "g5-01": "{整数|せいすう}と{小数|しょうすう}", "g5-02": "{直方体|ちょくほうたい}や{立方体|りっぽうたい}の{体積|たいせき}", "g5-03": "{比例|ひれい}", "g5-04": "{小数|しょうすう}のかけ{算|ざん}", "g5-05": "{小数|しょうすう}のわり{算|ざん}", "g5-05b": "{小数|しょうすう}の{倍|ばい}", "g5-06": "{合同|ごうどう}な{図形|ずけい}", "g5-07": "{図形|ずけい}の{角|かく}", "g5-08": "{偶数|ぐうすう}と{奇数|きすう}、{倍数|ばいすう}と{約数|やくすう}", "g5-09": "{分数|ぶんすう}と{小数|しょうすう}、{整数|せいすう}の{関係|かんけい}", "g5-10": "{分数|ぶんすう}のたし{算|ざん}とひき{算|ざん}", "g5-11": "{平均|へいきん}", "g5-12": "{単位量|たんいりょう}あたりの{大|おお}きさ", "g5-13": "{四角形|しかくけい}と{三角形|さんかくけい}の{面積|めんせき}", "g5-14": "{割合|わりあい}", "g5-15": "{帯|おび}グラフと{円|えん}グラフ", "g5-16": "{変|か}わり{方|かた}{調|しら}べ", "g5-17": "{正多角形|せいたかくけい}と{円周|えんしゅう}の{長|なが}さ", "g5-18": "{角柱|かくちゅう}と{円柱|えんちゅう}", "g6-01": "{対称|たいしょう}な{図形|ずけい}", "g6-02": "{文字|もじ}と{式|しき}", "g6-03": "{分数|ぶんすう}×{整数|せいすう}、{分数|ぶんすう}÷{整数|せいすう}、{分数|ぶんすう}×{分数|ぶんすう}", "g6-04": "{分数|ぶんすう}÷{分数|ぶんすう}", "g6-04b": "{分数|ぶんすう}の{倍|ばい}", "g6-05": "{比|ひ}", "g6-06": "{拡大図|かくだいず}と{縮図|しゅくず}", "g6-07": "データの{調|しら}べ{方|かた}", "g6-08": "{円|えん}の{面積|めんせき}", "g6-09": "{角柱|かくちゅう}と{円柱|えんちゅう}の{体積|たいせき}", "g6-10": "およその{面積|めんせき}と{体積|たいせき}", "g6-11": "{比例|ひれい}と{反比例|はんぴれい}", "g6-12": "{並|なら}べ{方|かた}と{組|く}み{合|あ}わせ{方|かた}", "g6-12b": "データを{使|つか}って {生活|せいかつ}を{見|み}なおそう", "g6-13": "{算数|さんすう}のしあげ"};
   // 小単元(単元の中の topics)。番号は 1 から。まとめテストは単元ぜんたいだけ
-  var topicKinds = (topic) => topic.kinds.filter((k) => k !== "test");
+  var topicKinds = (topic) => topic.kinds.filter((k) => k !== "test" && k !== "matome");
   // 小単元の名前を {漢字|かな} にする(ふりがな・習っていない漢字をひらがなにするため)
   var TOPIC_WORDS = {"読": "よ", "筆算": "ひっさん", "何十": "なんじゅう", "何百": "なんびゃく", "使": "つか", "暗算": "あんざん", "直角": "ちょっかく", "方眼": "ほうがん", "九九": "くく", "考": "かんが", "字": "じ", "数字": "すうじ", "終": "お", "変": "か", "棒": "ぼう", "二次元表": "{二次元|にじげん}{表|ひょう}", "整理": "せいり", "分度器": "ぶんどき", "角度": "かくど", "三角定規": "さんかくじょうぎ", "見積": "{見|み}{積|つ}", "見分": "{見|み}{分|わ}", "見取図": "みとりず", "見": "み", "順序": "じゅんじょ", "仮分数": "かぶんすう", "帯分数": "たいぶんすう", "帯": "おび", "積": "つ", "木": "き", "内": "うち", "概数": "がいすう", "決": "き", "三角": "さんかく", "公倍数": "こうばいすう", "公約数": "こうやくすう", "最小公倍数": "さいしょうこうばいすう", "最大公約数": "さいだいこうやくすう", "約分": "やくぶん", "約数": "やくすう", "異分母": "いぶんぼ", "混": "ま", "表示": "ひょうじ", "色": "いろ", "換算": "かんさん", "二重数直線": "にじゅうすうちょくせん", "百分率": "ひゃくぶんりつ", "歩合": "ぶあい", "場面": "ばめん", "縮尺": "しゅくしゃく", "縮図": "しゅくず", "拡大図": "かくだいず", "利用": "りよう", "代表値": "だいひょうち", "時期": "じき", "判断": "はんだん", "年": "ねん", "二次元": "にじげん"};
   var topicRuby = (label) => {
@@ -32996,7 +33000,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   };
   // 読み方が前後で変わることば(辞書の前になおす)
   var TOPIC_FIX = [[/上(?=が)/g, "{上|あ}"], [/下(?=が)/g, "{下|さ}"], [/(?<=[ぁ-ん])方/g, "{方|かた}"], [/分(?=け)/g, "{分|わ}"], [/何分の一/g, "{何分|なんぶん}の{一|いち}"], [/何分(?=前|後)/g, "{何分|なんぷん}"], [/がい数/g, "がい{数|すう}"], [/積(?=み)/g, "{積|つ}"], [/表(?=し)/g, "{表|あらわ}"]];
-  function buildSheet({ gradeData, unitId, kind, level, count, seed, from = 0, topicNo = 0 }) {
+  function buildSheet({ gradeData, unitId, kind, level, count, seed, from = 0, topicNo = 0, extra = 0 }) {
     const unit = gradeData.units.find((u2) => u2.id === unitId);
     if (!unit) throw new Error(`単元がない: ${unitId}`);
     if (!KINDS9[kind]) throw new Error(`種類が不正: ${kind}`);
@@ -33093,6 +33097,25 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           addSpread(topics, n, pts);
         }
       }
+    } else if (kind === "matome") {
+      // 順番は単元の小単元の順(本と同じ)。extra は、ページがあまったときに文章題・図をふやす数
+      const tps = topicsOf("matome"), more = tps.map(() => 0);
+      const wf = tps.map((t2, i) => i).filter((i) => !tps[i].kinds.includes("drill") && !tps[i].kinds.includes("record"));
+      for (let e = 0; e < extra && wf.length; e++) more[wf[e % wf.length]]++;
+      tps.forEach((t2, i) => {
+        curGroup = "matome";
+        const isDrill = t2.kinds.includes("drill");
+        if (isDrill) {
+          const s2 = make3(t2, 6, null);
+          sections.push(s2);
+          return;
+        }
+        for (let j = 0; j < 1 + more[i]; j++) {
+          const s2 = make3(t2, 1, null);
+          if (!getGenerator(t2.generator).instruction) s2.instruction = null;
+          sections.push(s2);
+        }
+      });
     } else if (kind === "record") {
       for (const t2 of topicsOf("record")) {
         const s = make3(t2, 1, null);
@@ -39461,7 +39484,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   function refreshCounts() {
     const k = KINDS9[el.kind.value];
     if (!k || !k.counts) {
-      fill2(el.count, [{ value: "", label: el.kind.value === "record" ? "ぜんぶ" : "固定(100点)" }]);
+      fill2(el.count, [{ value: "", label: el.kind.value === "record" ? "ぜんぶ" : el.kind.value === "matome" ? "おまかせ" : "固定(100点)" }]);
       el.count.disabled = true;
       return;
     }
@@ -39539,9 +39562,34 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   }
   var FILL_MIN = 0.7;
   // measure(sheet) は 問題のページ(article)の配列を返す。最後のページが FILL_MIN より少ないときは、問題を1つずつふやしてみる
+  // まとめプリント:最後のページがあまっているときは、文章題・図を 1問ずつふやす(ページがふえすぎないように)
+  // まとめプリント:あまったページ(いちばん少ないページ)があるときは、文章題・図を 1問ずつふやす(ページがふえすぎないように)
+  function fillMatome(spec, sheet, measure) {
+    const m = (sh) => {
+      const ps = measure(sh);
+      return { pages: ps.length, min: ps.length ? Math.min(...ps.map(pageFill)) : 1 };
+    };
+    let cur = m(sheet);
+    for (let e = 1; cur.min < FILL_MIN && e <= 6; e++) {
+      let sh;
+      try {
+        sh = buildSheet({ ...spec, extra: e });
+        sh.fill = true;
+      } catch (err) {
+        break;
+      }
+      const r = m(sh);
+      if (r.pages === cur.pages && r.min > cur.min || r.min >= FILL_MIN && r.pages <= cur.pages + 1) {
+        sheet = sh;
+        cur = r;
+      }
+    }
+    return sheet;
+  }
   function filledSheet(spec, measure) {
     let sheet = buildSheet(spec);
     if (spec.gradeData?.fill) sheet.fill = true;
+    if (spec.gradeData?.fill && spec.kind === "matome") return fillMatome(spec, sheet, measure);
     if (!spec.gradeData?.fill || !spec.count || spec.kind === "test" || spec.kind === "record") return sheet;
     const m = (sh) => {
       const ps = measure(sh);
@@ -39907,7 +39955,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   var homeGrade = store.get("grade") !== null && GRADES[Number(store.get("grade"))] ? Number(store.get("grade")) : 1;
   var homeLevel = LEVELS[store.get("level")] ? store.get("level") : "basic";
   var SUB_KIND = { drill: "計算", word: "文章題", figure: "図・グラフ", yoji: "え" };
-  var KIND_SHORT = { drill: "計算ドリル", word: "文章題", figure: "図形・グラフ", record: "記録シート", test: "まとめテスト", yoji: "プリントを つくる" };
+  var KIND_SHORT = { drill: "計算ドリル", word: "文章題", figure: "図形・グラフ", record: "記録シート", matome: "まとめプリント", test: "まとめテスト", yoji: "プリントを つくる" };
   var homeEl = $("home");
   $("versionHome").textContent = versionLabel;
   // キャラクターのせりふとポーズ

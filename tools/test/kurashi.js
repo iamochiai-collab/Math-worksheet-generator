@@ -26,14 +26,14 @@ const { chromium } = require('playwright');
         }
       }
       // いちばん多い問題数で作ってみる
-      for (const kind of ['drill', 'word', 'figure', 'test', 'record']) {
+      for (const kind of ['drill', 'word', 'figure', 'test', 'record', 'matome']) {
         if (!unit.topics.some(t => t.kinds.includes(kind))) continue;
-        const counts = { drill: 30, word: 10, figure: 10, test: null, record: null }[kind];
+        const counts = { drill: 30, word: 10, figure: 10, test: null, record: null, matome: null }[kind];
         for (const level of ['basic', 'normal', 'challenge']) for (const seed of [1, 2, 3]) {
-          try { T.buildSheet({ gradeData: g, unitId: unit.id, kind, level, count: counts, seed }); }
+          try { T.buildSheet({ gradeData: g, unitId: unit.id, kind, level, count: counts, seed, extra: kind === 'matome' ? 6 : 0 }); }
           catch (e) { out.build.push(`${unit.id} ${kind} ${level} ${seed}: ${e.message}`); }
         }
-        unit.topics.forEach((tp, ti) => { if (!tp.kinds.includes(kind) || kind === 'test' || unit.topics.length < 2) return; for (const level of ['basic', 'normal', 'challenge']) { try { T.buildSheet({ gradeData: g, unitId: unit.id, kind, level, count: counts, seed: 9, topicNo: ti + 1 }); } catch (e) { out.build.push(`${unit.id}:${ti + 1} ${kind} ${level}: ${e.message}`); } } });
+        unit.topics.forEach((tp, ti) => { if (!tp.kinds.includes(kind) || kind === 'test' || kind === 'matome' || unit.topics.length < 2) return; for (const level of ['basic', 'normal', 'challenge']) { try { T.buildSheet({ gradeData: g, unitId: unit.id, kind, level, count: counts, seed: 9, topicNo: ti + 1 }); } catch (e) { out.build.push(`${unit.id}:${ti + 1} ${kind} ${level}: ${e.message}`); } } });
       }
     }
     return out;

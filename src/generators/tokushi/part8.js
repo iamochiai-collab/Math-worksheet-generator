@@ -2,7 +2,7 @@
 // from の 3つめは { label: 小単元名({漢字|かな} 可), kinds: 種類 }。単元名(name)・内容(domain)も {漢字|かな} を使える。
 tokushi.push(...kurashiGens);
 (() => {
-  const W = ["word", "test"], D = ["drill", "test"], F = ["figure", "test"], R = ["record"];
+  const W = ["word", "test", "matome"], D = ["drill", "test", "matome"], F = ["figure", "test", "matome"], R = ["record", "matome"];
   const u = (name, domain, ...from) => ({ name, domain, from: from.map(([id, label, kinds]) => [id, null, { label, kinds }]) });
   const D1 = "Ⅰ {自分|じぶん}の{身|み}の{回|まわ}りのこと", D2 = "Ⅱ {毎日|まいにち}の{生活|せいかつ}", D3 = "Ⅲ {楽|たの}しむ({余暇|よか})", D4 = "Ⅳ {生活|せいかつ}を{豊|ゆた}かに", D5 = "Ⅴ {将来|しょうらい}の{生活|せいかつ}に{向|む}けて";
   tokushiStages.push({
