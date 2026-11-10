@@ -73,6 +73,15 @@ body {
 .panel .title-row h1 { width: auto; }
 .panel .subtitle { font-size: 12px; color: #666; }
 .panel .version { margin-left: auto; font-size: 12px; color: #666; }
+/* 設定のパネルを小さくする(1行だけにする)。もう一度おすと元にもどる */
+.panel .btn-mini { flex: none; font-size: 13px; padding: 4px 10px; background: #fff; color: #2b3a55; border: 1px solid #9aa3b5; }
+.panel .mini-sum { display: none; }
+.panel.mini { padding-top: 5px; padding-bottom: 5px; }
+.panel.mini > :not(.title-row) { display: none !important; }
+.panel.mini .title-row { flex-wrap: nowrap; align-items: center; }
+.panel.mini .title-row .chara, .panel.mini .title-row .subtitle, .panel.mini .title-row .version, .panel.mini .title-row h1 { display: none; }
+.panel.mini .mini-sum { display: block; flex: 1; min-width: 0; font-size: 13px; color: #1f2a40; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+body.panel-mini .help { display: none; }
 
 /* ===== まとめて作る・保存 ===== */
 .batch { border: 1px solid #aaa; border-radius: 12px; padding: 0; max-width: 520px; width: calc(100% - 32px); box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
@@ -225,6 +234,7 @@ body[data-view="print"] .home { display: none; }
   .panel .title-row { gap: 4px 8px; align-items: center; }
   .panel .title-row .version, .panel .title-row .subtitle, .panel .title-row .chara { display: none; }
   .panel .title-row h1 { font-size: 15px; margin: 0; }
+  .panel .btn-mini { margin-left: auto; font-size: 13px; padding: 4px 10px; }
   .panel .btn-home { font-size: 13px; padding: 4px 10px; }
   .panel label { flex: 1 1 140px; min-width: 0; font-size: 11px; gap: 2px; }
   .panel select, .panel input[type=number] { width: 100%; min-width: 0; font-size: 16px; padding: 3px 6px; }
@@ -576,6 +586,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     <h1>算数プリント</h1>
     <span class="subtitle" id="subtitle">小学校1〜6年 ・ 東京書籍『新編 新しい算数』の単元順</span>
     <span class="version" id="version">第4版(2026-10-19)</span>
+    <span class="mini-sum" id="miniSum"></span>
+    <button type="button" class="btn-mini" id="btnMini" aria-expanded="true" title="設定のパネルを小さくする">▲ 小さく</button>
   </div>
   <button type="button" class="sum-toggle" id="sumToggle" aria-expanded="false"><span class="sum-text" id="sumText"></span><span class="sum-go">設定 ▼</span></button>
   <div class="basic" id="basicOpts">
@@ -57881,7 +57893,23 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     parts.push(opt(el.kind), opt(el.level));
     if (!el.count.disabled) parts.push(opt(el.count));
     $("sumText").textContent = parts.filter(Boolean).join(" ・ ");
+    $("miniSum").textContent = $("sumText").textContent;
   }
+  // 設定のパネルを小さく(1行に)する・もどす。えらんだ形はおぼえておく
+  function setMini(on) {
+    el.panelEl.classList.toggle("mini", on);
+    document.body.classList.toggle("panel-mini", on);
+    $("btnMini").textContent = on ? "▼ ひらく" : "▲ 小さく";
+    $("btnMini").title = on ? "設定のパネルをひらく" : "設定のパネルを小さくする";
+    $("btnMini").setAttribute("aria-expanded", String(!on));
+  }
+  $("btnMini").addEventListener("click", () => {
+    const on = !el.panelEl.classList.contains("mini");
+    setMini(on);
+    store.set("panelMini", on ? "1" : "0");
+    if (typeof fitPreview === "function") setTimeout(fitPreview, 0);
+  });
+  if (store.get("panelMini") === "1") setMini(true);
   $("sumToggle").addEventListener("click", () => {
     const on = !el.panelEl.classList.contains("show-set");
     el.panelEl.classList.toggle("show-set", on);
