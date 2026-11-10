@@ -184,6 +184,22 @@ body[data-view="print"] .home { display: none; }
 .home-units-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; margin: 24px 0 8px; }
 .home-units-head h2 { font-size: 18px; margin: 0; color: var(--gc); white-space: nowrap; }
 .home-units-head span { font-size: 13px; color: #666; }
+/* さがす(単元・小単元をことばでさがす) */
+.home-search { display: flex; gap: 8px; align-items: center; margin: 14px 0 0; }
+.home-search input { flex: 1; min-width: 0; font: inherit; font-size: 16px; padding: 10px 14px 10px 38px; border: 2px solid #9aa3b5; border-radius: 24px; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='10' cy='10' r='6.5' fill='none' stroke='%236b7280' stroke-width='2.4'/%3E%3Cpath d='M15 15l5.5 5.5' stroke='%236b7280' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat 13px center / 18px; color: #1f2a40; }
+.home-search input:focus { outline: none; border-color: #2b3a55; box-shadow: 0 0 0 3px rgba(43,58,85,.15); }
+.home-search .hs-clear { flex: none; font: inherit; font-size: 13px; padding: 7px 12px; border-radius: 18px; border: 1px solid #9aa3b5; background: #fff; color: #2b3a55; cursor: pointer; }
+.home-search .hs-clear[hidden] { display: none; }
+.home-search input::-webkit-search-cancel-button { display: none; }
+.home-found { margin-top: 10px; }
+.home-found .home-units { align-items: start; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.home.searching .tk-banner, .home.searching .home-row > div:first-child, .home.searching .home-mascot { display: none; }
+.home-found[hidden] { display: none; }
+.hf-head { font-size: 14px; color: #444; margin: 0 0 8px; }
+.hf-head b { color: #1f2a40; }
+.ucard .ugrade { flex: none; margin-left: auto; font-size: 12px; font-weight: bold; color: #fff; background: var(--gc); border-radius: 6px; padding: 1px 7px; margin-top: 2px; white-space: nowrap; }
+.usb mark, .uname mark { background: #ffe58a; color: inherit; border-radius: 2px; padding: 0 1px; }
+.home.searching .home-units-head, .home.searching #homeUnits, .home.searching .home-cheer { display: none; }
 .home-units { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
 .ucard { background: #fff; border-radius: 10px; border: 1px solid #d5d7de; border-top: 4px solid var(--gc); padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; }
 .ucard-head { display: flex; gap: 8px; align-items: flex-start; }
@@ -216,7 +232,7 @@ body[data-view="print"] .home { display: none; }
 @media (max-width: 640px) {
   .home-top { flex-direction: column; align-items: stretch; gap: 0; }
   .home-main { display: contents; }
-  .home-hero { order: 1; } .tk-banner { order: 1; } .home-mascot { order: 2; } .home-row { order: 3; }
+  .home-hero { order: 1; } .home-search, .home-found { order: 1; } .tk-banner { order: 1; } .home-mascot { order: 2; } .home-row { order: 3; }
   .home-mascot { width: auto; flex-direction: row-reverse; justify-content: flex-end; align-items: flex-end; gap: 6px; margin: 12px 0 0; }
   .home-mascot .chara { width: 76px; height: 96px; }
   .bubble { margin-bottom: 30px; font-size: 14px; max-width: none; }
@@ -567,6 +583,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     <h1>算数プリント<span class="version" id="versionHome"></span></h1>
     <p>ようじ ・ 小学校1〜6年(東京書籍『新編 新しい算数』の単元順) ・ 中学・高校(学習指導要領の内容の順)。学年をえらんで、単元のボタンをおすとプリントができます。</p>
   </div>
+  <div class="home-search"><input type="search" id="homeQ" autocomplete="off" enterkeyhint="search" aria-label="単元・小単元をさがす"><button type="button" class="hs-clear" id="homeQClear" hidden>× けす</button></div>
+  <div class="home-found" id="homeFound" hidden></div>
   <button type="button" class="tk-banner" id="tkBanner"></button>
   <div class="home-row">
     <div><div class="home-step"><span class="n">1</span><span id="homeStep1">学年</span></div><div class="home-grades" id="homeGrades"></div></div>
@@ -40047,7 +40065,74 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
         ${subs.length > 1 ? `<details class="usubs"><summary>小単元をえらぶ(${subs.length})</summary><ol class="usub-list">${subs.map(([tp, n]) => topicKinds(tp).map((k) => `<li><button type="button" class="usb" data-unit="${u2.id}" data-sub="${n}" data-kind="${k}"><span class="usub-no">${n}</span><span class="usub-name">${esc2(tp.label)}</span><span class="usub-kind">${SUB_KIND[k]}</span></button></li>`).join("")).join("")}</ol></details>` : ""}
       </div>`;
     }).join("");
+    if ($("homeQ").value) renderSearch();
   }
+  // ===== さがす:単元名・小単元名・内容のことばで、学年をこえてさがす(カタカナ・ひらがな、全角・半角は同じとみる) =====
+  var rubyBase = (x) => String(x ?? "").replace(/\{([^{}|]+)\|[^{}]*\}/g, "$1");
+  var rubyKana = (x) => String(x ?? "").replace(/\{[^{}|]+\|([^{}]*)\}/g, "$1");
+  var normQ = (x) => String(x ?? "").normalize("NFKC").toLowerCase().replace(/[\u30a1-\u30f6]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0x60)).replace(/[\s・、,.。「」()]/g, "");
+  var hay = (...xs) => xs.map((x) => normQ(rubyBase(x)) + "\n" + normQ(rubyKana(x))).join("\n");
+  function markHit(text, words) {
+    // 見つかったところに色をつける(ことばはひらがなにそろえてくらべる)
+    const ch = [...String(text)], n = ch.map((c) => normQ(c));
+    const on = new Array(n.length).fill(false);
+    for (const w of words) {
+      for (let i = 0; i < n.length; i++) {
+        let j = i, acc = "";
+        while (j < n.length && acc.length < w.length) acc += n[j++];
+        if (acc === w) for (let k = i; k < j; k++) on[k] = true;
+      }
+    }
+    let out = "", open = false;
+    ch.forEach((c, i) => {
+      if (on[i] && !open) out += "<mark>", open = true;
+      if (!on[i] && open) out += "</mark>", open = false;
+      out += esc2(c);
+    });
+    return out + (open ? "</mark>" : "");
+  }
+  function renderSearch() {
+    const raw = $("homeQ").value;
+    const words = raw.split(/[\s　]+/).map(normQ).filter(Boolean);
+    $("homeQClear").hidden = !raw;
+    homeEl.classList.toggle("searching", words.length > 0);
+    $("homeFound").hidden = !words.length;
+    if (!words.length) return;
+    const stageMode = isStage(homeGrade);
+    const hits = [];
+    for (const g3 of GRADE_KEYS.filter((g4) => isStage(g4) === stageMode)) {
+      for (const u2 of GRADES[g3].units) {
+        if (!isReady(u2)) continue;
+        const uh = hay(u2.name, u2.domain, ...(u2.contents || []));
+        const subs = hasSubs(g3) ? u2.topics.map((tp, i) => [tp, i + 1]).filter(([tp]) => topicKinds(tp).length) : [];
+        const subHit = subs.filter(([tp]) => words.every((w) => (uh + "\n" + hay(tp.label)).includes(w)) && words.some((w) => hay(tp.label).includes(w)));
+        const unitHit = words.every((w) => uh.includes(w));
+        if (unitHit || subHit.length) hits.push({ g3, u2, subs, subHit, unitHit, nameHit: words.every((w) => hay(u2.name).includes(w)) ? 1 : 0 });
+      }
+    }
+    hits.sort((a, b) => b.nameHit - a.nameHit);
+    const kindBtn = (g3, u2, k) => `<button type="button" class="uk k-${k}" data-g="${g3}" data-unit="${u2.id}" data-kind="${k}">${stageMode && k === "yoji" ? "えのプリント" : KIND_SHORT[k]}</button>`;
+    const subBtn = (g3, u2, tp, n) => topicKinds(tp).map((k) => `<li><button type="button" class="usb" data-g="${g3}" data-unit="${u2.id}" data-sub="${n}" data-kind="${k}"><span class="usub-no">${n}</span><span class="usub-name">${markHit(rubyBase(tp.label), words)}</span><span class="usub-kind">${SUB_KIND[k]}</span></button></li>`).join("");
+    const MAX = 60;
+    $("homeFound").innerHTML = `<p class="hf-head">「<b>${esc2(raw.trim())}</b>」${stageMode ? "(特別支援の段階)" : ""}:${hits.length ? `${hits.length}この単元が見つかりました${hits.length > MAX ? `(はじめの${MAX}こ)` : ""}` : "見つかりませんでした。ことばをかえてみてください(れい:グラフ、時計、分数、面積)"}</p>
+      <div class="home-units">${hits.slice(0, MAX).map(({ g3, u2, subs, subHit, unitHit }) => `<div class="ucard g${g3}">
+        <div class="ucard-head"><span class="uno${u2.numberless ? " extra" : ""}">${u2.numberless ? "補" : u2.order}</span><span class="uname">${markHit(rubyBase(u2.name), words)}</span><span class="ugrade">${esc2(gradeName(g3))}</span></div>
+        ${u2.domain ? `<div class="udomain">${esc2(u2.domain)}</div>` : ""}
+        ${unitHit ? `<div class="ukinds">${unitKindsAvailable(u2).map((k) => kindBtn(g3, u2, k)).join("")}</div>` : ""}
+        ${subHit.length ? `<ol class="usub-list">${subHit.map(([tp, n]) => subBtn(g3, u2, tp, n)).join("")}</ol>` : ""}
+        ${unitHit && subs.length > 1 && subHit.length < subs.length ? `<details class="usubs"><summary>小単元をえらぶ(${subs.length})</summary><ol class="usub-list">${subs.map(([tp, n]) => subBtn(g3, u2, tp, n)).join("")}</ol></details>` : ""}
+      </div>`).join("")}</div>`;
+  }
+  $("homeQ").placeholder = "単元・小単元をさがす(れい:グラフ、時計、分数)";
+  $("homeQ").addEventListener("input", renderSearch);
+  $("homeQ").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") e.target.blur();
+  });
+  $("homeQClear").addEventListener("click", () => {
+    $("homeQ").value = "";
+    renderSearch();
+    $("homeQ").focus();
+  });
   function showView(v) {
     if (v === "home") {
       if (GRADES[Number(el.grade.value)] && document.body.dataset.view === "print") homeGrade = Number(el.grade.value);
@@ -40089,6 +40174,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       renderHome();
       mascot(...LEVEL_SAY[homeLevel]);
     } else if (b.dataset.unit) {
+      if (b.dataset.g) homeGrade = Number(b.dataset.g); // さがした結果から(ほかの学年の単元)
       mascot("maru", "OK！<br>プリントを 作るよ");
       openPrint(b.dataset.unit, b.dataset.kind, Number(b.dataset.sub) || 0);
     }
