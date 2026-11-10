@@ -34643,7 +34643,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     // 1問ぶんの答え(四角・線・図・メモ)
     const itemKey = (p2, a0, ws) => {
       const disp = p2.answer?.display ?? "";
-      const F = p2.figure?.type === "hissan" ? [] : keyFills(a0.text + (a0.need ? " " + a0.box : ""), disp);
+      // answer.fills があれば、四角の順にそのまま入れる(四角のあいだに文がある問題など)
+      const F = p2.answer?.fills || (p2.figure?.type === "hissan" ? [] : keyFills(a0.text + (a0.need ? " " + a0.box : ""), disp));
       const fills = F && F.length && F.every((x) => x) ? F : null;
       const lk = fills ? null : lineKeys(ws, disp);
       let kfig = p2.answer?.figure || null, inFig = false;
@@ -36042,7 +36043,11 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           { label: "m と cm", generator: "g2.measureConv", kinds: ["drill", "test"], params: { systems: ["mcm"] } },
           { label: "長さの計算(m・cm)", generator: "g2.measureCalc", kinds: ["drill", "test"], params: { systems: ["mcm"] } },
           { label: "長さの文章題(m・cm)", generator: "g2.measureWord", kinds: ["word", "test"], params: { systems: ["mcm"] } },
-          { label: "まきじゃくを読む", generator: "g2.tapeRead", kinds: ["figure", "test"] }
+          { label: "まきじゃくを読む", generator: "g2.tapeRead", kinds: ["figure", "test"] },
+          { label: "あてはまるたんい", generator: "u.unitPick", kinds: ["drill", "test"], params: { units: "mmcmm" }, options: [
+            { key: "units", label: "えらぶたんい", choices: [["auto", "mm・cm・m(2年)"], ["mmcm", "mm・cm"], ["mmcmm", "mm・cm・m"], ["all", "mm・cm・m・km"]] },
+            { key: "conv", label: "たんいのへんかん", choices: [["auto", "なし"], ["on", "あり(1m53cm の形)"], ["dec", "あり(小数 1.53m の形)"]] }
+          ] }
         ]
       },
       {
@@ -36392,7 +36397,11 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
               "figure",
               "test"
             ]
-          }
+          },
+          { label: "あてはまるたんい", generator: "u.unitPick", kinds: ["drill", "test"], params: { units: "all" }, options: [
+            { key: "units", label: "えらぶたんい", choices: [["auto", "mm・cm・m・km(3年)"], ["mmcm", "mm・cm"], ["mmcmm", "mm・cm・m"], ["all", "mm・cm・m・km"]] },
+            { key: "conv", label: "たんいのへんかん", choices: [["auto", "なし"], ["on", "あり(1m53cm の形)"], ["dec", "あり(小数 1.53m の形)"]] }
+          ] }
         ]
       },
       {
@@ -37261,7 +37270,11 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           { label: "10倍・1/10にした小数", generator: "g4.decTimes", kinds: ["drill", "test"] },
           { label: "小数のたし算・ひき算", generator: "g4.decAddSub", kinds: ["drill", "test"], weight: 2 },
           { label: "小数の文章題", generator: "g4.decWord4", kinds: ["word", "test"] },
-          { label: "数直線と小数", generator: "g4.decLine4", kinds: ["figure", "test"] }
+          { label: "数直線と小数", generator: "g4.decLine4", kinds: ["figure", "test"] },
+          { label: "あてはまるたんい", generator: "u.unitPick", kinds: ["drill"], params: { units: "all" }, options: [
+            { key: "units", label: "えらぶたんい", choices: [["auto", "mm・cm・m・km"], ["mmcm", "mm・cm"], ["mmcmm", "mm・cm・m"], ["all", "mm・cm・m・km"]] },
+            { key: "conv", label: "たんいのへんかん", choices: [["auto", "なし"], ["on", "あり(1m53cm の形)"], ["dec", "あり(小数 1.53m の形)"]] }
+          ] }
         ]
       },
       {
