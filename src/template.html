@@ -515,6 +515,17 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
 .keyed .item.trace .kbox > .key .kv { color: var(--key); font-weight: bold; }
 .trace-note { font-size: 9.5pt; color: #666; white-space: nowrap; margin-left: auto; }
 .ws-rule { position: relative; }
+.ws-qa { margin: 3mm 0 0 4mm; }
+.qa-row { display: flex; align-items: center; gap: 6mm; min-height: 21mm; }
+.qa-q { flex: 1 1 auto; min-width: 0; font-size: 15pt; line-height: 1.45; }
+.qa-note { display: block; font-size: 9.5pt; color: #8a8a8a; margin: 0.8mm 0 0 1.2em; line-height: 1.4; }
+.qa-ans { flex: none; position: relative; width: 44mm; height: 15mm; margin-right: 2mm; }
+.qa-ans::before, .qa-ans::after { content: ""; position: absolute; top: 0; bottom: 0; width: 2.6mm; border: 0.9pt solid #333; }
+.qa-ans::before { left: 0; border-right: none; }
+.qa-ans::after { right: 0; border-left: none; }
+.qa-ans > .qa-rule { position: absolute; left: 3mm; right: 11mm; top: 0; bottom: 0; height: auto; border: none; }
+.qa-unit { position: absolute; right: 4.5mm; bottom: 2.6mm; font-size: 15pt; line-height: 1; color: #b5b5b5; }
+.qa-ans .key-line { left: 50%; transform: translateX(-50%); bottom: 2.2mm; font-size: 17pt; line-height: 1; }
 .key-line { position: absolute; left: 1.5mm; bottom: 0.6mm; color: var(--key); font-weight: bold; font-size: 12.5pt; line-height: 1.35; white-space: nowrap; }
 .keyed .key-line { display: block; }
 .calc { position: relative; }
@@ -34007,6 +34018,10 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   function workspaceHtml(ws, policy, problem, keys, note = "") {
     if (!ws || ws.type === "none") return "";
     if (ws.type === "grid") return `<div class="ws-grid">${svgGrid(ws.rows, ws.cols)}${note}</div>`;
+    if (ws.type === "qa") {
+      // 問いを左に大きく、右に「［　　%］」のかっこの答えらん(円グラフを読む など)
+      return `<div class="ws-qa">${ws.labels.map((l, i) => `<div class="qa-row"><div class="qa-q"><span class="qa-text">${t(l, policy)}</span>${ws.notes && ws.notes[i] ? `<span class="qa-note">${t(ws.notes[i], policy)}</span>` : ""}</div><div class="qa-ans"><span class="ws-rule qa-rule">${keys && keys[i] ? `<span class="key key-line">${t(keys[i], policy)}</span>` : ""}</span>${ws.unit ? `<span class="qa-unit">${t(ws.unit, policy)}</span>` : ""}</div></div>`).join("")}</div>`;
+    }
     if (ws.type === "lines") {
       return `<div class="ws-lines${ws.wideLabel ? " wide-label" : ""}">${ws.labels.map((l, i) => `<div class="ws-line"><span class="ws-label">${t(l, policy)}</span><span class="ws-rule">${keys && keys[i] ? `<span class="key key-line">${t(keys[i], policy)}</span>` : ""}</span></div>`).join("")}</div>`;
     }
@@ -34216,6 +34231,19 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   }
   // 答えの線(式・答え・(1)…)に書く答え。答えの「式 …　答え …」を線のことばに合わせて分ける
   function lineKeys(ws, display) {
+    if (ws && ws.type === "qa") {
+      // 「① 40%　② 30%」→ ①②… で問いに合わせ、かっこの中に出ている単位はのぞく
+      const parts = String(display ?? "").split("　").map((x) => x.trim()).filter(Boolean);
+      const unit = ws.unit ? plainAns(ws.unit) : "";
+      const keys = ws.labels.map((l) => {
+        const m = [...plainAns(l).trim()][0];
+        const x = parts.find((q) => [...q][0] === m);
+        if (!x) return null;
+        const v = x.slice(m.length).trim();
+        return unit && v.endsWith(unit) ? v.slice(0, -unit.length).trim() : v;
+      });
+      return keys.every((k) => k) ? { keys, rest: "" } : null;
+    }
     if (!ws || ws.type !== "lines" || !ws.labels.length) return null;
     const d = String(display ?? "").trim();
     if (!d) return null;

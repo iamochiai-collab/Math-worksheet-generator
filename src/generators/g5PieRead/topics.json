@@ -1,0 +1,8 @@
+{"g5-15": [
+ {"label": "百分率を求める", "generator": "rate.compute", "kinds": ["drill", "test"], "params": {"modes": ["percent"]}},
+ {"label": "割合から数を求める", "generator": "rate.quantity", "kinds": ["drill", "test"], "params": {"types": ["compare"]}},
+ {"label": "円グラフとは", "generator": "g5.pieRead", "kinds": ["figure"]},
+ {"label": "グラフを読む", "generator": "graph.read", "kinds": ["figure", "test"]},
+ {"label": "グラフに表す", "generator": "graph.draw", "kinds": ["figure", "test"]},
+ {"label": "2つのグラフを比べる", "generator": "graph.compare", "kinds": ["figure", "test"]}
+]}
