@@ -66,6 +66,7 @@ body {
 .panel button.secondary { background: #fff; color: #2b3a55; }
 .panel button:disabled { opacity: 0.4; cursor: default; }
 .panel .more, .panel .basic { display: contents; }
+.panel .opt-wrap { display: contents; }
 .panel .more-toggle, .panel .sum-toggle, .panel .buttons .sm { display: none; }
 .panel .msg { width: 100%; color: #a11; font-size: 13px; min-height: 1.2em; }
 .panel .hint { width: 100%; color: #666; font-size: 12px; }
@@ -430,6 +431,9 @@ table.data.dense th, table.data.dense td { padding: 3pt 4pt; min-width: 26pt; }
 .item.side-no > :not(.item-head) { grid-column: 2; }
 .item.side-no .figure { margin: 0; }
 .item.side-no > .ans-under { justify-self: end; margin-right: 6mm; }
+/* 1ページにたくさん入れるとき(compact)は、答えの四角を少しひくく */
+.sheet .item.compact .abox.ans { height: 8.5mm; margin-top: 0.3mm; margin-bottom: 0.3mm; }
+.item.compact > .ans-under { margin-top: 0; margin-bottom: 0; }
 .item.has-hissan { flex-direction: row; align-items: flex-start; flex-wrap: nowrap; }
 .item.has-hissan .item-no { min-width: 18pt; padding-top: 2pt; }
 .item.has-hissan > .item-head { flex: none; }
@@ -620,6 +624,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   <label>学年<select id="grade"></select></label>
   <label>単元<select id="unit"></select></label>
   <label id="subWrap" hidden>小単元<select id="subunit"></select></label>
+  <span id="optWrap" class="opt-wrap"></span>
   <label>種類<select id="kind"></select></label>
   <label>難易度<select id="level"></select></label>
   <label id="fromWrap" hidden>はじめの かず<select id="from"></select></label>
@@ -33052,7 +33057,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   };
   // 読み方が前後で変わることば(辞書の前になおす)
   var TOPIC_FIX = [[/上(?=が)/g, "{上|あ}"], [/下(?=が)/g, "{下|さ}"], [/(?<=[ぁ-ん])方/g, "{方|かた}"], [/分(?=け)/g, "{分|わ}"], [/何分の一/g, "{何分|なんぶん}の{一|いち}"], [/何分(?=前|後)/g, "{何分|なんぷん}"], [/がい数/g, "がい{数|すう}"], [/積(?=み)/g, "{積|つ}"], [/表(?=し)/g, "{表|あらわ}"]];
-  function buildSheet({ gradeData, unitId, kind, level, count, seed, from = 0, topicNo = 0, extra = 0 }) {
+  function buildSheet({ gradeData, unitId, kind, level, count, seed, from = 0, topicNo = 0, extra = 0, opts = null }) {
     const unit = gradeData.units.find((u2) => u2.id === unitId);
     if (!unit) throw new Error(`単元がない: ${unitId}`);
     if (!KINDS9[kind]) throw new Error(`種類が不正: ${kind}`);
@@ -33068,6 +33073,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     const make3 = (topic, n, points) => {
       const gen2 = getGenerator(topic.generator);
       const p = topicParams(topic, level);
+      // 小単元の「えらべる設定」(topic.options)。"auto" は★に合わせる
+      if (opts && topic.options) for (const o of topic.options) if (opts[o.key] != null && opts[o.key] !== "auto") p[o.key] = o.num ? Number(opts[o.key]) : opts[o.key];
       // 絵のプリントで 1問しかない種類は、お手本(れい)にしない(れいばかりにならないように)
       if (kind === "yoji" && n < 2 && p.example) p.example = false;
       const out = [];
@@ -33093,7 +33100,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
         if (pr.softKey) usedSoft.add(`${gen2.id}:${pr.softKey}`);
         out.push({ ...pr, topic: topic.label, generator: gen2.id, points });
       }
-      return { instruction: gen2.instruction || null, topic: topic.label, problems: out, pointsEach: points, group: curGroup };
+      return { instruction: (gen2.instructionFor ? gen2.instructionFor(p) : gen2.instruction) || null, topic: topic.label, problems: out, pointsEach: points, group: curGroup };
     };
     const sections = [];
     let curGroup = kind;
@@ -34147,7 +34154,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       s = s.replace(/\[\[(?:fbox1?|mbox|abox:[\d.]+)\]\]/g, `[[${kind}:${w}]]`);
       return { text: s, need: !has && !own && !p.noAnswerBox, box: [...flat].length > 13 ? "[[aline]]" : `[[${kind}:${w}]]` };
     }
-    if (p.ansBox) return { text: s, need: true, box: String(p.ansBox).replace(/□/g, "[[abox:20]]") };
+    if (p.ansBox) return { text: s, need: true, box: String(p.ansBox).replace(/□/g, `[[abox:${p.ansBoxW || 20}]]`) };
     return { text: s, need: !has && !own && !p.noAnswerBox, box: boxFor(display, unitFrac) };
   }
   // ===== 答えのページ:問題のプリントに答えを書きこむ =====
@@ -34697,7 +34704,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           // 式は考えるスペース(か計算のます)があるときだけ書く
           const note = K ? noteHtml(K.note || (calcMm || gridWs ? K.work : "")) : "";
           return `
-        <li class="item ${p2.workspace?.type === "grid" ? "has-grid" : ""} ${p2.figure ? "has-figure" : ""}${p2.figure?.type === "hissan" ? " has-hissan" : ""}${p2.sideNo ? " side-no" : ""}${tr ? " trace" : ""}">
+        <li class="item ${p2.workspace?.type === "grid" ? "has-grid" : ""} ${p2.figure ? "has-figure" : ""}${p2.figure?.type === "hissan" ? " has-hissan" : ""}${p2.sideNo ? " side-no" : ""}${p2.compact ? " compact" : ""}${tr ? " trace" : ""}">
           ${!p2.no && !String(a.text + tail).trim() ? "" : `<span class="item-head">${p2.no ? `<span class="item-no">(${p2.no})</span>` : ""}${p2.figure?.type === "hissan" ? "" : `<span class="item-body">${tk(a.text + tail)}</span>`}</span>`}
           ${fig(p2, K?.kfig)}
           ${calcMm ? calcHtml(calcMm, policy, p2.workspace?.type === "lines" ? "{考|かんが}え{方|かた}" : "", note) : ""}
@@ -35733,7 +35740,11 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           { label: "長さの計算", generator: "g2.measureCalc", kinds: ["drill", "test"], params: { systems: ["cmmm"] } },
           { label: "長さの文章題", generator: "g2.measureWord", kinds: ["word", "test"], params: { systems: ["cmmm"] } },
           { label: "ものさしを読む", generator: "g2.rulerRead", kinds: ["figure", "test"] },
-          { label: "テープの長さをはかる", generator: "g2.tapeLen", kinds: ["figure", "test"] }
+          { label: "テープの長さをはかる", generator: "g2.tapeLen", kinds: ["figure", "test"], options: [
+            { key: "from", label: "テープのはじまり", choices: [["auto", "★に合わせる"], ["zero", "0から"], ["cm", "とちゅうから(cmの目もり)"], ["mm", "とちゅうから(mmの目もり)"], ["mix", "0から・とちゅうから まぜる"]] },
+            { key: "unit", label: "答え", choices: [["auto", "何cm何mm"], ["cm", "何cmだけ"]] },
+            { key: "per", label: "1ページの問題数", num: true, choices: [["auto", "おまかせ(4問)"], ["3", "3問(大きく)"], ["4", "4問"], ["5", "5問"], ["6", "6問(小さく)"]] }
+          ] }
         ]
       },
       {
@@ -39551,8 +39562,31 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     const avail = sub ? topicKinds(sub) : unit ? unitKindsAvailable(unit) : [];
     fill2(el.kind, Object.entries(KINDS9).map(([k, v]) => ({ value: k, label: v.label, disabled: !avail.includes(k) })), true);
     fill2(el.level, Object.entries(LEVELS).map(([k, v]) => ({ value: k, label: v.label })), true);
+    refreshOpts(sub);
     refreshCounts();
   }
+  // 小単元の「えらべる設定」(テープのはじまり・答えの形・1ページの問題数 など)。同じ小単元のあいだは えらんだものをのこす
+  function refreshOpts(sub) {
+    const w = $("optWrap"), key = sub ? `${el.unit.value}:${el.subunit.value}` : "";
+    if (w.dataset.key === key) return;
+    const prev = {};
+    for (const s2 of w.querySelectorAll("select")) prev[s2.dataset.opt] = s2.value;
+    w.dataset.key = key;
+    w.innerHTML = (sub?.options || []).map((o) => `<label>${esc2(o.label)}<select data-opt="${esc2(o.key)}">${o.choices.map(([v, l]) => `<option value="${esc2(v)}">${esc2(l)}</option>`).join("")}</select></label>`).join("");
+    for (const s2 of w.querySelectorAll("select")) {
+      if (prev[s2.dataset.opt] && [...s2.options].some((o) => o.value === prev[s2.dataset.opt])) s2.value = prev[s2.dataset.opt];
+      s2.addEventListener("change", () => {
+        // 「1ページの問題数」をえらんだら、問題数もその数(1まいぶん)にそろえる
+        if (s2.dataset.opt === "per" && s2.value !== "auto" && [...el.count.options].some((o) => o.value === s2.value)) el.count.value = s2.value;
+        setTimeout(updateSummary, 0);
+      });
+    }
+  }
+  var currentOpts = () => {
+    const o = {};
+    for (const s2 of $("optWrap").querySelectorAll("select")) o[s2.dataset.opt] = s2.value;
+    return Object.keys(o).length ? o : null;
+  };
   function refreshCounts() {
     const k = KINDS9[el.kind.value];
     if (!k || !k.counts) {
@@ -39607,7 +39641,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       count: el.count.disabled ? null : Number(el.count.value),
       seed: Number(el.seed.value) || 1,
       from: el.fromWrap.hidden ? 0 : Number(el.from.value) || 0,
-      topicNo: el.subWrap.hidden ? 0 : Number(el.subunit.value) || 0
+      topicNo: el.subWrap.hidden ? 0 : Number(el.subunit.value) || 0,
+      opts: el.subWrap.hidden ? null : currentOpts()
     };
   }
   // スマホなど画面のはばがせまいときは、A4 のプリントを画面に入る大きさにして見せる(ページ分けのあとで)
@@ -40218,6 +40253,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     const parts = [opt(el.grade), opt(el.unit).replace(/^\d+\s*/, "")];
     if (!el.subWrap.hidden && el.subunit.value !== "0") parts.push(opt(el.subunit).replace(/^\d+\s*/, ""));
     parts.push(opt(el.kind), opt(el.level));
+    for (const s2 of $("optWrap").querySelectorAll("select")) if (s2.value !== "auto") parts.push(opt(s2));
     if (!el.count.disabled) parts.push(opt(el.count));
     $("sumText").textContent = parts.filter(Boolean).join(" ・ ");
     $("miniSum").textContent = $("sumText").textContent;
