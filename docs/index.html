@@ -424,6 +424,12 @@ table.data.dense th, table.data.dense td { padding: 3pt 4pt; min-width: 26pt; }
 .answers .ans-fig { zoom: 0.68; }
 
 /* ===== 3年: 筆算の小問、長いラベルの解答らん ===== */
+/* 番号を図の左に(テープの長さ など)。答えの四角は図の下の右に */
+.item.side-no { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 4pt; row-gap: 1pt; align-items: start; }
+.item.side-no > .item-head { grid-row: 1 / span 3; padding-top: 4mm; }
+.item.side-no > :not(.item-head) { grid-column: 2; }
+.item.side-no .figure { margin: 0; }
+.item.side-no > .ans-under { justify-self: end; margin-right: 6mm; }
 .item.has-hissan { flex-direction: row; align-items: flex-start; flex-wrap: nowrap; }
 .item.has-hissan .item-no { min-width: 18pt; padding-top: 2pt; }
 .item.has-hissan > .item-head { flex: none; }
@@ -38636,6 +38642,78 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     };
   })();
 
+  // add/g2TapeLen
+  // 2年「長さのたんい」:テープの長さをものさしではかる(何cm何mm)。
+  // テープは灰色のおびで、ものさしのふちにぴったりのせる。はしから点線を目もりまでおろして、どこからどこまでかを見やすくする。
+  // ★1 は0から、★2 は0でない cm の目もりから、★3 は mm の目もりから(ものさしも8cm)
+  var g2TapeLen = (() => {
+    const cmmm = (v) => `${Math.floor(v / 10)}cm${v % 10}mm`;
+    function figure(start, len, maxCm) {
+      const K = maxCm > 6 ? 1.75 : 2.2; // 1mm を何mmでかくか
+      const L = 6, R = maxCm * 10;
+      const X = (v) => L + 4 + v * K;
+      const tapeY = 3, tapeH = 7.5, top = tapeY + tapeH, rulerH = 17;
+      const W = X(R) + 12;
+      const items = [];
+      // ものさし
+      items.push({ t: "poly", pts: [[L, top], [X(R) + 5, top], [X(R) + 5, top + rulerH], [L, top + rulerH]], fill: "#fffdf3", w: 0.5, lead: true });
+      for (let v = 0; v <= R; v++) {
+        const len = v % 10 === 0 ? 6.5 : v % 5 === 0 ? 4.6 : 3;
+        items.push({ t: "line", x1: X(v), y1: top, x2: X(v), y2: top + len, w: v % 10 === 0 ? 0.45 : v % 5 === 0 ? 0.3 : 0.2, lead: true });
+        if (v % 10 === 0) items.push({ t: "text", x: X(v), y: top + 12.2, s: String(v / 10), size: 4.4, halo: false });
+      }
+      items.push({ t: "text", x: X(R) + 3.6, y: top + 15.2, s: "cm", size: 3.2, anchor: "end", halo: false });
+      // テープ(灰色のおび)と、はしからおろす点線
+      const x1 = X(start), x2 = X(start + len);
+      items.push({ t: "poly", pts: [[x1, tapeY], [x2, tapeY], [x2, top], [x1, top]], fill: "#cfcfcf", w: 0.6, lead: true });
+      for (const x of [x1, x2]) items.push({ t: "line", x1: x, y1: tapeY - 2, x2: x, y2: top + 6.5, w: 0.4, dash: "1.2 0.9", color: "#333", lead: true });
+      return { type: "draw", w: W, h: top + rulerH + 1.5, items, meta: { start, len, maxCm } };
+    }
+    const gen = {
+      id: "g2.tapeLen",
+      grade: 2,
+      instruction: "テープの{長|なが}さは、{何|なん}cm{何|なん}mmですか。",
+      defaults: { from: "zero", maxCm: 6 },
+      levels: {
+        basic: { from: "zero", maxCm: 6 },
+        normal: { from: "cm", maxCm: 6 },
+        challenge: { from: "mm", maxCm: 8 }
+      },
+      generate(rng, p) {
+        const R = p.maxCm * 10;
+        for (let t = 0; t < 500; t++) {
+          const start = p.from === "zero" ? 0 : p.from === "cm" ? rng.int(1, 4) * 10 : rng.int(3, 45);
+          if (p.from === "mm" && start % 10 === 0) continue;
+          const len = rng.int(12, R - start);
+          if (len % 10 === 0 || start + len > R) continue;
+          return {
+            key: `tl:${start}:${len}`,
+            softKey: `tl${len}`,
+            text: "",
+            ansBox: "□cm□mm",
+            sideNo: true,
+            wide: true,
+            figure: figure(start, len, p.maxCm),
+            answer: { display: cmmm(len), value: len },
+            meta: { start, len }
+          };
+        }
+        throw new Error("テープの問題が作れない");
+      },
+      verify(pr, p) {
+        const { start, len } = pr.figure.meta;
+        if (pr.answer.display !== cmmm(len) || pr.answer.value !== len) return "答えが合わない";
+        if (len % 10 === 0) return "mm が0";
+        if (start + len > p.maxCm * 10) return "ものさしからはみ出す";
+        if (p.from === "zero" && start !== 0) return "0からでない";
+        if (p.from === "cm" && (start === 0 || start % 10)) return "cm の目もりからでない";
+        if (p.from === "mm" && start % 10 === 0) return "mm の目もりからでない";
+        return null;
+      }
+    };
+    return [gen];
+  })();
+
   // add/g3MergeTables
   // 3年「ぼうグラフと表」:組(月・曜日)ごとの3〜4つの表を、1つの表(二次元表)にまとめる
   // 図は draw(mm)。上に元の表、矢印、下にまとめる表(左上にななめの線)。答えの図は、空らんにオレンジの数を書きこむ
@@ -50809,7 +50887,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     prismNet_default,
     cylinderNet_default
   ];
-  list.push(...chu1, ...chu2, ...chu3, ...g3MergeTables, ...g4LineGraph, ...g5PieRead, ...kou0, ...kou1, ...kou2, ...kou3, ...kouA, ...kouB, ...kouC, ...tokushi, ...yoji);
+  list.push(...chu1, ...chu2, ...chu3, ...g2TapeLen, ...g3MergeTables, ...g4LineGraph, ...g5PieRead, ...kou0, ...kou1, ...kou2, ...kou3, ...kouA, ...kouB, ...kouC, ...tokushi, ...yoji);
   var generators = Object.fromEntries(list.map((g3) => [g3.id, g3]));
   function getGenerator(id) {
     const g3 = generators[id];
@@ -51979,6 +52057,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       s = s.replace(/\[\[(?:fbox1?|mbox|abox:[\d.]+)\]\]/g, `[[${kind}:${w}]]`);
       return { text: s, need: !has && !own && !p.noAnswerBox, box: [...flat].length > 13 ? "[[aline]]" : `[[${kind}:${w}]]` };
     }
+    if (p.ansBox) return { text: s, need: true, box: String(p.ansBox).replace(/□/g, "[[abox:20]]") };
     return { text: s, need: !has && !own && !p.noAnswerBox, box: boxFor(display, unitFrac) };
   }
   // ===== 答えのページ:問題のプリントに答えを書きこむ =====
@@ -52219,6 +52298,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     "g2-04|g2.measureConv": "1cm＝10mm。たんいを まちがえないように、こたえにも cm、mm を かこう。",
     "g2-04|g2.measureCalc": "おなじ たんいどうしで {計算|けいさん}しよう。こたえに たんい(cm・mm)を かこう。",
     "g2-04|g2.measureWord": "しきと こたえを かこう。こたえには たんい(cm・mm)も かこう。",
+    "g2.tapeLen": "テープの はしから はしまでの {目|め}もりを {数|かぞ}えよう。0からでない ときは、テープの はじめの {目|め}もりから {数|かぞ}えるよ。",
     "g2.rulerRead": "{小|ちい}さい 1{目|め}もりは 1mm、{長|なが}い {目|め}もり 1つは 1cm(＝10mm)だよ。",
     "g2-06|g2.measureConv": "1L＝10dL、1dL＝100mL、1L＝1000mL。1Lますには 1dLますで 10ぱい {入|はい}るよ。",
     "g2-06|g2.measureCalc": "おなじ たんいどうしで {計算|けいさん}しよう。10dLに なったら 1Lに なおせるよ。",
@@ -52527,7 +52607,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           // 式は考えるスペース(か計算のます)があるときだけ書く
           const note = K ? noteHtml(K.note || (calcMm || gridWs ? K.work : "")) : "";
           return `
-        <li class="item ${p2.workspace?.type === "grid" ? "has-grid" : ""} ${p2.figure ? "has-figure" : ""}${p2.figure?.type === "hissan" ? " has-hissan" : ""}${tr ? " trace" : ""}">
+        <li class="item ${p2.workspace?.type === "grid" ? "has-grid" : ""} ${p2.figure ? "has-figure" : ""}${p2.figure?.type === "hissan" ? " has-hissan" : ""}${p2.sideNo ? " side-no" : ""}${tr ? " trace" : ""}">
           ${!p2.no && !String(a.text + tail).trim() ? "" : `<span class="item-head">${p2.no ? `<span class="item-no">(${p2.no})</span>` : ""}${p2.figure?.type === "hissan" ? "" : `<span class="item-body">${tk(a.text + tail)}</span>`}</span>`}
           ${fig(p2, K?.kfig)}
           ${calcMm ? calcHtml(calcMm, policy, p2.workspace?.type === "lines" ? "{考|かんが}え{方|かた}" : "", note) : ""}
@@ -53562,7 +53642,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           { label: "cm と mm", generator: "g2.measureConv", kinds: ["drill", "test"], params: { systems: ["cmmm"] } },
           { label: "長さの計算", generator: "g2.measureCalc", kinds: ["drill", "test"], params: { systems: ["cmmm"] } },
           { label: "長さの文章題", generator: "g2.measureWord", kinds: ["word", "test"], params: { systems: ["cmmm"] } },
-          { label: "ものさしを読む", generator: "g2.rulerRead", kinds: ["figure", "test"] }
+          { label: "ものさしを読む", generator: "g2.rulerRead", kinds: ["figure", "test"] },
+          { label: "テープの長さをはかる", generator: "g2.tapeLen", kinds: ["figure", "test"] }
         ]
       },
       {

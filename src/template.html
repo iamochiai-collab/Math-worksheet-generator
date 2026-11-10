@@ -424,6 +424,12 @@ table.data.dense th, table.data.dense td { padding: 3pt 4pt; min-width: 26pt; }
 .answers .ans-fig { zoom: 0.68; }
 
 /* ===== 3年: 筆算の小問、長いラベルの解答らん ===== */
+/* 番号を図の左に(テープの長さ など)。答えの四角は図の下の右に */
+.item.side-no { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 4pt; row-gap: 1pt; align-items: start; }
+.item.side-no > .item-head { grid-row: 1 / span 3; padding-top: 4mm; }
+.item.side-no > :not(.item-head) { grid-column: 2; }
+.item.side-no .figure { margin: 0; }
+.item.side-no > .ans-under { justify-self: end; margin-right: 6mm; }
 .item.has-hissan { flex-direction: row; align-items: flex-start; flex-wrap: nowrap; }
 .item.has-hissan .item-no { min-width: 18pt; padding-top: 2pt; }
 .item.has-hissan > .item-head { flex: none; }
@@ -34141,6 +34147,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       s = s.replace(/\[\[(?:fbox1?|mbox|abox:[\d.]+)\]\]/g, `[[${kind}:${w}]]`);
       return { text: s, need: !has && !own && !p.noAnswerBox, box: [...flat].length > 13 ? "[[aline]]" : `[[${kind}:${w}]]` };
     }
+    if (p.ansBox) return { text: s, need: true, box: String(p.ansBox).replace(/□/g, "[[abox:20]]") };
     return { text: s, need: !has && !own && !p.noAnswerBox, box: boxFor(display, unitFrac) };
   }
   // ===== 答えのページ:問題のプリントに答えを書きこむ =====
@@ -34381,6 +34388,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     "g2-04|g2.measureConv": "1cm＝10mm。たんいを まちがえないように、こたえにも cm、mm を かこう。",
     "g2-04|g2.measureCalc": "おなじ たんいどうしで {計算|けいさん}しよう。こたえに たんい(cm・mm)を かこう。",
     "g2-04|g2.measureWord": "しきと こたえを かこう。こたえには たんい(cm・mm)も かこう。",
+    "g2.tapeLen": "テープの はしから はしまでの {目|め}もりを {数|かぞ}えよう。0からでない ときは、テープの はじめの {目|め}もりから {数|かぞ}えるよ。",
     "g2.rulerRead": "{小|ちい}さい 1{目|め}もりは 1mm、{長|なが}い {目|め}もり 1つは 1cm(＝10mm)だよ。",
     "g2-06|g2.measureConv": "1L＝10dL、1dL＝100mL、1L＝1000mL。1Lますには 1dLますで 10ぱい {入|はい}るよ。",
     "g2-06|g2.measureCalc": "おなじ たんいどうしで {計算|けいさん}しよう。10dLに なったら 1Lに なおせるよ。",
@@ -34689,7 +34697,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           // 式は考えるスペース(か計算のます)があるときだけ書く
           const note = K ? noteHtml(K.note || (calcMm || gridWs ? K.work : "")) : "";
           return `
-        <li class="item ${p2.workspace?.type === "grid" ? "has-grid" : ""} ${p2.figure ? "has-figure" : ""}${p2.figure?.type === "hissan" ? " has-hissan" : ""}${tr ? " trace" : ""}">
+        <li class="item ${p2.workspace?.type === "grid" ? "has-grid" : ""} ${p2.figure ? "has-figure" : ""}${p2.figure?.type === "hissan" ? " has-hissan" : ""}${p2.sideNo ? " side-no" : ""}${tr ? " trace" : ""}">
           ${!p2.no && !String(a.text + tail).trim() ? "" : `<span class="item-head">${p2.no ? `<span class="item-no">(${p2.no})</span>` : ""}${p2.figure?.type === "hissan" ? "" : `<span class="item-body">${tk(a.text + tail)}</span>`}</span>`}
           ${fig(p2, K?.kfig)}
           ${calcMm ? calcHtml(calcMm, policy, p2.workspace?.type === "lines" ? "{考|かんが}え{方|かた}" : "", note) : ""}
@@ -35724,7 +35732,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           { label: "cm と mm", generator: "g2.measureConv", kinds: ["drill", "test"], params: { systems: ["cmmm"] } },
           { label: "長さの計算", generator: "g2.measureCalc", kinds: ["drill", "test"], params: { systems: ["cmmm"] } },
           { label: "長さの文章題", generator: "g2.measureWord", kinds: ["word", "test"], params: { systems: ["cmmm"] } },
-          { label: "ものさしを読む", generator: "g2.rulerRead", kinds: ["figure", "test"] }
+          { label: "ものさしを読む", generator: "g2.rulerRead", kinds: ["figure", "test"] },
+          { label: "テープの長さをはかる", generator: "g2.tapeLen", kinds: ["figure", "test"] }
         ]
       },
       {
