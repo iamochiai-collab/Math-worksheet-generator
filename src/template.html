@@ -198,7 +198,9 @@ body[data-view="print"] .home { display: none; }
 .hf-head { font-size: 14px; color: #444; margin: 0 0 8px; }
 .hf-head b { color: #1f2a40; }
 .ucard .ugrade { flex: none; margin-left: auto; font-size: 12px; font-weight: bold; color: #fff; background: var(--gc); border-radius: 6px; padding: 1px 7px; margin-top: 2px; white-space: nowrap; }
-.usb mark, .uname mark { background: #ffe58a; color: inherit; border-radius: 2px; padding: 0 1px; }
+.uwhy { font-size: 12px; color: #555; line-height: 1.45; display: flex; flex-direction: column; gap: 1px; }
+.uwhy span::before { content: "内容:"; color: #888; }
+.usb mark, .uname mark, .uwhy mark, .udomain mark { background: #ffe58a; color: inherit; border-radius: 2px; padding: 0 1px; }
 .home.searching .home-units-head, .home.searching #homeUnits, .home.searching .home-cheer { display: none; }
 .home-units { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
 .ucard { background: #fff; border-radius: 10px; border: 1px solid #d5d7de; border-top: 4px solid var(--gc); padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; }
@@ -40070,14 +40072,18 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   // ===== さがす:単元名・小単元名・内容のことばで、学年をこえてさがす(カタカナ・ひらがな、全角・半角は同じとみる) =====
   var rubyBase = (x) => String(x ?? "").replace(/\{([^{}|]+)\|[^{}]*\}/g, "$1");
   var rubyKana = (x) => String(x ?? "").replace(/\{[^{}|]+\|([^{}]*)\}/g, "$1");
-  var normQ = (x) => String(x ?? "").normalize("NFKC").toLowerCase().replace(/[\u30a1-\u30f6]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0x60)).replace(/[\s・、,.。「」()]/g, "");
+  // 「表す・表し方」の 表 は「あらわ」とみる(「表」でさがしたとき、表(ひょう)だけが出るように)
+  var normQ = (x) => String(x ?? "").normalize("NFKC").toLowerCase().replace(/[\u30a1-\u30f6]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0x60)).replace(/表(?=[さしすせそ])/g, "あらわ").replace(/代表/g, "代\ue000").replace(/表(?=[示現])/g, "\ue000").replace(/[\s・、,.。「」()]/g, "");
+  // 「表」は ひらがなの「ひょう」(2年「グラフとひょう」など)でも見つける
+  var altsQ = (w) => [...new Set([w, w.replace(/表/g, "ひょう"), w.replace(/ひょう/g, "表")])];
   var hay = (...xs) => xs.map((x) => normQ(rubyBase(x)) + "\n" + normQ(rubyKana(x))).join("\n");
   function markHit(text, words) {
     // 見つかったところに色をつける(ことばはひらがなにそろえてくらべる)
-    const ch = [...String(text)], n = ch.map((c) => normQ(c));
+    const ch = [...String(text)], n = ch.map((c, i) => c !== "表" ? normQ(c) : /[さしすせそ]/.test(ch[i + 1] || "") ? "あらわ" : ch[i - 1] === "代" || /[示現]/.test(ch[i + 1] || "") ? "\ue000" : "表");
     const on = new Array(n.length).fill(false);
-    for (const w of words) {
+    for (const w of words.flatMap(altsQ)) {
       for (let i = 0; i < n.length; i++) {
+        if (!n[i]) continue; // 「、」などからは色をつけはじめない
         let j = i, acc = "";
         while (j < n.length && acc.length < w.length) acc += n[j++];
         if (acc === w) for (let k = i; k < j; k++) on[k] = true;
@@ -40105,9 +40111,12 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
         if (!isReady(u2)) continue;
         const uh = hay(u2.name, u2.domain, ...(u2.contents || []));
         const subs = hasSubs(g3) ? u2.topics.map((tp, i) => [tp, i + 1]).filter(([tp]) => topicKinds(tp).length) : [];
-        const subHit = subs.filter(([tp]) => words.every((w) => (uh + "\n" + hay(tp.label)).includes(w)) && words.some((w) => hay(tp.label).includes(w)));
-        const unitHit = words.every((w) => uh.includes(w));
-        if (unitHit || subHit.length) hits.push({ g3, u2, subs, subHit, unitHit, nameHit: words.every((w) => hay(u2.name).includes(w)) ? 1 : 0 });
+        const has = (h, w) => altsQ(w).some((a) => h.includes(a));
+        const subHit = subs.filter(([tp]) => words.every((w) => has(uh + "\n" + hay(tp.label), w)) && words.some((w) => has(hay(tp.label), w)));
+        const unitHit = words.every((w) => has(uh, w));
+        // 単元名に出ていないことばで見つかったときは、見つかった「内容」の文を見せる
+        const why = unitHit ? (u2.contents || []).filter((c) => words.some((w) => has(hay(c), w)) && !words.every((w) => has(hay(u2.name, u2.domain), w))) : [];
+        if (unitHit || subHit.length) hits.push({ g3, u2, subs, subHit, unitHit, why, nameHit: words.every((w) => has(hay(u2.name), w)) ? 1 : 0 });
       }
     }
     hits.sort((a, b) => b.nameHit - a.nameHit);
@@ -40115,9 +40124,10 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     const subBtn = (g3, u2, tp, n) => topicKinds(tp).map((k) => `<li><button type="button" class="usb" data-g="${g3}" data-unit="${u2.id}" data-sub="${n}" data-kind="${k}"><span class="usub-no">${n}</span><span class="usub-name">${markHit(rubyBase(tp.label), words)}</span><span class="usub-kind">${SUB_KIND[k]}</span></button></li>`).join("");
     const MAX = 60;
     $("homeFound").innerHTML = `<p class="hf-head">「<b>${esc2(raw.trim())}</b>」${stageMode ? "(特別支援の段階)" : ""}:${hits.length ? `${hits.length}この単元が見つかりました${hits.length > MAX ? `(はじめの${MAX}こ)` : ""}` : "見つかりませんでした。ことばをかえてみてください(れい:グラフ、時計、分数、面積)"}</p>
-      <div class="home-units">${hits.slice(0, MAX).map(({ g3, u2, subs, subHit, unitHit }) => `<div class="ucard g${g3}">
+      <div class="home-units">${hits.slice(0, MAX).map(({ g3, u2, subs, subHit, unitHit, why }) => `<div class="ucard g${g3}">
         <div class="ucard-head"><span class="uno${u2.numberless ? " extra" : ""}">${u2.numberless ? "補" : u2.order}</span><span class="uname">${markHit(rubyBase(u2.name), words)}</span><span class="ugrade">${esc2(gradeName(g3))}</span></div>
-        ${u2.domain ? `<div class="udomain">${esc2(u2.domain)}</div>` : ""}
+        ${u2.domain ? `<div class="udomain">${markHit(u2.domain, words)}</div>` : ""}
+        ${why.length ? `<div class="uwhy">${why.map((c) => `<span>${markHit(rubyBase(c), words)}</span>`).join("")}</div>` : ""}
         ${unitHit ? `<div class="ukinds">${unitKindsAvailable(u2).map((k) => kindBtn(g3, u2, k)).join("")}</div>` : ""}
         ${subHit.length ? `<ol class="usub-list">${subHit.map(([tp, n]) => subBtn(g3, u2, tp, n)).join("")}</ol>` : ""}
         ${unitHit && subs.length > 1 && subHit.length < subs.length ? `<details class="usubs"><summary>小単元をえらぶ(${subs.length})</summary><ol class="usub-list">${subs.map(([tp, n]) => subBtn(g3, u2, tp, n)).join("")}</ol></details>` : ""}
