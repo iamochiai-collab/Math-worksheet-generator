@@ -587,12 +587,24 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
 .keyed .item.trace svg .keyd, .keyed .item.trace svg text[fill="#ef7d00"] { fill: var(--key, #ef7d00); font-weight: bold; }
 svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
 
+/* ===== ほかの教科のプリントへ(国語・算数・理科・社会 共通) ===== */
+.xsite { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 0 0 12px; }
+.xsite-lbl { font-size: 13px; font-weight: 700; color: #6b7280; margin-right: 2px; }
+.xsite-a { display: inline-flex; align-items: center; min-height: 32px; padding: 3px 14px; border: 2px solid var(--xc); border-radius: 999px;
+  background: #fff; color: var(--xc); font-size: 14px; font-weight: 700; line-height: 1.2; text-decoration: none; white-space: nowrap;
+  transition: background-color .15s, color .15s, transform .15s; }
+a.xsite-a:hover, a.xsite-a:focus-visible { background: var(--xc); color: #fff; transform: translateY(-1px); }
+a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
+.xsite-a.on { background: var(--xc); color: #fff; cursor: default; }
+@media (prefers-reduced-motion: reduce) { .xsite-a { transition: none; } a.xsite-a:hover { transform: none; } }
+@media print { .xsite { display: none !important; } }
 </style>
 </head>
 <body data-view="home">
 <section class="home" id="home">
   <div class="home-top">
     <div class="home-main">
+<nav class="xsite" aria-label="ほかの教科のプリント"><span class="xsite-lbl">教科</span><a class="xsite-a" style="--xc:#C23B33" href="https://iamochiai-collab.github.io/Kokugo-worksheet-generator/">国語</a><span class="xsite-a on" style="--xc:#2B66AE" aria-current="page">算数・数学</span><a class="xsite-a" style="--xc:#2E8A57" href="https://iamochiai-collab.github.io/Science-worksheet-generator/">理科</a><a class="xsite-a" style="--xc:#A87F00" href="https://iamochiai-collab.github.io/Social-worksheet-generator/">社会</a></nav>
   <div class="home-hero">
     <h1>算数プリント<span class="version" id="versionHome"></span></h1>
     <p>ようじ ・ 小学校1〜6年(東京書籍『新編 新しい算数』の単元順) ・ 中学・高校(学習指導要領の内容の順)。学年をえらんで、単元のボタンをおすとプリントができます。</p>
