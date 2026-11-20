@@ -478,7 +478,7 @@ var tokushiStages = [
       { name: "お金と かいもの", domain: "A 数と計算", from: [["t.coinSum", { basic: { values: [10, 100], kinds: [2, 2], maxEach: 5, maxTotal: 999 }, normal: { values: [1, 10, 50, 100], kinds: [2, 3], maxEach: 4, maxTotal: 999 }, challenge: { values: [1, 5, 10, 50, 100, 500], kinds: [3, 4], maxEach: 3, maxTotal: 999 } }, "ぜんぶで いくら"], ["t.coinPick", { basic: { values: [10, 100], kinds: 2, maxEach: 5 }, normal: { values: [1, 10, 100], kinds: 3, maxEach: 4 }, challenge: { values: [1, 5, 10, 50, 100], kinds: 3, maxEach: 4 } }, "ちょうど はらおう"], ["t.change", null, { label: "おつり", kinds: ["word", "test"] }]] },
       { name: "三角形と四角形", domain: "B 図形", from: [["g2-10"]] },
       { name: "はこの形", domain: "B 図形", from: [["g2-17"]] },
-      { name: "長さ", domain: "C 測定", from: [["g2-04"], ["g2-14"]] },
+      { name: "長さ", domain: "C 測定", from: [["t.unitMatch", null, { label: "たんいを せんで むすぼう", kinds: ["yoji"], options: [{ key: "set", label: "たんい", choices: [["auto", "★に合わせる"], ["cm_m", "cm・m"], ["mm_cm_m", "mm・cm・m"], ["all", "mm・cm・m・km"]] }] }], ["g2-04"], ["g2-14"]] },
       { name: "かさ", domain: "C 測定", from: [["g2-06"]] },
       { name: "重さ", domain: "C 測定", from: [["g3-14"]] },
       { name: "時こくと時間", domain: "C 測定", from: [["g2-07"], ["g3-02"]] },

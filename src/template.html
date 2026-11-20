@@ -39470,7 +39470,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           if (/^t\./.test(ref)) {
             const o = typeof opt === "string" ? { label: opt } : opt || {};
             const lab = o.label || su.name, plain = noRuby(lab);
-            topics.push(withLevels({ label: plain, ...plain !== lab ? { rubyLabel: lab } : {}, generator: ref, kinds: o.kinds || ["yoji"], ...o.weight ? { weight: o.weight } : {} }, lv2));
+            topics.push(withLevels({ label: plain, ...plain !== lab ? { rubyLabel: lab } : {}, generator: ref, kinds: o.kinds || ["yoji"], ...o.weight ? { weight: o.weight } : {}, ...o.options ? { options: o.options } : {} }, lv2));
             continue;
           }
           const [uid, no] = ref.split(":");
