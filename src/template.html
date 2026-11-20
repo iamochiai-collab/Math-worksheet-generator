@@ -119,7 +119,7 @@ body[data-view="home"] .panel, body[data-view="home"] .preview { display: none; 
 body[data-view="print"] .home { display: none; }
 .g0 { --gc: #c9457f; } .g7 { --gc: #3d6f8f; } .g8 { --gc: #5a5f9e; } .g9 { --gc: #7a4f6e; } .g1 { --gc: #c8453b; } .g2 { --gc: #c9731e; } .g3 { --gc: #3b8a4c; }
 .g4 { --gc: #23837f; } .g5 { --gc: #2f67b1; } .g6 { --gc: #7150a6; }
-.g21, .g22, .g23 { --gc: #b0476b; } .g24, .g25 { --gc: #3b7d5a; } .g26, .g27 { --gc: #4a5fa0; } .g28 { --gc: #b8641c; }
+.g21, .g22, .g23 { --gc: #b0476b; } .g24, .g25 { --gc: #3b7d5a; } .g26, .g27 { --gc: #4a5fa0; } .g28 { --gc: #b8641c; } .g29 { --gc: #2f8a96; }
 .tk-banner { display: flex; align-items: center; gap: 12px; width: 100%; margin: 14px 0 0; padding: 12px 16px; border-radius: 14px; border: 2px solid #e7a3bd; background: linear-gradient(90deg, #fff4f8, #fff); color: #6b2340; font: inherit; text-align: left; cursor: pointer; box-shadow: 0 2px 0 rgba(176,71,107,.15); }
 .tk-banner:hover, .tk-banner:focus-visible { background: #ffe9f1; }
 .tk-banner .tk-badge { flex: none; background: #b0476b; color: #fff; font-weight: bold; font-size: 13px; padding: 5px 10px; border-radius: 999px; }
@@ -33263,7 +33263,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   var KOU_NAMES = { 10: "数学Ⅰ", 11: "数学A", 12: "数学Ⅱ", 13: "数学B", 14: "数学Ⅲ", 15: "数学C" };
   var KOU_SHORT = { 10: "Ⅰ", 11: "A", 12: "Ⅱ", 13: "B", 14: "Ⅲ", 15: "C" };
   // 21〜27 は特別支援学校(知的障害)の段階。28 は高等部の「くらしの数学」(生活の場面の数学)
-  var STAGE_NAMES = { 21: "小学部1段階", 22: "小学部2段階", 23: "小学部3段階", 24: "中学部1段階", 25: "中学部2段階", 26: "高等部1段階", 27: "高等部2段階", 28: "くらしの数学" };
+  var STAGE_NAMES = { 21: "小学部1段階", 22: "小学部2段階", 23: "小学部3段階", 24: "中学部1段階", 25: "中学部2段階", 26: "高等部1段階", 27: "高等部2段階", 28: "くらしの数学", 29: "測定" };
   var isStage = (g3) => Number(g3) >= 21;
   var gradeNameOf = (g3) => (g3 = Number(g3), g3 >= 21 ? STAGE_NAMES[g3] || `段階${g3}` : g3 === 0 ? "ようじ" : g3 >= 10 ? KOU_NAMES[g3] : g3 >= 7 ? `中${g3 - 6}` : `${g3}年`);
   function coverageSummary(grades, exclude = /* @__PURE__ */ new Set()) {
@@ -39488,7 +39488,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           if (list.some((tp) => !tp)) throw new Error(`段階の小単元が見つからない: ${ref}`);
           // 3つめに名前があれば、その小単元の名前をかえる(「とけいを よむ」が2つならぶときなど)
           const rename = no && opt ? (typeof opt === "string" ? opt : opt.label) : null;
-          for (const tp of list) topics.push(withLevels({ ...tp, ...rename ? { label: rename } : {} }, lv2));
+          const kinds2 = no && opt && typeof opt === "object" && opt.kinds ? { kinds: opt.kinds } : {};
+          for (const tp of list) topics.push(withLevels({ ...tp, ...rename ? { label: rename } : {}, ...kinds2 }, lv2));
           if (!no && su.from.length === 1 && src.per) props = { per: src.per, starts: src.starts, defaultCount: src.defaultCount };
           else if (!no && su.from.length === 1 && src.starts) props = { starts: src.starts };
         }
@@ -39585,7 +39586,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     const avail = sub ? topicKinds(sub) : unit ? unitKindsAvailable(unit) : [];
     fill2(el.kind, Object.entries(KINDS9).map(([k, v]) => ({ value: k, label: v.label, disabled: !avail.includes(k) })), true);
     fill2(el.level, Object.entries(LEVELS).map(([k, v]) => ({ value: k, label: v.label })), true);
-    refreshOpts(sub);
+    // 小単元が1つだけの単元(はかり・計量カップ など)は、単元のままでも その設定を出す
+    refreshOpts(sub || (unit?.topics.length === 1 && unit.topics[0].options ? unit.topics[0] : null));
     refreshCounts();
   }
   // 小単元の「えらべる設定」(テープのはじまり・答えの形・1ページの問題数 など)。同じ小単元のあいだは えらんだものをのこす
@@ -39665,7 +39667,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       seed: Number(el.seed.value) || 1,
       from: el.fromWrap.hidden ? 0 : Number(el.from.value) || 0,
       topicNo: el.subWrap.hidden ? 0 : Number(el.subunit.value) || 0,
-      opts: el.subWrap.hidden ? null : currentOpts()
+      opts: currentOpts()
     };
   }
   // スマホなど画面のはばがせまいときは、A4 のプリントを画面に入る大きさにして見せる(ページ分けのあとで)
@@ -40112,8 +40114,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
     const hgBtn = (g3) => `<button type="button" class="hg g${g3}${g3 === homeGrade ? " on" : ""}" data-grade="${g3}" aria-pressed="${g3 === homeGrade}"${GRADES[g3] ? "" : " disabled"}>${g3 >= 21 ? GRADES[g3]?.btn ? `<span class="yj">${GRADES[g3].btn}</span>` : `${GRADES[g3]?.short ?? ""}<span class="stg">段階</span>` : g3 === 0 ? '<span class="yj">ようじ</span>' : g3 >= 10 ? `<small>数</small>${KOU_SHORT[g3]}` : g3 >= 7 ? `<small>中</small>${g3 - 6}` : `${g3}<small>年</small>`}</button>`;
     $("homeStep1").textContent = stageMode ? "段階" : "学年";
     $("tkBanner").className = `tk-banner${stageMode ? " back" : ""}`;
-    $("tkBanner").innerHTML = stageMode ? '<span class="tk-badge">学年べつ</span><span class="tk-main"><b>学年べつ(ようじ・小学校・中学・高校)に もどる</b><small>ふつうの学年・単元のプリントは こちら</small></span><span class="tk-go">◀</span>' : '<span class="tk-badge">特別支援</span><span class="tk-main"><b>特別支援学校 各段階のプリントは こちら！</b><small>知的障害の特別支援学校の学習指導要領(算数・数学)の段階に合わせています。小学部1〜3段階・中学部1・2段階・高等部1・2段階・くらしの数学</small></span><span class="tk-go">▶</span>';
-    $("homeGrades").innerHTML = (stageMode ? [["小学部", (g3) => g3 >= 21 && g3 <= 23], ["中学部", (g3) => g3 >= 24 && g3 <= 25], ["高等部", (g3) => g3 >= 26]] : [["ようじ・小学校", (g3) => g3 <= 6], ["中学", (g3) => g3 >= 7 && g3 <= 9], ["高校", (g3) => g3 >= 10 && g3 < 21]]).map(([cap, f]) => [cap, GRADE_KEYS.filter(f)]).filter(([, gs]) => gs.length).map(([cap, gs]) => `<div class="hg-group"><span class="hg-cap">${cap}</span><div class="hg-btns">${gs.map(hgBtn).join("")}</div></div>`).join("");
+    $("tkBanner").innerHTML = stageMode ? '<span class="tk-badge">学年べつ</span><span class="tk-main"><b>学年べつ(ようじ・小学校・中学・高校)に もどる</b><small>ふつうの学年・単元のプリントは こちら</small></span><span class="tk-go">◀</span>' : '<span class="tk-badge">特別支援</span><span class="tk-main"><b>特別支援学校 各段階のプリントは こちら！</b><small>知的障害の特別支援学校の学習指導要領(算数・数学)の段階に合わせています。小学部1〜3段階・中学部1・2段階・高等部1・2段階・くらしの数学・測定</small></span><span class="tk-go">▶</span>';
+    $("homeGrades").innerHTML = (stageMode ? [["小学部", (g3) => g3 >= 21 && g3 <= 23], ["中学部", (g3) => g3 >= 24 && g3 <= 25], ["高等部", (g3) => g3 >= 26 && g3 <= 28], ["分野べつ", (g3) => g3 >= 29]] : [["ようじ・小学校", (g3) => g3 <= 6], ["中学", (g3) => g3 >= 7 && g3 <= 9], ["高校", (g3) => g3 >= 10 && g3 < 21]]).map(([cap, f]) => [cap, GRADE_KEYS.filter(f)]).filter(([, gs]) => gs.length).map(([cap, gs]) => `<div class="hg-group"><span class="hg-cap">${cap}</span><div class="hg-btns">${gs.map(hgBtn).join("")}</div></div>`).join("");
     $("homeAges").textContent = homeGrade === 0 ? "★☆☆ 3〜4さい　★★☆ 4〜5さい　★★★ 5〜6さい" : stageMode ? `${gradeName(homeGrade)}:${GRADES[homeGrade]?.note || ""}` : "";
     $("homeAges").classList.toggle("stage-note", stageMode);
     // くらしの数学:まとめの PDF(62ページ・答えつき)をひらくリンク
