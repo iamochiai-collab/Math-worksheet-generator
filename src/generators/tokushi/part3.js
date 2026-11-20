@@ -52,7 +52,20 @@
           opt.meta2 = { a, b };
         }
         const two = (w) => w.replace(/(のち|時々)/, "\n$1");
-        const tb = table(0.5, 0.5, [30, ...Array(7).fill(20)], [7, 13, 8, 8, 8], [["", ...WD1.map((x) => ({ s: x, size: 3.8 }))], [{ s: "天気", size: 3.6 }, ...wx.map((w) => ({ s: two(w[0]), size: 3.2 }))], [{ s: "最高気温(℃)", size: 3.2 }, ...highs.map((x) => ({ s: x, size: 3.8 }))], [{ s: "最低気温(℃)", size: 3.2 }, ...lows.map((x) => ({ s: x, size: 3.8 }))], [{ s: "降水確率(%)", size: 3.2 }, ...prob.map((x) => ({ s: x == null ? "—" : x, size: 3.8 }))]], { head: 1, headCol: 1 });
+        const tb = table(0.5, 0.5, [30, ...Array(7).fill(20)], [7, 22, 8, 8, 8], [["", ...WD1.map((x) => ({ s: x, size: 3.8 }))], [{ s: "天気", size: 3.6 }, ...wx.map(() => "")], [{ s: "最高気温(℃)", size: 3.2 }, ...highs.map((x) => ({ s: x, size: 3.8 }))], [{ s: "最低気温(℃)", size: 3.2 }, ...lows.map((x) => ({ s: x, size: 3.8 }))], [{ s: "降水確率(%)", size: 3.2 }, ...prob.map((x) => ({ s: x == null ? "—" : x, size: 3.8 }))]], { head: 1, headCol: 1 });
+        // 天気の絵(晴れ・くもり・雨)と ことば。「AのちB」は 2つの絵を ならべる
+        const WIMG = { "晴れ": "sunny", "くもり": "cloudy", "雨": "rainy", "雪": "snowy" };
+        wx.forEach((w, i) => {
+          const cx = 0.5 + 30 + 20 * i + 10, y0 = 0.5 + 7;
+          const parts = w[0].split(/(のち|時々)/);
+          if (parts.length === 1) tb.items.push(illust(WIMG[parts[0]], cx, y0 + 7, 11));
+          else {
+            tb.items.push(illust(WIMG[parts[0]], cx - 5, y0 + 7, 8.5), illust(WIMG[parts[2]], cx + 5.2, y0 + 7, 8.5));
+            tb.items.push({ t: "text", x: cx + 0.1, y: y0 + 8, s: "→", size: 2.6, halo: false });
+          }
+          const ls = two(w[0]).split("\n");
+          ls.forEach((l, j) => tb.items.push({ t: "text", x: cx, y: y0 + 16.4 + j * 3.4 - (ls.length - 1) * 0.6, s: K(l), size: 2.9, halo: false }));
+        });
         const fig = draw(172, tb.h + 1, tb.items);
         return P({
           key: `kw:${ask}:${highs.join(",")}:${lows.join(",")}:${prob.join(",")}`,

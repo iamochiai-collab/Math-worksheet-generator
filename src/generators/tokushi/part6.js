@@ -1,4 +1,4 @@
-// 特別支援:長さのたんいを 絵と せんで むすぶ(あり ― mm、えんぴつ ― cm、くるま ― m、やまの みち ― km)。
+// 特別支援:長さ・重さ・かさの たんいを 絵と せんで むすぶ(あり ― mm、えんぴつ ― cm、くるま ― m、やまへの みち ― km/たまご ― g …/コップ ― dL …)。
 // 左に ものの絵と名前、右に たんい。どちらも おなじ数で、つかわない たんいは 出さない(まよわないように)。
 // ★1 は cm・m、★2 は mm・cm・m、★3 は km まで。小単元の設定「たんい」でも えらべる。
 (() => {
@@ -82,63 +82,98 @@
     }
     return it;
   }
-  const tUnitMatch = {
-    id: "t.unitMatch",
-    instruction: null,
-    defaults: { set: "all", example: false },
-    levels: {
-      basic: { set: "cm_m", example: true },
-      normal: { set: "mm_cm_m", example: true },
-      challenge: { set: "all", example: false }
+  // 長さ・重さ・かさ:左に ものの絵(イラスト。ないときは 線の絵)、右に たんい
+  const DIMS = {
+    len: {
+      id: "t.unitMatch", what: "ながさを はかる", order: ["mm", "cm", "m", "km"],
+      sets: SETS, levels: { basic: "cm_m", normal: "mm_cm_m", challenge: "all" },
+      things: {
+        mm: [["ant", "あり"], ["ladybug", "てんとうむし"], ["button", "ボタン"]],
+        cm: [["pencil", "えんぴつ"], ["eraser", "けしゴム"], ["hand", "手"], ["textbook", "きょうかしょ"], ["uwabaki", "うわばき"], ["pencase", "ふでばこ"]],
+        m: [["car", "くるま"], ["bus", "バス"], ["pool", "プール"], ["tree", "大きな 木"], ["train", "でんしゃ"], ["schoolbuilding", "こうしゃ"]],
+        km: [["mountainroad", "やまへの みち"], ["towns", "となりの まちまで"], ["marathon", "マラソンで 走る みち"], ["shinkansen", "しんかんせんで 行く みち"]]
+      }
     },
-    generate(rng, p, ctx) {
-      const us = SETS[p.set] || SETS.all;
-      const left = rng.shuffle(us.map((u) => [u, ...rng.pick(THINGS[u])]));
-      // 右は mm・cm・m・km の じゅん(さがしやすい)。左が おなじ じゅんに ならないように
-      if (left.every(([u], i) => u === us[i])) left.reverse();
-      const RH = us.length > 3 ? 34 : 38, items = [], lDot = [], rDot = [];
-      left.forEach(([u, kind, name], i) => {
-        const y = 2 + i * RH + RH / 2 - 2;
-        items.push({ ...frame(6, y - 15, 70, 30, 4), w: 0.5 });
-        items.push(...lenIcon(kind, 25, y, 30).map((x) => ({ ...x, g: `L${i}`, kind })));
-        // 名前(「やままでの みち」のように すきまが あれば 2行に)
-        const ls = name.split(" ");
-        ls.forEach((l, j) => items.push({ t: "text", x: 58, y: y + 1.6 + (j - (ls.length - 1) / 2) * 6.2, s: l, size: 5, halo: false }));
-        items.push({ t: "dot", x: 82, y, r: 1.9 });
-        lDot.push([82, y]);
-      });
-      us.forEach((u, i) => {
-        const y = 2 + i * RH + RH / 2 - 2;
-        items.push({ ...frame(W - 44, y - 12, 36, 24, 4), w: 0.5 });
-        items.push({ t: "text", x: W - 26, y: y + 3.6, s: u, size: 10, halo: false });
-        items.push({ t: "dot", x: W - 52, y, r: 1.9 });
-        rDot.push([W - 52, y]);
-      });
-      const example = p.example && ctx && ctx.index === 0;
-      const ans = (c) => left.map(([u], i) => ({ t: "line", x1: lDot[i][0], y1: lDot[i][1], x2: rDot[us.indexOf(u)][0], y2: rDot[us.indexOf(u)][1], w: 1, color: c, lead: true, cap: "round", from: i, to: us.indexOf(u) }));
-      const h = us.length * RH;
-      const fig = (extra) => ({ type: "draw", w: W + 4, h: h + 3, items: [...items, ...extra], scaleK: 1 });
-      return {
-        key: (example ? "ex:" : "") + `tum:${left.map((x) => x[1]).join(",")}`,
-        softKey: `tum:${left.map((x) => x[0]).join(",")}`,
-        text: "ながさを はかる とき、どの たんいを つかうかな。せんで むすびましょう。",
-        figure: fig(example ? ans(GRAY) : []),
-        answer: { display: "", figure: fig(ans(RED)) },
-        workspace: { type: "none" },
-        example,
-        meta: { left, us }
-      };
+    wt: {
+      id: "t.weightMatch", what: "おもさを はかる", order: ["g", "kg", "t"],
+      sets: { g_kg: ["g", "kg"], all: ["g", "kg", "t"] }, levels: { basic: "g_kg", normal: "all", challenge: "all" },
+      things: {
+        g: [["clip", "クリップ"], ["egg", "たまご"], ["strawberry", "いちご"], ["mikan", "みかん"]],
+        kg: [["randoseru", "ランドセル"], ["ricebag", "おこめの ふくろ"], ["watermelon", "すいか"], ["child", "子ども"]],
+        t: [["truck", "トラック"], ["elephant", "ぞう"], ["bus", "バス"]]
+      }
     },
-    verify(pr, p) {
-      const { left, us } = pr.meta;
-      if (us.join() !== (SETS[p.set] || SETS.all).join()) return "たんいの組が ちがう";
-      if (left.length !== us.length || new Set(left.map((x) => x[0])).size !== us.length) return "つかわない たんいが ある";
-      for (const [u, kind] of left) if (!THINGS[u].some(([k]) => k === kind)) return "ものと たんいが 合わない";
-      const lines = pr.answer.figure.items.filter((it) => it.t === "line" && it.color === RED);
-      if (lines.length !== us.length) return "線の数が違う";
-      for (const ln of lines) if (left[ln.from][0] !== us[ln.to]) return "ちがう たんいに むすんでいる";
-      return null;
+    vol: {
+      id: "t.volMatch", what: "かさを はかる", order: ["mL", "dL", "L"],
+      sets: { dL_L: ["dL", "L"], all: ["mL", "dL", "L"] }, levels: { basic: "dL_L", normal: "all", challenge: "all" },
+      things: {
+        mL: [["spoon", "スプーン"], ["eyedrops", "めぐすり"], ["petbottle", "ペットボトル(小)"]],
+        dL: [["glass", "コップ"], ["juicepack", "ジュースの パック"], ["smallbottle", "ぎゅうにゅうびん"]],
+        L: [["milkpack", "ぎゅうにゅうパック"], ["bigbottle", "大きい ペットボトル"], ["bucket", "バケツ"], ["bathtub", "おふろ"], ["aquarium", "すいそう"]]
+      }
     }
   };
-  tokushi.push(tUnitMatch);
+  function makeMatch(D) {
+    return {
+      id: D.id,
+      instruction: null,
+      defaults: { set: D.levels.challenge, example: false },
+      levels: {
+        basic: { set: D.levels.basic, example: true },
+        normal: { set: D.levels.normal, example: true },
+        challenge: { set: D.levels.challenge, example: false }
+      },
+      generate(rng, p, ctx) {
+        const us = D.sets[p.set] || D.order;
+        const left = rng.shuffle(us.map((u) => [u, ...rng.pick(D.things[u])]));
+        // 右は 小さい たんいから じゅんに(さがしやすい)。左が おなじ じゅんに ならないように
+        if (left.every(([u], i) => u === us[i])) left.reverse();
+        const RH = us.length > 3 ? 34 : 38, items = [], lDot = [], rDot = [];
+        left.forEach(([u, kind, name], i) => {
+          const y = 2 + i * RH + RH / 2 - 2;
+          items.push({ ...frame(6, y - 15, 70, 30, 4), w: 0.5 });
+          const pic = ILLUST[kind] ? [illust(kind, 24, y, 27)] : lenIcon(kind, 25, y, 30);
+          items.push(...pic.map((x) => ({ ...x, g: `L${i}`, kind })));
+          // 名前(すきまが あれば 2行に)
+          const ls = name.split(" ");
+          const fs = Math.max(...ls.map((l) => [...l].length)) > 6 ? 4.2 : 5;
+          ls.forEach((l, j) => items.push({ t: "text", x: 58, y: y + 1.6 + (j - (ls.length - 1) / 2) * fs * 1.25, s: l, size: fs, halo: false }));
+          items.push({ t: "dot", x: 82, y, r: 1.9 });
+          lDot.push([82, y]);
+        });
+        us.forEach((u, i) => {
+          const y = 2 + i * RH + RH / 2 - 2;
+          items.push({ ...frame(W - 44, y - 12, 36, 24, 4), w: 0.5 });
+          items.push({ t: "text", x: W - 26, y: y + 3.6, s: u, size: 10, halo: false });
+          items.push({ t: "dot", x: W - 52, y, r: 1.9 });
+          rDot.push([W - 52, y]);
+        });
+        const example = p.example && ctx && ctx.index === 0;
+        const ans = (c) => left.map(([u], i) => ({ t: "line", x1: lDot[i][0], y1: lDot[i][1], x2: rDot[us.indexOf(u)][0], y2: rDot[us.indexOf(u)][1], w: 1, color: c, lead: true, cap: "round", from: i, to: us.indexOf(u) }));
+        const h = us.length * RH;
+        const fig = (extra) => ({ type: "draw", w: W + 4, h: h + 3, items: [...items, ...extra], scaleK: 1 });
+        return {
+          key: (example ? "ex:" : "") + `${D.id}:${left.map((x) => x[1]).join(",")}`,
+          softKey: `${D.id}:${left.map((x) => x[1]).sort().join(",")}`,
+          text: `${D.what} とき、どの たんいを つかうかな。せんで むすびましょう。`,
+          figure: fig(example ? ans(GRAY) : []),
+          answer: { display: "", figure: fig(ans(RED)) },
+          workspace: { type: "none" },
+          example,
+          meta: { left, us }
+        };
+      },
+      verify(pr, p) {
+        const { left, us } = pr.meta;
+        if (us.join() !== (D.sets[p.set] || D.order).join()) return "たんいの組が ちがう";
+        if (left.length !== us.length || new Set(left.map((x) => x[0])).size !== us.length) return "つかわない たんいが ある";
+        for (const [u, kind] of left) if (!D.things[u].some(([k]) => k === kind)) return "ものと たんいが 合わない";
+        const lines = pr.answer.figure.items.filter((it) => it.t === "line" && it.color === RED);
+        if (lines.length !== us.length) return "線の数が違う";
+        for (const ln of lines) if (left[ln.from][0] !== us[ln.to]) return "ちがう たんいに むすんでいる";
+        return null;
+      }
+    };
+  }
+  tokushi.push(makeMatch(DIMS.len), makeMatch(DIMS.wt), makeMatch(DIMS.vol));
 })();

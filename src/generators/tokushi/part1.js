@@ -44,7 +44,8 @@ var tokushi = (() => {
         has.push(left ? 0 : 1);
         [0, 1].forEach((side) => {
           const cx = side === 0 ? 50 : 126;
-          items.push({ t: "path", d: `M${cx - 30},${y + 30} Q${cx},${y + 40} ${cx + 30},${y + 30} L${cx + 24},${y + 35} Q${cx},${y + 41} ${cx - 24},${y + 35} Z`, w: 0.6, fill: "white", lead: true });
+          if (ILLUST.plate_side) items.push(illust("plate_side", cx, y + 30.5, 66));
+          else items.push({ t: "path", d: `M${cx - 30},${y + 30} Q${cx},${y + 40} ${cx + 30},${y + 30} L${cx + 24},${y + 35} Q${cx},${y + 41} ${cx - 24},${y + 35} Z`, w: 0.6, fill: "white", lead: true });
           if ((side === 0) === left) {
             const n = p.many ? rng.int(1, 3) : 1;
             for (let j = 0; j < n; j++) items.push(...pic(k, cx + (j - (n - 1) / 2) * 15, y + 22, n > 1 ? 13 : 17, `${i}:${j}`));
@@ -479,8 +480,8 @@ var tokushiStages = [
       { name: "三角形と四角形", domain: "B 図形", from: [["g2-10"]] },
       { name: "はこの形", domain: "B 図形", from: [["g2-17"]] },
       { name: "長さ", domain: "C 測定", from: [["t.unitMatch", null, { label: "たんいを せんで むすぼう", kinds: ["yoji"], options: [{ key: "set", label: "たんい", choices: [["auto", "★に合わせる"], ["cm_m", "cm・m"], ["mm_cm_m", "mm・cm・m"], ["all", "mm・cm・m・km"]] }] }], ["g2-04"], ["g2-14"]] },
-      { name: "かさ", domain: "C 測定", from: [["g2-06"]] },
-      { name: "重さ", domain: "C 測定", from: [["g3-14"]] },
+      { name: "かさ", domain: "C 測定", from: [["t.volMatch", null, { label: "たんいを せんで むすぼう(かさ)", kinds: ["yoji"], options: [{ key: "set", label: "たんい", choices: [["auto", "★に合わせる"], ["dL_L", "dL・L"], ["all", "mL・dL・L"]] }] }], ["g2-06"]] },
+      { name: "重さ", domain: "C 測定", from: [["t.weightMatch", null, { label: "たんいを せんで むすぼう(重さ)", kinds: ["yoji"], options: [{ key: "set", label: "たんい", choices: [["auto", "★に合わせる"], ["g_kg", "g・kg"], ["all", "g・kg・t"]] }] }], ["g3-14"]] },
       // 時計を読む・針をかく(1年の なんじ・なんじはん/なんじなんぷん)を、時間のちがいより前の単元にする(★1でも むずかしすぎないように)
       { name: "とけいを よもう", domain: "C 測定", from: [["g1-08:1", null, "なんじ・なんじはんを よむ"], ["g1-08:2", null, "なんじ・なんじはんの はりを かく"], ["g1-16:1", null, "なんじなんぷんを よむ"], ["g1-16:2", null, "なんじなんぷんの はりを かく"]] },
       { name: "時こくと時間", domain: "C 測定", from: [["g2-07"], ["g3-02"]] },

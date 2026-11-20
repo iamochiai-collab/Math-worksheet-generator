@@ -198,6 +198,12 @@ body[data-view="print"] .home { display: none; }
 .home-found[hidden] { display: none; }
 .hf-head { font-size: 14px; color: #444; margin: 0 0 8px; }
 .hf-head b { color: #1f2a40; }
+/* 特別支援:分野べつ */
+.hg-domains { flex-basis: 100%; }
+.hg-domains .hd { font: inherit; font-size: 14px; font-weight: bold; padding: 8px 14px; border-radius: 12px; border: 2px solid #2f6f86; background: #fff; color: #2f6f86; cursor: pointer; }
+.hg-domains .hd.on { background: #2f6f86; color: #fff; }
+.dm-stage { grid-column: 1 / -1; margin: 10px 0 0; font-size: 15px; color: var(--gc); border-bottom: 2px solid var(--gc); padding-bottom: 2px; }
+.dm-none { grid-column: 1 / -1; color: #666; }
 .ucard .ugrade { flex: none; margin-left: auto; font-size: 12px; font-weight: bold; color: #fff; background: var(--gc); border-radius: 6px; padding: 1px 7px; margin-top: 2px; white-space: nowrap; }
 .uwhy { font-size: 12px; color: #555; line-height: 1.45; display: flex; flex-direction: column; gap: 1px; }
 .uwhy span::before { content: "内容:"; color: #888; }
@@ -13523,9 +13529,15 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       const perRow = b <= 3 ? b : Math.ceil(b / 2);
       for (let i = 0; i < b; i++) {
         const cx = 3 + R5 + i % perRow * (2 * R5 + gap), cy = 3 + R5 + Math.floor(i / perRow) * (2 * R5 + gap);
-        items.push({ t: "circle", cx, cy, r: R5, w: 0.4, plate: true });
+        // おさら(上から見た絵)と おかし(クッキーの絵)。絵がないときは 円と点
+        const pic = ILLUST.plate_top && ILLUST.cookie;
+        if (pic) items.push(illust("plate_top", cx, cy, 2 * R5 + 0.6));
+        items.push({ t: "circle", cx, cy, r: R5, w: pic ? 0 : 0.4, fill: "none", plate: true });
         const pos = dotPos(a);
-        pos.forEach(([dx, dy]) => items.push({ t: "dot", x: cx + dx, y: cy + dy, r: 1.1 }));
+        pos.forEach(([dx, dy]) => {
+          if (pic) items.push(illust("cookie", cx + dx, cy + dy, 2.8));
+          items.push({ t: "dot", x: cx + dx, y: cy + dy, r: pic ? 0.01 : 1.1 });
+        });
       }
       const rows = Math.ceil(b / perRow);
       return {
@@ -22024,9 +22036,20 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   };
   // お金の絵。assets/money/coin○.webp(こうか)・bill○.webp(おさつ)
   var MONEY_IMG = { 1: "{{MONEY:coin1}}", 5: "{{MONEY:coin5}}", 10: "{{MONEY:coin10}}", 50: "{{MONEY:coin50}}", 100: "{{MONEY:coin100}}", 500: "{{MONEY:coin500}}", 1000: "{{MONEY:bill1000}}", 5000: "{{MONEY:bill5000}}", 10000: "{{MONEY:bill10000}}" };
+  // イラスト(assets/illust。チャッピーで作った絵を切りぬいたもの)。{名前: {u: data URI, w, h}}
+  var ILLUST = {{ILLUST_MAP}};
+  // イラストを s×s の中に たてよこの わりあいを かえずに おく(cx, cy が まん中)
+  function illust(name, cx, cy, s, o = {}) {
+    const im = ILLUST[name];
+    if (!im) return null;
+    const k = Math.min(s / im.w, s / im.h), w = im.w * k, h = im.h * k;
+    return { t: "image", href: im.u, x: cx - w / 2, y: cy - h / 2, w, h, illust: name, ...o };
+  }
   var THINGS2 = Object.keys(ICONS).filter((k) => !ICONS[k].animal);
   var ANIMALS = Object.keys(ICONS).filter((k) => ICONS[k].animal);
   function icon(kind, cx, cy, s, { fill: fill3 } = {}) {
+    // イラストがあれば それを使う(ないときだけ 線でかく)
+    if (!fill3 && ILLUST[kind]) return [illust(kind, cx, cy, s * 1.02)];
     const { p, path, ell } = pen(cx, cy, s);
     const W3 = Math.max(0.35, s * 0.045);
     const body = fill3 ? "gray" : "white";
@@ -23237,10 +23260,16 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     }
     const cells = Array.from({ length: n }, () => /* @__PURE__ */ new Set());
     for (const it of items) {
-      if (it.t !== "path") continue;
-      const m2 = /^M(-?[\d.]+) (-?[\d.]+)/.exec(it.d);
-      if (!m2) continue;
-      const px = Number(m2[1]), py = Number(m2[2]);
+      let px, py;
+      if (it.t === "image" && it.illust) {
+        // イラストの絵は まん中で 数える
+        px = it.x + it.w / 2; py = it.y + it.h / 2;
+      } else {
+        if (it.t !== "path") continue;
+        const m2 = /^M(-?[\d.]+) (-?[\d.]+)/.exec(it.d);
+        if (!m2) continue;
+        px = Number(m2[1]); py = Number(m2[2]);
+      }
       if (py >= base) continue;
       const c = col(px), r = Math.floor((base - py) / GRAPH_RH);
       if (c >= 0 && c < n) cells[c].add(r);
@@ -24775,16 +24804,19 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     items.push({ t: "circle", cx, cy, r: R5 >= 16 ? 1.1 : 0.8, w: 0, fill: "black" });
     return items;
   }
-  function clockWithBox(t2, { hour = true, minute = true, box: box3 = true } = {}) {
-    const R5 = 20, cx = 24, cy = R5 + 2;
+  // 1日の場面の絵(assets/illust の sc_○○)。とけいの問題の「おきた とき」などの よこに出す
+  var SCENE_IMG = { "おきた　とき": "sc_wake", "あさごはん": "sc_breakfast", "いえを　でた　とき": "sc_leave", "きゅうしょく": "sc_lunch", "かえった　とき": "sc_return", "おやつ": "sc_snack", "こうえんで　あそぶ": "sc_park", "ばんごはん": "sc_dinner", "おふろ": "sc_bath", "ねた　とき": "sc_sleep", "かいものに　いく": "sc_shopping", "としょかんに　いく": "sc_library" };
+  function clockWithBox(t2, { hour = true, minute = true, box: box3 = true, scene = null } = {}) {
+    const R5 = 20, pic = scene && ILLUST[SCENE_IMG[scene]] ? 30 : 0, cx = 24 + pic, cy = R5 + 2;
     const items = clockItems(cx, cy, R5, t2, { hour, minute });
+    if (pic) items.unshift(illust(SCENE_IMG[scene], 14, cy, 28));
     let h = cy + R5 + 2;
     if (box3) {
       const bw = 36, bh = 13, by = cy + R5 + 4;
       items.push({ t: "path", d: `M${f5(cx - bw / 2 + 2)} ${f5(by)} H${f5(cx + bw / 2 - 2)} A2 2 0 0 1 ${f5(cx + bw / 2)} ${f5(by + 2)} V${f5(by + bh - 2)} A2 2 0 0 1 ${f5(cx + bw / 2 - 2)} ${f5(by + bh)} H${f5(cx - bw / 2 + 2)} A2 2 0 0 1 ${f5(cx - bw / 2)} ${f5(by + bh - 2)} V${f5(by + 2)} A2 2 0 0 1 ${f5(cx - bw / 2 + 2)} ${f5(by)} Z`, w: 0.5, lead: true });
       h = by + bh + 1;
     }
-    return { type: "draw", w: cx * 2, h, items };
+    return { type: "draw", w: cx + 24, h, items };
   }
   // 答えの時計:問題と同じ大きさで、かきこむ針だけ答えの色にする
   function keyClock(t2, tag) {
@@ -24845,7 +24877,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         softKey: scene.text,
         text: scene.text,
         cols: 2,
-        figure: clockWithBox(t2, { box: false }),
+        figure: clockWithBox(t2, { box: false, scene: scene.text }),
         answer: { display: timeText(t2, { han: true }), value: t2 },
         workspace: { type: "none" },
         meta: { t: t2, scene: scene.text }
@@ -24890,7 +24922,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         softKey: scene.text,
         text: scene.text,
         cols: 2,
-        figure: clockWithBox(t2, { box: false }),
+        figure: clockWithBox(t2, { box: false, scene: scene.text }),
         answer: { display: timeText(t2), value: t2 },
         workspace: { type: "none" },
         meta: { t: t2, scene: scene.text }
@@ -25073,6 +25105,22 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     return { items, boxes, w: x - gap + x0, h: base + 9 };
   }
 
+  // かたちの なかま:身の回りの ものの絵(はこ・さいころ・つつ・ボール)。絵がないときは 線でかいた 立体
+  var SOLID_PICS = { box: ["tissue", "snackbox"], dice: ["dice"], can: ["can", "toiletpaper", "wrap"], ball: ["soccerball", "marble", "orange"] };
+  function pictureRow(objs, rng) {
+    const n = objs.length, slot = Math.min(30, (ROW_MAX - 6) / n), sz = Math.min(24, slot - GAP3 - 0.5);
+    const items = [], boxes = [], used = new Set();
+    objs.forEach((o, i) => {
+      const cand = SOLID_PICS[o.kind].filter((k) => !used.has(k));
+      o.pic = rng.pick(cand.length ? cand : SOLID_PICS[o.kind]);
+      used.add(o.pic);
+      const cx = 3 + slot * i + slot / 2;
+      items.push(illust(o.pic, cx, 3 + sz / 2, sz));
+      items.push({ t: "text", x: cx, y: 3 + sz + 7, s: LABELS9[i], size: 5 });
+      boxes.push([cx - sz / 2, cx + sz / 2]);
+    });
+    return { items, boxes, w: 6 + slot * n, h: sz + 12 };
+  }
   // src/generators/g1/solidSort.js
   var KINDS7 = ["box", "dice", "can", "ball"];
   var FEATURES = {
@@ -25098,6 +25146,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         objs = kinds.map((k) => makeObject(rng, k, { lying: p.lying }));
         row2 = objectRow(objs);
       } while (row2.w > ROW_MAX);
+      if (KINDS7.every((k) => SOLID_PICS[k].every((x) => ILLUST[x]))) row2 = pictureRow(objs, rng);
       const pick = (ks) => kinds.map((k, i) => ks.includes(k) ? LABELS9[i] : null).filter(Boolean);
       const qs = [], ans = [];
       for (const a0 of p.asks) {
@@ -40120,14 +40169,40 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     return `中${g3 - 6}の問題に<br>ちょうせんしよう！`;
   }
   var LEVEL_SAY = { basic: ["guide", "まずは きほんから！<br>じっくり いこう"], normal: ["idea", "いいね！<br>ちょうどいい むずかしさ"], challenge: ["cheer", "むずかしい問題に<br>ちょうせんだ！"] };
+  // ===== 特別支援:分野べつ(段階をこえて、数量の基礎・数と計算・図形・測定・変化と関係・データの活用 ごとに ならべる) =====
+  var DOMAINS = ["数量の基礎", "数と計算", "図形", "測定", "変化と関係", "データの活用"];
+  var homeDomain = null;
+  // 単元の分野(「A 数と計算」→「数と計算」)。測定(29)は 測定、計算・パズル(30)は 数と計算、くらし(28)は 入れない
+  var domainOf = (g3, u2) => g3 === 29 ? "測定" : g3 === 30 ? "数と計算" : g3 === 28 ? null : String(u2.domain || "").replace(/^[A-ZＡ-Ｚ]\s*/, "");
+  function domainCard(g3, u2) {
+    const subs = hasSubs(g3) ? u2.topics.map((tp, i) => [tp, i + 1]).filter(([tp]) => topicKinds(tp).length) : [];
+    const kinds = unitKindsAvailable(u2);
+    return `<div class="ucard g${g3}">
+        <div class="ucard-head"><span class="uno">${u2.order}</span><span class="uname">${esc2(u2.name)}</span><span class="ugrade">${esc2(gradeName(g3))}</span></div>
+        <div class="ukinds">${kinds.map((k) => `<button type="button" class="uk k-${k}" data-g="${g3}" data-unit="${u2.id}" data-kind="${k}">${k === "yoji" ? "えのプリント" : KIND_SHORT[k]}</button>`).join("")}</div>
+        ${subs.length > 1 ? `<details class="usubs"><summary>小単元をえらぶ(${subs.length})</summary><ol class="usub-list">${subs.map(([tp, n]) => topicKinds(tp).map((k) => `<li><button type="button" class="usb" data-g="${g3}" data-unit="${u2.id}" data-sub="${n}" data-kind="${k}"><span class="usub-no">${n}</span><span class="usub-name">${esc2(tp.label)}</span><span class="usub-kind">${SUB_KIND[k]}</span></button></li>`).join("")).join("")}</ol></details>` : ""}
+      </div>`;
+  }
+  function renderDomain() {
+    const d = homeDomain, out = [];
+    for (const g3 of GRADE_KEYS.filter((g4) => isStage(g4))) {
+      const us = GRADES[g3].units.filter((u2) => isReady(u2) && domainOf(g3, u2) === d);
+      if (us.length) out.push(`<h3 class="dm-stage g${g3}">${esc2(gradeName(g3))}</h3>${us.map((u2) => domainCard(g3, u2)).join("")}`);
+    }
+    $("homeUnitsTitle").textContent = `分野べつ:${d}`;
+    $("homeHint").textContent = "段階の じゅんに ならんでいます(上ほど やさしい)。ほかの段階の内容も ここから作れます";
+    $("homeUnits").innerHTML = out.join("") || '<p class="dm-none">この分野の内容は まだありません</p>';
+  }
   function renderHome() {
     homeEl.className = `home g${homeGrade}`;
     const stageMode = isStage(homeGrade);
-    const hgBtn = (g3) => `<button type="button" class="hg g${g3}${g3 === homeGrade ? " on" : ""}" data-grade="${g3}" aria-pressed="${g3 === homeGrade}"${GRADES[g3] ? "" : " disabled"}>${g3 >= 21 ? GRADES[g3]?.btn ? `<span class="yj">${GRADES[g3].btn}</span>` : `${GRADES[g3]?.short ?? ""}<span class="stg">段階</span>` : g3 === 0 ? '<span class="yj">ようじ</span>' : g3 >= 10 ? `<small>数</small>${KOU_SHORT[g3]}` : g3 >= 7 ? `<small>中</small>${g3 - 6}` : `${g3}<small>年</small>`}</button>`;
+    if (!stageMode) homeDomain = null;
+    const hgBtn = (g3) => `<button type="button" class="hg g${g3}${g3 === homeGrade && !homeDomain ? " on" : ""}" data-grade="${g3}" aria-pressed="${g3 === homeGrade}"${GRADES[g3] ? "" : " disabled"}>${g3 >= 21 ? GRADES[g3]?.btn ? `<span class="yj">${GRADES[g3].btn}</span>` : `${GRADES[g3]?.short ?? ""}<span class="stg">段階</span>` : g3 === 0 ? '<span class="yj">ようじ</span>' : g3 >= 10 ? `<small>数</small>${KOU_SHORT[g3]}` : g3 >= 7 ? `<small>中</small>${g3 - 6}` : `${g3}<small>年</small>`}</button>`;
     $("homeStep1").textContent = stageMode ? "段階" : "学年";
     $("tkBanner").className = `tk-banner${stageMode ? " back" : ""}`;
     $("tkBanner").innerHTML = stageMode ? '<span class="tk-badge">学年べつ</span><span class="tk-main"><b>学年べつ(ようじ・小学校・中学・高校)に もどる</b><small>ふつうの学年・単元のプリントは こちら</small></span><span class="tk-go">◀</span>' : '<span class="tk-badge">特別支援</span><span class="tk-main"><b>特別支援学校 各段階のプリントは こちら！</b><small>知的障害の特別支援学校の学習指導要領(算数・数学)の段階に合わせています。小学部1〜3段階・中学部1・2段階・高等部1・2段階・くらしの数学・測定・計算パズル</small></span><span class="tk-go">▶</span>';
-    $("homeGrades").innerHTML = (stageMode ? [["小学部", (g3) => g3 >= 21 && g3 <= 23], ["中学部", (g3) => g3 >= 24 && g3 <= 25], ["高等部", (g3) => g3 >= 26 && g3 <= 28], ["分野べつ", (g3) => g3 >= 29]] : [["ようじ・小学校", (g3) => g3 <= 6], ["中学", (g3) => g3 >= 7 && g3 <= 9], ["高校", (g3) => g3 >= 10 && g3 < 21]]).map(([cap, f]) => [cap, GRADE_KEYS.filter(f)]).filter(([, gs]) => gs.length).map(([cap, gs]) => `<div class="hg-group"><span class="hg-cap">${cap}</span><div class="hg-btns">${gs.map(hgBtn).join("")}</div></div>`).join("");
+    $("homeGrades").innerHTML = (stageMode ? [["小学部", (g3) => g3 >= 21 && g3 <= 23], ["中学部", (g3) => g3 >= 24 && g3 <= 25], ["高等部", (g3) => g3 >= 26 && g3 <= 28], ["まとめ", (g3) => g3 >= 29]] : [["ようじ・小学校", (g3) => g3 <= 6], ["中学", (g3) => g3 >= 7 && g3 <= 9], ["高校", (g3) => g3 >= 10 && g3 < 21]]).map(([cap, f]) => [cap, GRADE_KEYS.filter(f)]).filter(([, gs]) => gs.length).map(([cap, gs]) => `<div class="hg-group"><span class="hg-cap">${cap}</span><div class="hg-btns">${gs.map(hgBtn).join("")}</div></div>`).join("")
+      + (stageMode ? `<div class="hg-group hg-domains"><span class="hg-cap">分野べつ(段階を こえて 見る)</span><div class="hg-btns">${DOMAINS.map((d) => `<button type="button" class="hd${d === homeDomain ? " on" : ""}" data-domain="${d}" aria-pressed="${d === homeDomain}">${d}</button>`).join("")}</div></div>` : "");
     $("homeAges").textContent = homeGrade === 0 ? "★☆☆ 3〜4さい　★★☆ 4〜5さい　★★★ 5〜6さい" : stageMode ? `${gradeName(homeGrade)}:${GRADES[homeGrade]?.note || ""}` : "";
     $("homeAges").classList.toggle("stage-note", stageMode);
     // くらしの数学:まとめの PDF(62ページ・答えつき)をひらくリンク
@@ -40148,6 +40223,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         ${subs.length > 1 ? `<details class="usubs"><summary>小単元をえらぶ(${subs.length})</summary><ol class="usub-list">${subs.map(([tp, n]) => topicKinds(tp).map((k) => `<li><button type="button" class="usb" data-unit="${u2.id}" data-sub="${n}" data-kind="${k}"><span class="usub-no">${n}</span><span class="usub-name">${esc2(tp.label)}</span><span class="usub-kind">${SUB_KIND[k]}</span></button></li>`).join("")).join("")}</ol></details>` : ""}
       </div>`;
     }).join("");
+    if (homeDomain) renderDomain();
     if ($("homeQ").value) renderSearch();
   }
   // ===== さがす:単元名・小単元名・内容のことばで、学年をこえてさがす(カタカナ・ひらがな、全角・半角は同じとみる) =====
@@ -40253,7 +40329,14 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   homeEl.addEventListener("click", (e) => {
     const b = e.target.closest("button");
     if (!b || b.disabled) return;
+    if (b.dataset.domain) {
+      homeDomain = homeDomain === b.dataset.domain ? null : b.dataset.domain;
+      renderHome();
+      if (homeDomain) mascot("idea", `${homeDomain}の<br>プリントを つくろう！`);
+      return;
+    }
     if (b.dataset.grade) {
+      homeDomain = null;
       homeGrade = Number(b.dataset.grade);
       store.set("grade", homeGrade);
       store.set(isStage(homeGrade) ? "stage" : "normalGrade", homeGrade);
