@@ -481,6 +481,8 @@ var tokushiStages = [
       { name: "長さ", domain: "C 測定", from: [["t.unitMatch", null, { label: "たんいを せんで むすぼう", kinds: ["yoji"], options: [{ key: "set", label: "たんい", choices: [["auto", "★に合わせる"], ["cm_m", "cm・m"], ["mm_cm_m", "mm・cm・m"], ["all", "mm・cm・m・km"]] }] }], ["g2-04"], ["g2-14"]] },
       { name: "かさ", domain: "C 測定", from: [["g2-06"]] },
       { name: "重さ", domain: "C 測定", from: [["g3-14"]] },
+      // 時計を読む・針をかく(1年の なんじ・なんじはん/なんじなんぷん)を、時間のちがいより前の単元にする(★1でも むずかしすぎないように)
+      { name: "とけいを よもう", domain: "C 測定", from: [["g1-08:1", null, "なんじ・なんじはんを よむ"], ["g1-08:2", null, "なんじ・なんじはんの はりを かく"], ["g1-16:1", null, "なんじなんぷんを よむ"], ["g1-16:2", null, "なんじなんぷんの はりを かく"]] },
       { name: "時こくと時間", domain: "C 測定", from: [["g2-07"], ["g3-02"]] },
       { name: "表とグラフ", domain: "D データの活用", from: [["g2-01"], ["g3-06"]] }
     ]

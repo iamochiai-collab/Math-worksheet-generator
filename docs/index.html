@@ -484,6 +484,8 @@ table.data.dense th, table.data.dense td { padding: 3pt 4pt; min-width: 26pt; }
 .sheet .abox.ans.tall { height: 17mm; }
 .calc { margin: 1mm 0 1.5mm 0; flex: 0 0 100%; width: 100%; }
 .item > .ans-under { flex: 0 0 100%; }
+/* 図の問題(たてにならぶ)では、答えの行は図の下に(100% の高さにしない) */
+.item.has-figure > .ans-under { flex: none; margin-left: 10pt; }
 .calc.box { border: 0.8pt dashed #b9b9b9; border-radius: 2mm; position: relative; margin: 2mm 0 2mm 10pt; box-sizing: border-box; width: calc(100% - 10pt); flex-basis: calc(100% - 10pt); }
 .calc-label { position: absolute; top: 1mm; left: 2.5mm; font-size: 8.5pt; color: #8a8a8a; }
 .sqrt { white-space: nowrap; }
@@ -24737,11 +24739,12 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
   var at = (cx, cy, deg2, r) => [cx + r * Math.sin(deg2 * Math.PI / 180), cy - r * Math.cos(deg2 * Math.PI / 180)];
   var hourDeg = (t2) => (Math.floor(t2 / 60) % 12 + t2 % 60 / 60) * 30;
   var minuteDeg = (t2) => t2 % 60 * 6;
-  function hand(cx, cy, deg2, len3, wBase, tag) {
+  // 針:小学校のプリントのような 細い まっすぐな針(先だけ少しとがらせる)。うしろに出っぱりを作らない(読みまちがえないように)
+  function hand(cx, cy, deg2, len3, wHalf, tag) {
     const u2 = at(0, 0, deg2, 1), n = [-u2[1], u2[0]];
-    const tail = 2.2, wTip = wBase * 0.45;
+    const tail = 0.6, tip = Math.min(1.4, wHalf * 2.2);
     const P3 = (s, k) => [cx + u2[0] * s + n[0] * k, cy + u2[1] * s + n[1] * k];
-    return { t: "poly", pts: [P3(-tail, wBase), P3(len3 - 2.6, wTip), P3(len3, 0), P3(len3 - 2.6, -wTip), P3(-tail, -wBase)], w: 0.2, fill: "black", lead: true, tag };
+    return { t: "poly", pts: [P3(-tail, wHalf), P3(len3 - tip, wHalf), P3(len3, 0), P3(len3 - tip, -wHalf), P3(-tail, -wHalf)], w: 0.15, fill: "black", lead: true, tag };
   }
   function clockItems(cx, cy, R5, t2, { hour = true, minute = true } = {}) {
     const items = [{ t: "circle", cx, cy, r: R5, w: 0.7, fill: "white" }];
@@ -24750,8 +24753,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       const [x1, y1] = at(cx, cy, k * 6, R5 - (big ? 2.4 : 1.2)), [x2, y2] = at(cx, cy, k * 6, R5);
       items.push({ t: "line", x1, y1, x2, y2, w: big ? 0.5 : 0.22, lead: true });
     }
-    if (hour) items.push(hand(cx, cy, hourDeg(t2), R5 * 0.52, R5 >= 16 ? 1.5 : 1, "hour"));
-    if (minute) items.push(hand(cx, cy, minuteDeg(t2), R5 - 2.8, R5 >= 16 ? 0.95 : 0.65, "minute"));
+    if (hour) items.push(hand(cx, cy, hourDeg(t2), R5 * 0.55, R5 >= 16 ? 0.75 : 0.55, "hour"));
+    if (minute) items.push(hand(cx, cy, minuteDeg(t2), R5 - 3, R5 >= 16 ? 0.38 : 0.3, "minute"));
     const fs = R5 >= 16 ? 4.3 : 3;
     for (let n = 1; n <= 12; n++) {
       const [x, y] = at(cx, cy, n * 30, R5 - (R5 >= 16 ? 6.2 : 4.3));
@@ -24770,6 +24773,11 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
       h = by + bh + 1;
     }
     return { type: "draw", w: cx * 2, h, items };
+  }
+  // 答えの時計:問題と同じ大きさで、かきこむ針だけ答えの色にする
+  function keyClock(t2, tag) {
+    const fig = clockWithBox(t2, { box: false });
+    return { ...fig, items: fig.items.map((it) => it.tag === tag ? { ...it, fill: "#ef7d00", color: "#ef7d00" } : it) };
   }
   function smallClock(t2) {
     const R5 = 15, c = R5 + 1;
@@ -24825,8 +24833,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
         softKey: scene.text,
         text: scene.text,
         cols: 2,
-        figure: clockWithBox(t2),
-        answer: { display: timeText(t2, { han: true }), value: t2, figure: smallClock(t2) },
+        figure: clockWithBox(t2, { box: false }),
+        answer: { display: timeText(t2, { han: true }), value: t2 },
         workspace: { type: "none" },
         meta: { t: t2, scene: scene.text }
       };
@@ -24870,8 +24878,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
         softKey: scene.text,
         text: scene.text,
         cols: 2,
-        figure: clockWithBox(t2),
-        answer: { display: timeText(t2), value: t2, figure: smallClock(t2) },
+        figure: clockWithBox(t2, { box: false }),
+        answer: { display: timeText(t2), value: t2 },
         workspace: { type: "none" },
         meta: { t: t2, scene: scene.text }
       };
@@ -24912,7 +24920,7 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
         text: timeText(t2, { han: p.step === 30 }),
         cols: 2,
         figure: fig,
-        answer: { display: timeText(t2, { han: p.step === 30 }), value: t2, figure: smallClock(t2) },
+        answer: { display: timeText(t2, { han: p.step === 30 }), value: t2, figure: keyClock(t2, p.hand) },
         workspace: { type: "none" },
         meta: { t: t2, hand: p.hand }
       };
@@ -47537,6 +47545,8 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
         { name: "長さ", domain: "C 測定", from: [["t.unitMatch", null, { label: "たんいを せんで むすぼう", kinds: ["yoji"], options: [{ key: "set", label: "たんい", choices: [["auto", "★に合わせる"], ["cm_m", "cm・m"], ["mm_cm_m", "mm・cm・m"], ["all", "mm・cm・m・km"]] }] }], ["g2-04"], ["g2-14"]] },
         { name: "かさ", domain: "C 測定", from: [["g2-06"]] },
         { name: "重さ", domain: "C 測定", from: [["g3-14"]] },
+        // 時計を読む・針をかく(1年の なんじ・なんじはん/なんじなんぷん)を、時間のちがいより前の単元にする(★1でも むずかしすぎないように)
+        { name: "とけいを よもう", domain: "C 測定", from: [["g1-08:1", null, "なんじ・なんじはんを よむ"], ["g1-08:2", null, "なんじ・なんじはんの はりを かく"], ["g1-16:1", null, "なんじなんぷんを よむ"], ["g1-16:2", null, "なんじなんぷんの はりを かく"]] },
         { name: "時こくと時間", domain: "C 測定", from: [["g2-07"], ["g3-02"]] },
         { name: "表とグラフ", domain: "D データの活用", from: [["g2-01"], ["g3-06"]] }
       ]
@@ -57576,7 +57586,9 @@ svg .keyd { fill: var(--key, #ef7d00); font-weight: bold; }
           if (!src) throw new Error(`段階の単元が見つからない: ${ref}`);
           const list = no ? [src.topics[Number(no) - 1]] : src.topics;
           if (list.some((tp) => !tp)) throw new Error(`段階の小単元が見つからない: ${ref}`);
-          for (const tp of list) topics.push(withLevels({ ...tp }, lv2));
+          // 3つめに名前があれば、その小単元の名前をかえる(「とけいを よむ」が2つならぶときなど)
+          const rename = no && opt ? (typeof opt === "string" ? opt : opt.label) : null;
+          for (const tp of list) topics.push(withLevels({ ...tp, ...rename ? { label: rename } : {} }, lv2));
           if (!no && su.from.length === 1 && src.per) props = { per: src.per, starts: src.starts, defaultCount: src.defaultCount };
           else if (!no && su.from.length === 1 && src.starts) props = { starts: src.starts };
         }
