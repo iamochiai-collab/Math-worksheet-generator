@@ -24966,10 +24966,11 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     grade: 1,
     instruction: "とけいを　よみましょう。",
     defaults: { step: 5, tricky: false, aux: "none" },
+    // ★1 ちょうど(6じ)→ ★2 5ふんごと → ★3 1ぷんごと(先生の希望)
     levels: {
-      basic: { step: 5, tricky: false },
-      normal: { step: 1, tricky: false },
-      challenge: { step: 1, tricky: true }
+      basic: { step: 5, tricky: false, tk: "0" },
+      normal: { step: 5, tricky: false },
+      challenge: { step: 1, tricky: false }
     },
     generate(rng, p) {
       const odd = p.step === 1 && rng.chance(0.7);
@@ -25063,10 +25064,10 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     id: "g1.clockDrawMinute",
     defaults: { mins: null, step: 5, hand: "minute" },
     levels: {
-      basic: { mins: null, step: 5, hand: "minute" },
-      // 5分きざみ、ながい はりを かく
-      normal: { mins: null, step: 1, hand: "minute" },
-      // 1分きざみ
+      basic: { mins: null, step: 5, hand: "minute", tk: "0" },
+      // ちょうど(6じ)の ながい はりを かく
+      normal: { mins: null, step: 5, hand: "minute" },
+      // 5分きざみ
       challenge: { mins: null, step: 5, hand: "hour" }
       // みじかい はりを かく(数と数の あいだの どこか)
     }
