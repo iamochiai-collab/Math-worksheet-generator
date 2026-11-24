@@ -203,19 +203,27 @@ body[data-view="print"] .home { display: none; }
 .home-search .hs-clear[hidden] { display: none; }
 .home-search input::-webkit-search-cancel-button { display: none; }
 .home-found { margin-top: 10px; }
-/* あたらしく なったこと(ホーム) */
-.home-news { margin-top: 10px; background: #fffdf3; border: 1.5px solid #e8d89a; border-radius: 12px; padding: 8px 12px; font-size: 13px; }
+/* あたらしく なったこと(ホーム):1行1つ。3行ぶんの わくで、中を スクロールすると 10こ 見える */
+.home-news { margin-top: 10px; background: #fffdf3; border: 1.5px solid #e8d89a; border-radius: 12px; padding: 6px 6px 6px 12px; font-size: 13px; }
 .home-news:empty { display: none; }
-.nw-head { display: flex; align-items: center; gap: 8px; font-weight: bold; color: #8a6a00; }
-.nw-head .nw-more { margin-left: auto; font: inherit; font-size: 12px; font-weight: bold; color: #8a6a00; background: #fff; border: 1px solid #e0cd86; border-radius: 999px; padding: 2px 10px; cursor: pointer; }
-.nw-list { list-style: none; margin: 6px 0 0; padding: 0; }
-.nw-list li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; padding: 5px 0; border-top: 1px dashed #eadfb5; }
-.nw-list li[hidden] { display: none; }
-.nw-date { color: #8a6a00; font-variant-numeric: tabular-nums; flex: none; }
-.nw-where { font-weight: bold; color: #2f6f86; }
-.nw-text { flex: 1 1 260px; min-width: 0; }
-.nw-go { font: inherit; font-size: 12px; font-weight: bold; color: #fff; background: #2f8a96; border: none; border-radius: 999px; padding: 3px 12px; cursor: pointer; flex: none; margin-left: auto; }
-.nw-go:hover { background: #246e78; }
+.nw-head { display: flex; align-items: baseline; gap: 8px; font-weight: bold; color: #8a6a00; padding-right: 6px; }
+.nw-head small { margin-left: auto; font-weight: normal; font-size: 11px; color: #a08a40; }
+.nw-list { list-style: none; margin: 4px 0 0; padding: 0 6px 0 0; max-height: calc(3 * 34px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.nw-list li { border-top: 1px dashed #eadfb5; }
+.nw-row { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 33px; padding: 4px 2px; font: inherit; font-size: 13px; text-align: left; color: #333; background: none; border: none; }
+button.nw-row { cursor: pointer; border-radius: 6px; }
+button.nw-row:hover { background: #fff3c9; }
+.nw-date { color: #8a6a00; font-variant-numeric: tabular-nums; flex: none; font-size: 12px; }
+.nw-tag { flex: none; font-size: 11px; font-weight: bold; color: #fff; background: var(--gc, #2f8a96); border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
+.nw-text { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nw-tag.nog { background: #a08a40; }
+.nw-go { flex: none; font-size: 12px; font-weight: bold; color: #2f8a96; white-space: nowrap; }
+@media (max-width: 600px) {
+  .nw-row { flex-wrap: wrap; row-gap: 2px; }
+  .nw-go { margin-left: auto; }
+  .nw-text { order: 3; flex-basis: 100%; white-space: normal; }
+  .nw-list { max-height: calc(3 * 52px); }
+}
 .home-found .home-units { align-items: start; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
 .home.searching .tk-banner, .home.searching .home-row > div:first-child, .home.searching .home-mascot { display: none; }
 .home-found[hidden] { display: none; }
@@ -268,7 +276,7 @@ body[data-view="print"] .home { display: none; }
 @media (max-width: 640px) {
   .home-top { flex-direction: column; align-items: stretch; gap: 0; }
   .home-main { display: contents; }
-  .home-hero { order: 1; } .home-search, .home-found { order: 1; } .tk-banner { order: 1; } .home-mascot { order: 2; } .home-row { order: 3; }
+  .home-hero { order: 1; } .home-search, .home-found, .home-news { order: 1; } .tk-banner { order: 1; } .home-mascot { order: 2; } .home-row { order: 3; }
   .home-mascot { width: auto; flex-direction: row-reverse; justify-content: flex-end; align-items: flex-end; gap: 6px; margin: 12px 0 0; }
   .home-mascot .chara { width: 76px; height: 96px; }
   .bubble { margin-bottom: 30px; font-size: 14px; max-width: none; }
@@ -59284,30 +59292,29 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
-    { d: "26/11/24", t: "下が あいた プリントは、問題を ふやしたり 図を 大きくしたり するように しました(くわしい設定で とめられます)", g: 24, unit: "s24-02", sub: 2, kind: "word" },
-    { d: "26/11/24", t: "とけいの ほじょの 数字に「はりの ちかくだけ」を 足しました。1ぷんごとでも 6問 のせられます", g: 24, unit: "s24-12", sub: 3, kind: "figure", opts: { aux: "near", per: "6" } },
-    { d: "26/11/24", t: "単元の ボタンに カーソルを おくと、プリントの 見本が 出るように しました" },
-    { d: "26/11/24", t: "分野べつで「長さ」「重さ」「とけい」など、小分類で しぼれるように しました", domain: "測定" },
-    { d: "26/11/24", t: "「なんじなんぷん」の ★1を ちょうど(6じ)から に しました", g: 1, unit: "g1-16", sub: 1, kind: "figure", level: "basic" },
-    { d: "26/11/24", t: "とけいの 時こくの むずかしさ・場面の あり/なし・1ページの 問題数を えらべるように しました", g: 1, unit: "g1-16", sub: 1, kind: "figure", opts: { scene: "off" } },
-    { d: "26/11/24", t: "とけいに ほじょの 数字(5ふんごと・1ぷんごと)を つけられるように しました", g: 24, unit: "s24-12", sub: 3, kind: "figure", opts: { aux: "1" } },
-    { d: "26/11/20", t: "「計算・パズル」(マス計算・虫くい算・魔方陣・数独 など)を 足しました", g: 30, unit: "s30-01", sub: 1, kind: "figure" },
-    { d: "26/11/20", t: "「測定」(はかり・計量カップ・ものさし・とけいを よむ)を 足しました", g: 29, unit: "s29-02", sub: 1, kind: "figure" },
-    { d: "26/11/20", t: "イラストを 116こ 入れました。特別支援に「分野べつ」を 足しました", g: 1, unit: "g1-01", sub: 1, kind: "figure" },
-    { d: "26/11/20", t: "「とけいを よもう」を 足しました。とけいの はりを 細く しました", g: 24, unit: "s24-12", sub: 1, kind: "figure" },
-    { d: "26/11/20", t: "「長さ」に「たんいを せんで むすぼう」(絵と たんいを 線で むすぶ)を 足しました", g: 24, unit: "s24-09", sub: 1, kind: "yoji" }
+    { d: "26/11/24", t: "下が あいた プリントを うめる(問題を ふやす・図を 大きく)", g: 24, unit: "s24-02", sub: 2, kind: "word" },
+    { d: "26/11/24", t: "とけい:ほじょの数字「はりの ちかくだけ」(1ぷんごとでも 6問)", g: 24, unit: "s24-12", sub: 3, kind: "figure", opts: { aux: "near", per: "6" } },
+    { d: "26/11/24", t: "単元の ボタンに カーソルを おくと 見本が 出る", tag: "ホーム" },
+    { d: "26/11/24", t: "分野べつを 小分類(長さ・重さ・とけい など)で しぼれる", domain: "測定" },
+    { d: "26/11/24", t: "なんじなんぷん:★1を ちょうど(6じ)から に", g: 1, unit: "g1-16", sub: 1, kind: "figure", level: "basic" },
+    { d: "26/11/24", t: "とけい:時こくの むずかしさ・場面・1ページの問題数を えらべる", g: 1, unit: "g1-16", sub: 1, kind: "figure", opts: { scene: "off" } },
+    { d: "26/11/24", t: "とけい:ほじょの数字(5ふんごと・1ぷんごと)", g: 24, unit: "s24-12", sub: 3, kind: "figure", opts: { aux: "1" } },
+    { d: "26/11/20", t: "計算・パズルを 追加(マス計算・虫くい算・数独 など)", g: 30, unit: "s30-01", sub: 1, kind: "figure" },
+    { d: "26/11/20", t: "測定を 追加(はかり・計量カップ・ものさし・とけい)", g: 29, unit: "s29-02", sub: 1, kind: "figure" },
+    { d: "26/11/20", t: "イラスト 116こ と、特別支援の 分野べつを 追加", g: 1, unit: "g1-01", sub: 1, kind: "figure" },
+    { d: "26/11/20", t: "とけいを よもう を 追加。とけいの はりを 細く", g: 24, unit: "s24-12", sub: 1, kind: "figure" }
   ].slice(0, 10);
-  var NEWS_SHOW = 3;
   function renderNews() {
     const box = $("homeNews");
     if (!box || !CHANGES.length) return;
-    const open = store.get("newsOpen") === "1";
-    box.innerHTML = `<div class="nw-head"><span>🆕 あたらしく なったこと</span>${CHANGES.length > NEWS_SHOW ? `<button type="button" class="nw-more" data-nwmore="1">${open ? "とじる" : `もっと 見る(${CHANGES.length})`}</button>` : ""}</div><ul class="nw-list">${CHANGES.map((c, i) => {
+    box.innerHTML = `<div class="nw-head"><span>🆕 あたらしく なったこと</span>${CHANGES.length > 3 ? `<small>スクロールで ${CHANGES.length}こ 見られます</small>` : ""}</div><ul class="nw-list">${CHANGES.map((c, i) => {
       const u2 = c.unit && GRADES[c.g]?.units.find((x) => x.id === c.unit);
       const tp = u2 && c.sub ? u2.topics[c.sub - 1] : null;
-      const where = c.domain ? `分野べつ › ${c.domain}` : u2 ? `${gradeName(c.g)} › ${u2.name}${tp ? ` › ${rubyBase(tp.label)}` : ""}` : "";
-      const go = c.domain || u2 ? `<button type="button" class="nw-go" data-ci="${i}">${c.domain ? "ひらく" : "つくる"} ▶</button>` : "";
-      return `<li${!open && i >= NEWS_SHOW ? " hidden" : ""}><span class="nw-date">${esc2(c.d)}</span>${where ? `<span class="nw-where">${esc2(where)}</span>` : ""}<span class="nw-text">${esc2(c.t)}</span>${go}</li>`;
+      const tag = c.tag || (c.domain ? "分野べつ" : u2 ? (isStage(c.g) ? gradeName(c.g).replace(/段階$/, "") : gradeName(c.g)) : "");
+      const full = c.domain ? `分野べつ › ${c.domain}` : u2 ? `${gradeName(c.g)} › ${u2.name}${tp ? ` › ${rubyBase(tp.label)}` : ""}` : "";
+      const inner = `<span class="nw-date">${esc2(c.d)}</span>${tag ? `<span class="nw-tag${c.g != null ? ` g${c.g}` : " nog"}">${esc2(tag)}</span>` : ""}<span class="nw-text">${esc2(c.t)}</span>`;
+      const link = c.domain || u2;
+      return `<li>${link ? `<button type="button" class="nw-row" data-ci="${i}" title="${esc2(full)}"${u2 ? ` data-g="${c.g}" data-unit="${c.unit}" data-kind="${c.kind}" data-sub="${c.sub || 0}"` : ""}>${inner}<span class="nw-go">${c.domain ? "ひらく" : "つくる"} ›</span></button>` : `<div class="nw-row">${inner}</div>`}</li>`;
     }).join("")}</ul>`;
   }
   function goChange(c) {
@@ -59529,9 +59536,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       document.body.appendChild(hovPop);
     }
     const card = b.closest(".ucard");
-    const uname = card?.querySelector(".uname")?.textContent || "";
+    const uname = card?.querySelector(".uname")?.textContent || b.title || "";
     const sname = b.querySelector(".usub-name")?.textContent;
-    const kname = b.querySelector(".usub-kind")?.textContent || b.textContent;
+    const kname = b.querySelector(".usub-kind")?.textContent || (b.classList.contains("nw-row") ? KIND_SHORT[b.dataset.kind] || "" : b.textContent);
     const w = pg2.w * HOV_K, h = pg2.h * HOV_K;
     hovPop.innerHTML = `<div class="hp-cap">${esc2(uname)}${sname ? ` › ${esc2(sname)}` : ""}(${esc2(kname)}・${LEVELS[homeLevel]?.label || ""})<small>見本(1ページめ${pg2.n > 1 ? ` / ぜんぶで ${pg2.n}ページ` : ""})。おすと 作れます。問題は 作るたびに かわります</small></div><div class="hp-page" style="width:${w}px;height:${h}px">${pg2.html}</div>`;
     hovPop.querySelector(".hp-page > .sheet").style.transform = `scale(${HOV_K})`;
@@ -59549,7 +59556,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   var canHover = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   homeEl.addEventListener("mouseover", (e) => {
     if (!canHover) return;
-    const b = e.target.closest(".uk, .usb");
+    const b = e.target.closest(".uk, .usb, .nw-row[data-unit]");
     if (b === hovBtn) return;
     hovHide();
     if (!b || !b.dataset.unit) return;

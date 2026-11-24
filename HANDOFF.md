@@ -93,3 +93,4 @@ node tools/test/render.js build/test.html 単元id 種類 難易度 問題数 �
   - stretchPage → growFigures:あきが 18% より 多いページは 図を 1.5ばいまで 大きくする(よこに はみ出さない・下に 7% のこす)。
   - balanceTail:さいごのページが 前のページの 6わり より すくないときは、前のページの さいごの 大問を まるごと うつす(差が へるときだけ)。
 - ホーム「🆕 あたらしく なったこと」:template.html の CHANGES(あたらしい ものを 上に。10こまで 出す)。{d:"YY/MM/DD", t:文, g, unit, sub, kind, opts?, level?, domain?}。「つくる▶」で openPrint(unit, kind, sub, opts)。domain は 分野べつを ひらく。**機能を 足したら ここにも 1行 足すこと**。ふだんは 3こ、「もっと見る」で10こ(localStorage newsOpen)。
+  - (11/24 よる)1行1つ・3行ぶんの わくで スクロール。タグ(中学部1・1年 など)は 学年の色。行ぜんたいが ボタン(カーソルで 見本も出る)。スマホは 日づけ・タグの 下に 文。
