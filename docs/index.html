@@ -203,6 +203,19 @@ body[data-view="print"] .home { display: none; }
 .home-search .hs-clear[hidden] { display: none; }
 .home-search input::-webkit-search-cancel-button { display: none; }
 .home-found { margin-top: 10px; }
+/* あたらしく なったこと(ホーム) */
+.home-news { margin-top: 10px; background: #fffdf3; border: 1.5px solid #e8d89a; border-radius: 12px; padding: 8px 12px; font-size: 13px; }
+.home-news:empty { display: none; }
+.nw-head { display: flex; align-items: center; gap: 8px; font-weight: bold; color: #8a6a00; }
+.nw-head .nw-more { margin-left: auto; font: inherit; font-size: 12px; font-weight: bold; color: #8a6a00; background: #fff; border: 1px solid #e0cd86; border-radius: 999px; padding: 2px 10px; cursor: pointer; }
+.nw-list { list-style: none; margin: 6px 0 0; padding: 0; }
+.nw-list li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; padding: 5px 0; border-top: 1px dashed #eadfb5; }
+.nw-list li[hidden] { display: none; }
+.nw-date { color: #8a6a00; font-variant-numeric: tabular-nums; flex: none; }
+.nw-where { font-weight: bold; color: #2f6f86; }
+.nw-text { flex: 1 1 260px; min-width: 0; }
+.nw-go { font: inherit; font-size: 12px; font-weight: bold; color: #fff; background: #2f8a96; border: none; border-radius: 999px; padding: 3px 12px; cursor: pointer; flex: none; margin-left: auto; }
+.nw-go:hover { background: #246e78; }
 .home-found .home-units { align-items: start; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
 .home.searching .tk-banner, .home.searching .home-row > div:first-child, .home.searching .home-mascot { display: none; }
 .home-found[hidden] { display: none; }
@@ -640,6 +653,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   </div>
   <div class="home-search"><input type="search" id="homeQ" autocomplete="off" enterkeyhint="search" aria-label="単元・小単元をさがす"><button type="button" class="hs-clear" id="homeQClear" hidden>× けす</button></div>
   <div class="home-found" id="homeFound" hidden></div>
+  <div class="home-news" id="homeNews"></div>
   <button type="button" class="tk-banner" id="tkBanner"></button>
   <div class="home-row">
     <div><div class="home-step"><span class="n">1</span><span id="homeStep1">学年</span></div><div class="home-grades" id="homeGrades"></div></div>
@@ -59267,7 +59281,53 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     $("homeHint").textContent = (DOMAIN_SUBS[d] && !ds ? "上の「長さ」「かけ算」などで、もっと しぼれます。" : "") + "段階の じゅんに ならんでいます(上ほど やさしい)。ほかの段階の内容も ここから作れます";
     $("homeUnits").innerHTML = out.join("") || '<p class="dm-none">この分野の内容は まだありません</p>';
   }
+  // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
+  // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
+  var CHANGES = [
+    { d: "26/11/24", t: "下が あいた プリントは、問題を ふやしたり 図を 大きくしたり するように しました(くわしい設定で とめられます)", g: 24, unit: "s24-02", sub: 2, kind: "word" },
+    { d: "26/11/24", t: "とけいの ほじょの 数字に「はりの ちかくだけ」を 足しました。1ぷんごとでも 6問 のせられます", g: 24, unit: "s24-12", sub: 3, kind: "figure", opts: { aux: "near", per: "6" } },
+    { d: "26/11/24", t: "単元の ボタンに カーソルを おくと、プリントの 見本が 出るように しました" },
+    { d: "26/11/24", t: "分野べつで「長さ」「重さ」「とけい」など、小分類で しぼれるように しました", domain: "測定" },
+    { d: "26/11/24", t: "「なんじなんぷん」の ★1を ちょうど(6じ)から に しました", g: 1, unit: "g1-16", sub: 1, kind: "figure", level: "basic" },
+    { d: "26/11/24", t: "とけいの 時こくの むずかしさ・場面の あり/なし・1ページの 問題数を えらべるように しました", g: 1, unit: "g1-16", sub: 1, kind: "figure", opts: { scene: "off" } },
+    { d: "26/11/24", t: "とけいに ほじょの 数字(5ふんごと・1ぷんごと)を つけられるように しました", g: 24, unit: "s24-12", sub: 3, kind: "figure", opts: { aux: "1" } },
+    { d: "26/11/20", t: "「計算・パズル」(マス計算・虫くい算・魔方陣・数独 など)を 足しました", g: 30, unit: "s30-01", sub: 1, kind: "figure" },
+    { d: "26/11/20", t: "「測定」(はかり・計量カップ・ものさし・とけいを よむ)を 足しました", g: 29, unit: "s29-02", sub: 1, kind: "figure" },
+    { d: "26/11/20", t: "イラストを 116こ 入れました。特別支援に「分野べつ」を 足しました", g: 1, unit: "g1-01", sub: 1, kind: "figure" },
+    { d: "26/11/20", t: "「とけいを よもう」を 足しました。とけいの はりを 細く しました", g: 24, unit: "s24-12", sub: 1, kind: "figure" },
+    { d: "26/11/20", t: "「長さ」に「たんいを せんで むすぼう」(絵と たんいを 線で むすぶ)を 足しました", g: 24, unit: "s24-09", sub: 1, kind: "yoji" }
+  ].slice(0, 10);
+  var NEWS_SHOW = 3;
+  function renderNews() {
+    const box = $("homeNews");
+    if (!box || !CHANGES.length) return;
+    const open = store.get("newsOpen") === "1";
+    box.innerHTML = `<div class="nw-head"><span>🆕 あたらしく なったこと</span>${CHANGES.length > NEWS_SHOW ? `<button type="button" class="nw-more" data-nwmore="1">${open ? "とじる" : `もっと 見る(${CHANGES.length})`}</button>` : ""}</div><ul class="nw-list">${CHANGES.map((c, i) => {
+      const u2 = c.unit && GRADES[c.g]?.units.find((x) => x.id === c.unit);
+      const tp = u2 && c.sub ? u2.topics[c.sub - 1] : null;
+      const where = c.domain ? `分野べつ › ${c.domain}` : u2 ? `${gradeName(c.g)} › ${u2.name}${tp ? ` › ${rubyBase(tp.label)}` : ""}` : "";
+      const go = c.domain || u2 ? `<button type="button" class="nw-go" data-ci="${i}">${c.domain ? "ひらく" : "つくる"} ▶</button>` : "";
+      return `<li${!open && i >= NEWS_SHOW ? " hidden" : ""}><span class="nw-date">${esc2(c.d)}</span>${where ? `<span class="nw-where">${esc2(where)}</span>` : ""}<span class="nw-text">${esc2(c.t)}</span>${go}</li>`;
+    }).join("")}</ul>`;
+  }
+  function goChange(c) {
+    if (c.domain) {
+      if (!isStage(homeGrade)) {
+        const st = Number(store.get("stage"));
+        homeGrade = GRADES[st] && isStage(st) ? st : 21;
+      }
+      homeDomain = c.domain;
+      homeDSub = c.dsub || null;
+      renderHome();
+      $("homeUnitsTitle").scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    homeGrade = c.g;
+    if (c.level) homeLevel = c.level;
+    openPrint(c.unit, c.kind, c.sub || 0, c.opts || null);
+  }
   function renderHome() {
+    renderNews();
     homeEl.className = `home g${homeGrade}`;
     const stageMode = isStage(homeGrade);
     if (!stageMode) homeDomain = null;
@@ -59384,7 +59444,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     document.body.dataset.view = v;
     window.scrollTo(0, 0);
   }
-  function openPrint(unitId, kind, sub = 0) {
+  function openPrint(unitId, kind, sub = 0, opts = null) {
     el.grade.value = String(homeGrade);
     refreshUnits();
     el.unit.value = unitId;
@@ -59395,6 +59455,16 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     }
     el.kind.value = kind;
     refreshCounts();
+    // 「あたらしく なったこと」から:その設定(ほじょの数字 など)を えらんだ じょうたいで ひらく
+    if (opts) for (const s2 of $("optWrap").querySelectorAll("select")) {
+      const v = opts[s2.dataset.opt];
+      if (v == null || ![...s2.options].some((o) => o.value === String(v))) continue;
+      s2.value = String(v);
+      if (s2.dataset.opt === "per" && !el.count.disabled) {
+        if (![...el.count.options].some((o) => o.value === String(v))) el.count.add(new Option(`${v}問`, String(v)));
+        el.count.value = String(v);
+      }
+    }
     el.level.value = homeLevel;
     el.seed.value = randomSeed();
     showView("print");
@@ -59491,6 +59561,15 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   homeEl.addEventListener("click", (e) => {
     hovHide();
     const b = e.target.closest("button");
+    if (b && b.dataset.nwmore) {
+      store.set("newsOpen", store.get("newsOpen") === "1" ? "0" : "1");
+      renderNews();
+      return;
+    }
+    if (b && b.dataset.ci !== undefined) {
+      goChange(CHANGES[Number(b.dataset.ci)]);
+      return;
+    }
     if (!b || b.disabled) return;
     if (b.dataset.domain) {
       homeDomain = homeDomain === b.dataset.domain ? null : b.dataset.domain;

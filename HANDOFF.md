@@ -92,3 +92,4 @@ node tools/test/render.js build/test.html 単元id 種類 難易度 問題数 �
   - filledSheet:くらしの数学 いがいも、ページ数を ふやさずに さいごのページが 85% に なるまで 問題を ふやす(per を えらんだとき・まい数の単元・テスト・記録・まとめは しない)。はかるときは growHold で 図を 大きくしない。ふえた数は 問題数の らんに「○問(下が あいたので ふやした)」で出す。
   - stretchPage → growFigures:あきが 18% より 多いページは 図を 1.5ばいまで 大きくする(よこに はみ出さない・下に 7% のこす)。
   - balanceTail:さいごのページが 前のページの 6わり より すくないときは、前のページの さいごの 大問を まるごと うつす(差が へるときだけ)。
+- ホーム「🆕 あたらしく なったこと」:template.html の CHANGES(あたらしい ものを 上に。10こまで 出す)。{d:"YY/MM/DD", t:文, g, unit, sub, kind, opts?, level?, domain?}。「つくる▶」で openPrint(unit, kind, sub, opts)。domain は 分野べつを ひらく。**機能を 足したら ここにも 1行 足すこと**。ふだんは 3こ、「もっと見る」で10こ(localStorage newsOpen)。
