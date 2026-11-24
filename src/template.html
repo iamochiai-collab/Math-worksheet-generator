@@ -24907,9 +24907,10 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       // ちょうど 5の数字(○じ20ぷん など)のときは いらないので かかない
       const m = t2 % 60, b = Math.floor(m / 5) * 5;
       if (m % 5) for (let k = b + 1; k < b + 5; k++) {
-        const fsA = 2.9, [x, y] = at(cx, cy, k * 6, R5 + 8.4);
+        // となりの 数字と かさならない 大きさ・きょり(1ぷんの あいだ = 2π×半径÷60 が 2けたの はばより 広くなるように)
+        const fsA = 2.6, [x, y] = at(cx, cy, k * 6, R5 + 9.8);
         items.push({ t: "text", x, y: y + fsA * 0.36, s: String(k), size: fsA, color: "#333", aux: true });
-        const [x1, y1] = at(cx, cy, k * 6, R5 + 0.8), [x2, y2] = at(cx, cy, k * 6, R5 + 6.4);
+        const [x1, y1] = at(cx, cy, k * 6, R5 + 0.8), [x2, y2] = at(cx, cy, k * 6, R5 + 7.6);
         items.push({ t: "line", x1, y1, x2, y2, w: 0.2, color: "#888", aux: true });
       }
     }
@@ -24933,7 +24934,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ほじょの数字があるときは 時計を大きくする(1ぷんごとは 1行に1つの 大きな時計)
   var CLOCK_R = { none: 20, 5: 24, 1: 36, near: 24 };
   function clockWithBox(t2, { hour = true, minute = true, box: box3 = true, scene = null, aux = "none", scaleK = null } = {}) {
-    const R5 = CLOCK_R[aux] || 20, pad = aux === "near" ? 11 : aux === "5" || aux === "1" ? 6 : 0;
+    const R5 = CLOCK_R[aux] || 20, pad = aux === "near" ? 12.5 : aux === "5" || aux === "1" ? 6 : 0;
     const pic = scene && ILLUST[SCENE_IMG[scene]] ? (aux === "1" ? 40 : 30) : 0, cx = 4 + pad + R5 + pic, cy = R5 + 2 + pad;
     const items = clockItems(cx, cy, R5, t2, { hour, minute, aux });
     if (pic) items.unshift(illust(SCENE_IMG[scene], pic / 2 - 1, cy, pic - 2));
