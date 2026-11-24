@@ -440,6 +440,10 @@ table.data.dense th, table.data.dense td { padding: 3pt 4pt; min-width: 26pt; }
 /* 1ページにたくさん入れるとき(compact)は、答えの四角を少しひくく */
 .sheet .item.compact .abox.ans { height: 8.5mm; margin-top: 0.3mm; margin-bottom: 0.3mm; }
 .item.compact > .ans-under { margin-top: 0; margin-bottom: 0; }
+.item.has-figure.compact > .ans-under { white-space: nowrap; }
+/* 答えを書く欄を 図の下の まん中に(時計) */
+.item.has-figure.ans-center > .ans-under { align-self: center; margin-left: 0; margin-right: 0; }
+.item.has-figure.compact > .ans-under .abox.ans { max-width: 40mm; }
 /* 答えの四角を 問題の文と おなじ行の右に(大きな時計など。図は その下に 大きく) */
 .item.ans-right-fig { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 6mm; align-items: center; }
 .item.ans-right-fig > .item-head { grid-column: 1; grid-row: 1; }
@@ -24821,7 +24825,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   var SCENE_IMG = { "おきた　とき": "sc_wake", "あさごはん": "sc_breakfast", "いえを　でた　とき": "sc_leave", "きゅうしょく": "sc_lunch", "かえった　とき": "sc_return", "おやつ": "sc_snack", "こうえんで　あそぶ": "sc_park", "ばんごはん": "sc_dinner", "おふろ": "sc_bath", "ねた　とき": "sc_sleep", "かいものに　いく": "sc_shopping", "としょかんに　いく": "sc_library" };
   // ほじょの数字があるときは 時計を大きくする(1ぷんごとは 1行に1つの 大きな時計)
   var CLOCK_R = { none: 20, 5: 24, 1: 36 };
-  function clockWithBox(t2, { hour = true, minute = true, box: box3 = true, scene = null, aux = "none" } = {}) {
+  function clockWithBox(t2, { hour = true, minute = true, box: box3 = true, scene = null, aux = "none", scaleK = null } = {}) {
     const R5 = CLOCK_R[aux] || 20, pad = aux === "5" || aux === "1" ? 6 : 0;
     const pic = scene && ILLUST[SCENE_IMG[scene]] ? (aux === "1" ? 40 : 30) : 0, cx = 4 + pad + R5 + pic, cy = R5 + 2 + pad;
     const items = clockItems(cx, cy, R5, t2, { hour, minute, aux });
@@ -24833,11 +24837,11 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       h = by + bh + 1;
     }
     // ほじょの数字つきは 1行に1つ。1ページに2つ入る大きさにする
-    return { type: "draw", w: cx + R5 + pad + 4, h, items, ...(aux === "1" ? { scaleK: 1.02 } : aux === "5" ? { scaleK: 1.3 } : {}) };
+    return { type: "draw", w: cx + R5 + pad + 4, h, items, ...(scaleK ? { scaleK } : {}) };
   }
   // 答えの時計:問題と同じ大きさで、かきこむ針だけ答えの色にする
-  function keyClock(t2, tag, aux = "none") {
-    const fig = clockWithBox(t2, { box: false, aux });
+  function keyClock(t2, tag, aux = "none", scaleK = null) {
+    const fig = clockWithBox(t2, { box: false, aux, scaleK });
     return { ...fig, items: fig.items.map((it) => it.tag === tag ? { ...it, fill: "#ef7d00", color: "#ef7d00" } : it) };
   }
   function smallClock(t2) {
@@ -24862,6 +24866,40 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     };
     return { ...s, from: toMin(s.from), to: toMin(s.to) };
   });
+  // とけいの小単元の設定(パネルにえらぶ欄が出る)
+  var CLOCK_OPTS = [
+    { key: "tk", label: "時こく", choices: [["auto", "★に合わせる"], ["0", "ちょうど(6じ・6じ00ぷん)"], ["30", "なんじはん まで"], ["5", "5ふんごと"], ["1", "1ぷんごと"], ["tricky", "まちがえやすい(○じ50ぷんすぎ など)"]] },
+    { key: "aux", label: "ほじょの 数字", choices: [["auto", "なし"], ["5", "5ふんごと(5・10…55)"], ["1", "1ぷんごと(1〜59)"]] },
+    { key: "scene", label: "場面(おきた とき など)", choices: [["auto", "あり(絵と ことば)"], ["off", "なし(時計だけ)"]] },
+    { key: "per", label: "1ページの問題数", num: true, choices: [["auto", "おまかせ"], ["2", "2問(大きく)"], ["4", "4問"], ["6", "6問(小さく・1ぷんごとは2問まで)"]] }
+  ];
+  // ===== とけいの設定(小単元の options)=====
+  // tk:時こくの むずかしさ。"0" ちょうど(6じ)/"30" なんじはん まで/"5" 5ふんごと/"1" 1ぷんごと/"tricky" まちがえやすい(○じ50ぷんすぎ・○じ5ふん など)
+  var TK_OK = {
+    0: (m) => m === 0,
+    30: (m) => m === 0 || m === 30,
+    5: (m) => m !== 0 && m % 5 === 0,
+    1: (m) => m % 5 !== 0,
+    tricky: (m) => m !== 0 && (m >= 45 || m <= 10)
+  };
+  var tkOn = (p) => p.tk && p.tk !== "auto" && TK_OK[p.tk];
+  // 時こくの えらび方(tk があれば それ、なければ 生成器の ok3)。"30" は なんじ と なんじはん を半分ずつ
+  function tkFilter(rng, p, ok3) {
+    if (!tkOn(p)) return ok3;
+    if (p.tk === "30") { const half = rng.chance(0.5); return (t3) => t3 % 60 === (half ? 30 : 0); }
+    return (t3) => TK_OK[p.tk](t3 % 60);
+  }
+  // 1ページの問題数(per)と ほじょの数字(aux)から、列の数・時計の大きさ・答えの四角の場所をきめる。1ぷんごとは 2問まで
+  function clockLayout(p) {
+    const aux = p.aux === "1" || p.aux === "5" ? p.aux : "none";
+    const per = aux === "1" ? 2 : Number(p.per) || (aux === "5" ? 2 : 4);
+    // 答えを書く欄は いつも 時計の下(まん中)。2問は 1行に1つの 大きな時計
+    if (per <= 2) return { cols: 1, ansRight: false, scaleK: aux === "1" ? 0.86 : aux === "5" ? 1.18 : 1.7 };
+    // 6問:2列×3だん。答えの四角は時計の下に 少しひくく(compact)
+    if (per >= 6) return { cols: 2, ansRight: false, compact: true, scaleK: aux === "5" ? 0.76 : 1.08 };
+    return { cols: 2, ansRight: false, scaleK: null };
+  }
+  var sceneOn = (p) => p.scene !== "off";
   function pickSceneTime(rng, ok3) {
     for (let k = 0; k < 400; k++) {
       const sc = rng.pick(SCENES17);
@@ -24888,14 +24926,17 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     },
     generate(rng, p) {
       const wantHalf = rng.chance(p.half);
-      const { scene, t: t2 } = pickSceneTime(rng, (t3) => t3 % 60 === (wantHalf ? 30 : 0));
+      const { scene, t: t2 } = pickSceneTime(rng, tkFilter(rng, p, (t3) => t3 % 60 === (wantHalf ? 30 : 0)));
+      const L = clockLayout(p), sc = sceneOn(p) ? scene.text : null;
       return {
         key: `ch:${t2}`,
-        softKey: scene.text,
-        text: scene.text,
-        cols: p.aux === "1" || p.aux === "5" ? 1 : 2,
-        figure: clockWithBox(t2, { box: false, scene: scene.text, aux: p.aux }),
-        ansRight: p.aux === "1" || p.aux === "5",
+        softKey: sc || `ch${t2}`,
+        text: sc || "",
+        cols: L.cols,
+        figure: clockWithBox(t2, { box: false, scene: sc, aux: p.aux, scaleK: L.scaleK }),
+        ansRight: L.ansRight,
+        ansCenter: true,
+        compact: !!L.compact,
         answer: { display: timeText(t2, { han: true }), value: t2 },
         workspace: { type: "none" },
         meta: { t: t2, scene: scene.text }
@@ -24907,6 +24948,11 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       if (r.hour === null || r.minute === null) return `はりがない`;
       const m2 = Math.round(r.minute / 6) % 60, h = Math.floor((r.hour + 0.01) / 30) || 12;
       if (h * 60 + m2 !== t2) return `はりと時こくが合わない ${h}:${m2}`;
+      if (tkOn(p)) {
+        if (!TK_OK[p.tk](m2)) return `時こくの むずかしさが ちがう`;
+        if (pr.answer.display !== timeText(t2, { han: true })) return `答えの書き方が違う`;
+        return null;
+      }
       if (m2 !== 0 && m2 !== 30) return `なんじ・なんじはん ではない`;
       if (p.half === 0 && m2 !== 0) return `きほんは なんじ だけ`;
       if (pr.answer.display !== (m2 ? `${h}じはん` : `${h}じ`)) return `答えの書き方が違う`;
@@ -24934,14 +24980,17 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         if (p.tricky && !(m2 >= 45 || m2 <= 10)) return false;
         return true;
       };
-      const { scene, t: t2 } = pickSceneTime(rng, ok3);
+      const { scene, t: t2 } = pickSceneTime(rng, tkFilter(rng, p, ok3));
+      const L = clockLayout(p), sc = sceneOn(p) ? scene.text : null;
       return {
         key: `cm:${t2}`,
-        softKey: scene.text,
-        text: scene.text,
-        cols: p.aux === "1" || p.aux === "5" ? 1 : 2,
-        figure: clockWithBox(t2, { box: false, scene: scene.text, aux: p.aux }),
-        ansRight: p.aux === "1" || p.aux === "5",
+        softKey: sc || `cm${t2}`,
+        text: sc || "",
+        cols: L.cols,
+        figure: clockWithBox(t2, { box: false, scene: sc, aux: p.aux, scaleK: L.scaleK }),
+        ansRight: L.ansRight,
+        ansCenter: true,
+        compact: !!L.compact,
         answer: { display: timeText(t2), value: t2 },
         workspace: { type: "none" },
         meta: { t: t2, scene: scene.text }
@@ -24953,6 +25002,10 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       if (r.hour === null || r.minute === null) return `はりがない`;
       const m2 = Math.round(r.minute / 6) % 60, h = Math.floor((r.hour + 0.01) / 30) || 12;
       if (h * 60 + m2 !== t2) return `はりと時こくが合わない ${h}:${m2}`;
+      if (tkOn(p)) {
+        if (!TK_OK[p.tk](m2)) return `時こくの むずかしさが ちがう`;
+        return pr.answer.display === timeText(t2) ? null : `答えの書き方が違う`;
+      }
       if (m2 === 0 || m2 % p.step) return `分のきざみが範囲外`;
       if (p.tricky && !(m2 >= 45 || m2 <= 10)) return `まちがえやすい時こくではない`;
       const last = String(m2).slice(-1);
@@ -24975,15 +25028,16 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     },
     generate(rng, p) {
       const ok3 = (t3) => t3 % p.step === 0 && (p.mins === null || p.mins.includes(t3 % 60));
-      const { t: t2 } = pickSceneTime(rng, ok3);
+      const { t: t2 } = pickSceneTime(rng, tkFilter(rng, p, ok3));
       const show4 = p.hand === "minute" ? { hour: true, minute: false } : { hour: false, minute: true };
-      const fig = clockWithBox(t2, { ...show4, box: false, aux: p.aux });
+      const L = clockLayout(p), han = tkOn(p) ? p.tk === "30" : p.step === 30;
+      const fig = clockWithBox(t2, { ...show4, box: false, aux: p.aux, scaleK: L.scaleK });
       return {
         key: `cd:${t2}:${p.hand}`,
-        text: timeText(t2, { han: p.step === 30 }),
-        cols: p.aux === "1" || p.aux === "5" ? 1 : 2,
+        text: timeText(t2, { han }),
+        cols: L.cols,
         figure: fig,
-        answer: { display: timeText(t2, { han: p.step === 30 }), value: t2, figure: keyClock(t2, p.hand, p.aux) },
+        answer: { display: timeText(t2, { han }), value: t2, figure: keyClock(t2, p.hand, p.aux, L.scaleK) },
         workspace: { type: "none" },
         meta: { t: t2, hand: p.hand }
       };
@@ -24997,6 +25051,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       if (h * 60 + m2 !== t2) return `答えの時計が合わない`;
       if (hand2 === "minute" && Math.abs(q2.hour - r.hour) > 0.01) return `みじかい はりが ずれている`;
       if (hand2 === "hour" && Math.abs(q2.minute - r.minute) > 0.01) return `ながい はりが ずれている`;
+      if (tkOn(p)) return TK_OK[p.tk](m2) ? null : `時こくの むずかしさが ちがう`;
       if (t2 % p.step || p.mins && !p.mins.includes(m2)) return `時こくが範囲外`;
       return null;
     }
@@ -52954,7 +53009,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     if (k === 1) return html;
     return html.replace(/<svg\b[^>]*>/g, (tag) => tag.replace(/width="([\d.]+)mm" height="([\d.]+)mm"/, (_, w, h) => {
       const W = Number(w), H = Number(h);
-      const kk = Math.max(1, Math.min(k, FIG_MAX_W / W, FIG_MAX_H / H));
+      // scaleK が 1 より小さいときは その大きさに 小さくする(1ページに たくさん入れる時計など)
+      const kk = k < 1 ? k : Math.max(1, Math.min(k, FIG_MAX_W / W, FIG_MAX_H / H));
       return `width="${(W * kk).toFixed(2)}mm" height="${(H * kk).toFixed(2)}mm"`;
     }));
   }
@@ -53671,7 +53727,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           // 式は考えるスペース(か計算のます)があるときだけ書く
           const note = K ? noteHtml(K.note || (calcMm || gridWs ? K.work : "")) : "";
           return `
-        <li class="item ${p2.workspace?.type === "grid" ? "has-grid" : ""} ${p2.figure ? "has-figure" : ""}${p2.figure?.type === "hissan" ? " has-hissan" : ""}${p2.sideNo ? " side-no" : ""}${p2.compact ? " compact" : ""}${p2.ansRight ? " ans-right-fig" : ""}${tr ? " trace" : ""}">
+        <li class="item ${p2.workspace?.type === "grid" ? "has-grid" : ""} ${p2.figure ? "has-figure" : ""}${p2.figure?.type === "hissan" ? " has-hissan" : ""}${p2.sideNo ? " side-no" : ""}${p2.compact ? " compact" : ""}${p2.ansRight ? " ans-right-fig" : ""}${p2.ansCenter ? " ans-center" : ""}${tr ? " trace" : ""}">
           ${!p2.no && !String(a.text + tail).trim() ? "" : `<span class="item-head">${p2.no ? `<span class="item-no">(${p2.no})</span>` : ""}${p2.figure?.type === "hissan" ? "" : `<span class="item-body">${tk(a.text + tail)}</span>`}</span>`}
           ${fig(p2, K?.kfig)}
           ${calcMm ? calcHtml(calcMm, policy, p2.workspace?.type === "lines" ? "{考|かんが}え{方|かた}" : "", note) : ""}
@@ -54368,8 +54424,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           "何時、何時半の読み方"
         ],
         topics: [
-          { label: "とけいを よむ", generator: "g1.clockHour", kinds: ["figure", "test"], options: [{ key: "aux", label: "ほじょの 数字", choices: [["auto", "なし"], ["5", "5ふんごと(5・10…55)"], ["1", "1ぷんごと(1〜59)"]] }] },
-          { label: "はりを かく", generator: "g1.clockDraw", kinds: ["figure", "test"], options: [{ key: "aux", label: "ほじょの 数字", choices: [["auto", "なし"], ["5", "5ふんごと(5・10…55)"], ["1", "1ぷんごと(1〜59)"]] }] }
+          { label: "とけいを よむ", generator: "g1.clockHour", kinds: ["figure", "test"], options: CLOCK_OPTS },
+          { label: "はりを かく", generator: "g1.clockDraw", kinds: ["figure", "test"], options: CLOCK_OPTS }
         ],
         prerequisites: "細案 第1時(1時間): 1日の生活と結びつけて なんじ・なんじはん を読み、模型時計で指示された時刻を表す(短い針の読み取り・動き方に重点)。時計は1年用に描きなおした(はりを片方だけ描く問題があるため。3年の svgClocks は使っていない)。時計の上の言葉(おきた とき・きゅうしょく など)は教科書にない場面。きほん=なんじ、ふつう=なんじ と なんじはん、チャレンジ=なんじはん を多く・みじかい はりを かく",
         testPlan: { figure: [4, 25] }
@@ -54556,8 +54612,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           "何時何分の読み方"
         ],
         topics: [
-          { label: "とけいを よむ", generator: "g1.clockMinute", kinds: ["figure", "test"], options: [{ key: "aux", label: "ほじょの 数字", choices: [["auto", "なし"], ["5", "5ふんごと(5・10…55)"], ["1", "1ぷんごと(1〜59)"]] }] },
-          { label: "はりを かく", generator: "g1.clockDrawMinute", kinds: ["figure", "test"], options: [{ key: "aux", label: "ほじょの 数字", choices: [["auto", "なし"], ["5", "5ふんごと(5・10…55)"], ["1", "1ぷんごと(1〜59)"]] }] }
+          { label: "とけいを よむ", generator: "g1.clockMinute", kinds: ["figure", "test"], options: CLOCK_OPTS },
+          { label: "はりを かく", generator: "g1.clockDrawMinute", kinds: ["figure", "test"], options: CLOCK_OPTS }
         ],
         prerequisites: "細案 第1〜2時: はじめは10分・5分きざみ、ながい はりを5とびで数えて読む。30ぷん・45ふん を基点にした読み方。きほん=5分きざみ、ふつう=1分きざみ、チャレンジ=みじかい はりが数の近くにあって まちがえやすい時こく(45〜59分・1〜10分)と、みじかい はりを かく問題。答えは「3じ25ふん」「9じ4ぷん」のように 数字＋ふん/ぷん(一の位が 2・5・7・9 なら ふん)。30分は「30ぷん」と書く(なんじはん とも読める)",
         testPlan: { figure: [4, 25] }
@@ -58356,7 +58412,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   };
 
   // src/app.js
-  var GRADES = { ...typeof yojiGrade !== "undefined" ? { 0: yojiGrade } : {}, ...typeof chu1Grade !== "undefined" ? { 7: chu1Grade } : {}, ...typeof chu2Grade !== "undefined" ? { 8: chu2Grade } : {}, ...typeof chu3Grade !== "undefined" ? { 9: chu3Grade } : {}, ...typeof kou1Grade !== "undefined" ? { 10: kou1Grade } : {}, ...typeof kouAGrade !== "undefined" ? { 11: kouAGrade } : {}, ...typeof kou2Grade !== "undefined" ? { 12: kou2Grade } : {}, ...typeof kouBGrade !== "undefined" ? { 13: kouBGrade } : {}, ...typeof kou3Grade !== "undefined" ? { 14: kou3Grade } : {}, ...typeof kouCGrade !== "undefined" ? { 15: kouCGrade } : {}, 1: grade1_default, 2: grade2_default, 3: grade3_default, 4: grade4_default, 5: grade5_default, 6: grade6_default };
+    var GRADES = { ...typeof yojiGrade !== "undefined" ? { 0: yojiGrade } : {}, ...typeof chu1Grade !== "undefined" ? { 7: chu1Grade } : {}, ...typeof chu2Grade !== "undefined" ? { 8: chu2Grade } : {}, ...typeof chu3Grade !== "undefined" ? { 9: chu3Grade } : {}, ...typeof kou1Grade !== "undefined" ? { 10: kou1Grade } : {}, ...typeof kouAGrade !== "undefined" ? { 11: kouAGrade } : {}, ...typeof kou2Grade !== "undefined" ? { 12: kou2Grade } : {}, ...typeof kouBGrade !== "undefined" ? { 13: kouBGrade } : {}, ...typeof kou3Grade !== "undefined" ? { 14: kou3Grade } : {}, ...typeof kouCGrade !== "undefined" ? { 15: kouCGrade } : {}, 1: grade1_default, 2: grade2_default, 3: grade3_default, 4: grade4_default, 5: grade5_default, 6: grade6_default };
   // ===== 特別支援学校(知的障害)の段階:いまある単元・小単元の問題を、学習指導要領の段階・内容にならべなおす =====
   if (typeof tokushiStages !== "undefined") {
     const findUnit = (id) => {
