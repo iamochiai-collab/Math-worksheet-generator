@@ -183,6 +183,34 @@ body[data-view="print"] .home { display: none; }
 .htab.on img { background: #fff; border-radius: 8px; padding: 2px; box-sizing: border-box; }
 .home-steps { background: #fff; border: 1.5px solid var(--tabc, #c94a3b); border-top: none; border-radius: 0 0 14px 14px; padding: 12px 16px 14px; }
 .home-steps .home-row { margin-top: 0; }
+/* ===== うごく UI ===== */
+/* えらんだ色が すっと 横に うごく(タブ・★) */
+.home-tabs, .home-levels { position: relative; }
+.seg-thumb { position: absolute; left: 0; top: 0; z-index: 0; pointer-events: none; border-radius: inherit; }
+.seg-thumb.anim { transition: transform .42s cubic-bezier(.34,1.45,.5,1), width .42s cubic-bezier(.34,1.45,.5,1), background-color .3s; }
+.home-levels .seg-thumb { background: #2b3a55; border-radius: 0; }
+.home-levels .hl { position: relative; z-index: 1; background: transparent; transition: color .25s; }
+.home-levels .hl.on { background: transparent; }
+.home-tabs .seg-thumb { background: var(--tabc); border-radius: 12px 12px 0 0; }
+.home-tabs .htab { position: relative; z-index: 1; background: rgba(244,245,248,.55); transition: color .25s, border-color .25s; }
+.home-tabs .htab.on { background: transparent; }
+/* 問題数の −/＋ */
+.stepper { display: inline-flex; align-items: center; gap: 4px; }
+.panel .st-btn, .st-btn { flex: none; width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid #2b3a55; background: #fff; color: #2b3a55; font: inherit; font-size: 18px; font-weight: bold; line-height: 1; padding: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+.panel .st-btn:hover, .st-btn:hover { background: #2b3a55; color: #fff; }
+.stepper:has(select:disabled) .st-btn { opacity: .35; pointer-events: none; }
+.stepper select.pop { animation: st-pop .35s cubic-bezier(.34,1.6,.5,1); }
+@keyframes st-pop { 0% { transform: scale(.82); } 100% { transform: scale(1); } }
+/* おすと ぷにっと へこんで はねる */
+.hg, .hl, .htab, .hd, .hds, .uk, .usb, .nw-row, .hn-btn, .st-btn, .xsite-a, .panel .buttons button, .btn-home, .hs-clear { transition: transform .22s cubic-bezier(.34,1.8,.5,1); }
+.hg:active, .hd:active, .hds:active, .uk:active, .usb:active, .nw-row:active, .hn-btn:active, .st-btn:active, .xsite-a:active, .panel .buttons button:active, .btn-home:active, .hs-clear:active { transform: scale(.9); transition-duration: .06s; }
+.hl:active, .htab:active { transform: scale(.95); transition-duration: .06s; }
+.hg:hover, .uk:hover, .hd:hover { transform: translateY(-2px); }
+@media (prefers-reduced-motion: reduce) {
+  .seg-thumb.anim, .stepper select.pop { transition: none; animation: none; }
+  .hg, .hl, .htab, .hd, .hds, .uk, .usb, .nw-row, .hn-btn, .st-btn, .xsite-a, .panel .buttons button, .btn-home, .hs-clear { transition: none; transform: none !important; }
+}
+@media print { .seg-thumb, .st-btn { display: none !important; } }
 .tk-banner[hidden] { display: none !important; }
 .home .home-units-head h2 { color: var(--tabc, var(--gc)); }
 .home-band, .home-band .home-search { box-sizing: border-box; min-width: 0; max-width: 100%; }
@@ -751,7 +779,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   <label>種類<select id="kind"></select></label>
   <label>難易度<select id="level"></select></label>
   <label id="fromWrap" hidden>はじめの かず<select id="from"></select></label>
-  <label>問題数<select id="count"></select></label>
+  <label>問題数<span class="stepper"><button type="button" class="st-btn" data-step="-1" aria-label="1つ へらす">−</button><select id="count"></select><button type="button" class="st-btn" data-step="1" aria-label="1つ ふやす">＋</button></span></label>
   </div>
   <button type="button" class="more-toggle" id="moreToggle" aria-expanded="false" aria-controls="moreOpts">くわしい設定(答え・ふりがな・ヒントなど) ▼</button>
   <div class="more" id="moreOpts">
@@ -59237,6 +59265,16 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   };
   if (["key", "list"].includes(store.get("ansStyle"))) el.ansStyle.value = store.get("ansStyle");
   if (store.get("autoFit") === "0") el.autoFit.checked = false;
+  // 問題数の −/＋:となりの 数に うごかして、数字を ぴょこっと
+  for (const b of document.querySelectorAll(".stepper .st-btn")) b.addEventListener("click", () => {
+    const sel = el.count, i = sel.selectedIndex + Number(b.dataset.step);
+    if (sel.disabled || i < 0 || i >= sel.options.length) return;
+    sel.selectedIndex = i;
+    sel.dispatchEvent(new Event("change", { bubbles: true }));
+    sel.classList.remove("pop");
+    void sel.offsetWidth;
+    sel.classList.add("pop");
+  });
   if (["key", "list"].includes(q.get("ansStyle"))) el.ansStyle.value = q.get("ansStyle");
   if (q.get("trace") === "1") el.trace.checked = true;
   var homeGrade = store.get("grade") !== null && GRADES[Number(store.get("grade"))] ? Number(store.get("grade")) : 1;
@@ -59360,6 +59398,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/24", t: "うごく UI:タブ・★が すっと うごく/問題数の −・＋/おすと ぷにっと", tag: "ホーム" },
     { d: "26/11/24", t: "とけい:答えの らんを「□じ □ふん」「□時 □分」にも できる", g: 1, unit: "g1-16", sub: 1, kind: "figure", opts: { afmt: "jifun" } },
     { d: "26/11/24", t: "ホームを 見やすく(ロゴ・3つの タブ・分野の 絵・右に キャラ)", domain: "測定" },
     { d: "26/11/24", t: "下が あいた プリントを うめる(問題を ふやす・図を 大きく)", g: 24, unit: "s24-02", sub: 2, kind: "word" },
@@ -59431,6 +59470,43 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     renderHome();
     mascot("idea", t === "domain" ? `${homeDomain}の<br>プリントを つくろう！` : gradeSay(homeGrade));
   }
+  // えらんだ ところ(.on)の うしろに 色の 板を おいて、まえの 場所から すっと うごかす
+  function segSlide(box) {
+    if (!box) return;
+    const on = box.querySelector(".on");
+    if (!on) return;
+    const th = document.createElement("span");
+    th.className = "seg-thumb";
+    box.prepend(th);
+    const to = { x: on.offsetLeft, y: on.offsetTop, w: on.offsetWidth, h: on.offsetHeight };
+    const place = (r) => {
+      th.style.transform = `translate(${r.x}px, ${r.y}px)`;
+      th.style.width = `${r.w}px`;
+      th.style.height = `${r.h}px`;
+    };
+    const from = box._seg;
+    box._seg = to;
+    place(from && from.h === to.h ? from : to);
+    if (from && from.h === to.h && (from.x !== to.x || from.w !== to.w)) {
+      th.getBoundingClientRect();
+      th.classList.add("anim");
+      place(to);
+    } else requestAnimationFrame(() => th.classList.add("anim"));
+  }
+  // 画面の 大きさが かわったり、ホームに もどったり したときは、うごかさずに おきなおす
+  function reSeg() {
+    for (const box of [$("homeLevels"), $("homeTabs")]) {
+      if (!box) continue;
+      box.querySelector(".seg-thumb")?.remove();
+      box._seg = null;
+      if (box.offsetParent) segSlide(box);
+    }
+  }
+  var reSegT = 0;
+  window.addEventListener("resize", () => {
+    clearTimeout(reSegT);
+    reSegT = setTimeout(reSeg, 120);
+  });
   function renderHome() {
     renderNews();
     const keep = ["news-open"].filter((c) => homeEl.classList.contains(c));
@@ -59454,6 +59530,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     const pdf = tab === "stage" && GRADES[homeGrade]?.pdf;
     if (pdf) $("homeAges").insertAdjacentHTML("beforeend", `<a class="home-pdf" href="${esc2(pdf.href)}" target="_blank" rel="noopener">📄 ${esc2(pdf.label)}</a>`);
     $("homeLevels").innerHTML = Object.entries(LEVELS).map(([k, v]) => `<button type="button" class="hl${k === homeLevel ? " on" : ""}" data-level="${k}" aria-pressed="${k === homeLevel}">${v.label}</button>`).join("");
+    segSlide($("homeLevels"));
+    segSlide($("homeTabs"));
     const units = GRADES[homeGrade]?.units ?? [];
     $("homeUnitsTitle").textContent = homeGrade === 0 ? "ようじの プリント" : stageMode ? `${gradeName(homeGrade)}の内容` : `${gradeName(homeGrade)}の単元`;
     $("homeHint").textContent = stageMode ? "内容の「えのプリント」「計算ドリル」などをおすと作れます。「小単元をえらぶ」から、もっとしぼったプリントも作れます" : homeGrade === 0 ? "「プリントを つくる」を おすと できます。こたえは あかで かきこんだ ページが つきます" : homeGrade <= 6 ? "単元の「計算ドリル」「文章題」などをおすと作れます。「小単元をえらぶ」から小単元だけのプリントも作れます" : "単元の「計算ドリル」「文章題」などをおすと作れます";
@@ -59552,6 +59630,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       renderHome();
     }
     document.body.dataset.view = v;
+    if (v === "home") reSeg();
     window.scrollTo(0, 0);
   }
   function openPrint(unitId, kind, sub = 0, opts = null) {
