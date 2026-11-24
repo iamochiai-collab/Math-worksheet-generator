@@ -682,6 +682,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   <label class="check"><input type="checkbox" id="excludeCurrent">習っていない漢字は使わない</label>
   <label class="check"><input type="checkbox" id="furigana">ふりがなをつける</label>
   <label class="check"><input type="checkbox" id="hints">ヒントをつける</label>
+  <label class="check"><input type="checkbox" id="autoFit" checked>下が あいたら 問題を ふやす・図を 大きくする</label>
   </div>
   <div class="buttons">
     <button type="button" id="btnMake">作成</button>
@@ -35120,6 +35121,19 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     if (pages.length < 2) return;
     const last = pages[pages.length - 1], prev = pages[pages.length - 2];
     const lb = last.querySelector(".body"), pb = prev.querySelector(".body");
+    // まとめテストなど:さいごのページが 大きく あいているときは、前のページの さいごの 大問を まるごと うつす(順番は かわらない)
+    if (growOn()) for (let g = 0; g < 10 && pb.children.length > 1; g++) {
+      if (usedH(lb) >= usedH(pb) * 0.6) break;
+      const blk = pb.lastElementChild, lf = lb.firstElementChild;
+      if (lf && blk.dataset.sec && blk.dataset.sec === lf.dataset.sec) break;
+      const diff0 = usedH(pb) - usedH(lb);
+      lb.prepend(blk);
+      // うつして かえって かたよる(差が 大きくなる)ときは もどす
+      if (overflows(last) || Math.abs(usedH(pb) - usedH(lb)) >= diff0) {
+        pb.appendChild(blk);
+        break;
+      }
+    }
     const pLast = pb.lastElementChild, lFirst = lb.firstElementChild;
     if (!pLast || !lFirst || pLast.dataset.sec !== lFirst.dataset.sec) return;
     const pl = pLast.querySelector("ol.items"), ll = lFirst.querySelector("ol.items");
@@ -35135,8 +35149,31 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     }
   }
   // あまった高さを、問題のあいだ(考えるスペース)に分ける
+  // 下が 大きく あいたページは、図を すこしずつ 大きくする(1.5ばいまで。よこに はみ出さない、下に 少し すき間を のこす)
+  var GROW_MAX = 1.5;
+  function growFigures(page) {
+    const body = page.querySelector(".body");
+    const figs = [...body.querySelectorAll(".figure")].filter((f13) => !f13.parentElement.closest(".figure"));
+    if (!figs.length) return;
+    // もう ちぢめてある図は、その大きさを もとに 同じ わりあいで 大きくする(大きさを そろえる)
+    const base = figs.map((f13) => Number(f13.style.zoom) || 1);
+    const fits = () => usedH(body) <= body.clientHeight * 0.93 && !overflows(page) && body.scrollWidth <= body.clientWidth + 1 && figs.every((f13) => {
+      const box = f13.closest("li") || f13.parentElement;
+      return box.scrollWidth <= box.clientWidth + 1;
+    });
+    let best = 1;
+    for (let z = 1.05; z <= GROW_MAX + 1e-9; z += 0.05) {
+      figs.forEach((f13, i) => f13.style.zoom = (base[i] * z).toFixed(3));
+      if (!fits()) break;
+      best = z;
+    }
+    figs.forEach((f13, i) => f13.style.zoom = best > 1 || base[i] !== 1 ? (base[i] * best).toFixed(3) : "");
+  }
+  var growHold = false;
+  var growOn = () => !growHold && !(typeof el !== "undefined" && el.autoFit && !el.autoFit.checked);
   function stretchPage(page) {
     const body = page.querySelector(".body");
+    if (growOn() && body.clientHeight - usedH(body) > body.clientHeight * 0.18) growFigures(page);
     const free = body.clientHeight - usedH(body) - 6;
     if (free < 12) return;
     const blocks = [...body.querySelectorAll(":scope > .block")];
@@ -39682,6 +39719,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     excludeCurrent: $("excludeCurrent"),
     furigana: $("furigana"),
     hints: $("hints"),
+    autoFit: $("autoFit"),
     make: $("btnMake"),
     remake: $("btnRemake"),
     print: $("btnPrint"),
@@ -39834,7 +39872,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       seed: Number(el.seed.value) || 1,
       from: el.fromWrap.hidden ? 0 : Number(el.from.value) || 0,
       topicNo: el.subWrap.hidden ? 0 : Number(el.subunit.value) || 0,
-      opts: currentOpts()
+      opts: currentOpts(),
+      autoFit: el.autoFit.checked
     };
   }
   // スマホなど画面のはばがせまいときは、A4 のプリントを画面に入る大きさにして見せる(ページ分けのあとで)
@@ -39885,22 +39924,53 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     }
     return sheet;
   }
+  // autoFit(くわしい設定「下が あいたら 問題を ふやす」):どの学年でも、さいごのページが あきすぎたら 問題を ふやす
+  // (図を ちぢめて つめこむ fillpage は くらしの数学だけ。1ページの問題数(per)を えらんだときと、まい数で えらぶ単元は ふやさない)
+  function autoFillOn(spec) {
+    if (spec.autoFit === false || spec.kind === "matome") return false;
+    if (spec.opts && spec.opts.per && spec.opts.per !== "auto") return false;
+    return !spec.gradeData?.units.find((u2) => u2.id === spec.unitId)?.per;
+  }
   function filledSheet(spec, measure) {
     let sheet = buildSheet(spec);
     if (spec.gradeData?.fill) sheet.fill = true;
     if (spec.gradeData?.fill && spec.kind === "matome") return fillMatome(spec, sheet, measure);
-    if (!spec.gradeData?.fill || !spec.count || spec.kind === "test" || spec.kind === "record") return sheet;
+    if (!(spec.gradeData?.fill || autoFillOn(spec)) || !spec.count || spec.kind === "test" || spec.kind === "record") return sheet;
     const m = (sh) => {
       const ps = measure(sh);
       return { pages: ps.length, fill: ps.length ? pageFill(ps[ps.length - 1]) : 1 };
     };
+    // くらしの数学 いがい:ページは ふやさずに、さいごのページの 下が あいている ぶんだけ 問題を ふやす(はかるときは 図を 大きくしない)
+    if (!spec.gradeData?.fill) {
+      growHold = true;
+      try {
+        let cur = m(sheet);
+        const step = spec.kind === "drill" ? 2 : 1;
+        for (let c = spec.count + step, t = 0; cur.fill < 0.85 && t < 10; c += step, t++) {
+          let sh;
+          try {
+            sh = buildSheet({ ...spec, count: c });
+          } catch (e) {
+            break;
+          }
+          const r = m(sh);
+          if (r.pages !== cur.pages) break;
+          sheet = sh;
+          cur = r;
+          sheet.filledCount = c;
+        }
+      } finally {
+        growHold = false;
+      }
+      return sheet;
+    }
     let cur = m(sheet);
     const step = spec.kind === "drill" ? 2 : 1;
     for (let c = spec.count + step, t = 0; cur.fill < FILL_MIN && t < 8; c += step, t++) {
       let sh;
       try {
         sh = buildSheet({ ...spec, count: c });
-        sh.fill = true;
+        if (spec.gradeData?.fill) sh.fill = true;
       } catch (e) {
         break;
       }
@@ -39931,7 +40001,15 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         return [...el.preview.querySelectorAll("article.sheet")];
       });
       // 問題をふやしたときは、問題数のらんも合わせる
-      if (sheet.filledCount && [...el.count.options].some((o) => Number(o.value) === sheet.filledCount)) el.count.value = String(sheet.filledCount);
+      // (ない数のときは「○問(ふやした)」を たして えらぶ)
+      if (sheet.filledCount && !el.count.disabled) {
+        if (![...el.count.options].some((o) => Number(o.value) === sheet.filledCount)) {
+          const o = new Option(`${sheet.filledCount}問(下が あいたので ふやした)`, String(sheet.filledCount));
+          const after = [...el.count.options].find((x) => Number(x.value) > sheet.filledCount);
+          el.count.add(o, after || null);
+        }
+        el.count.value = String(sheet.filledCount);
+      }
       el.preview.innerHTML = sheetHtml(sheet, { policy, withAnswers: el.withAnswers.checked, gradeLabel: `${spec.grade}年`, hints: el.hints.checked, answerMode: el.ansStyle.value, trace: el.trace.checked });
       paginate(el.preview);
       fitPreview();
@@ -40202,8 +40280,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     }
   });
 
-  for (const id of ["withAnswers", "excludeCurrent", "furigana", "hints", "ansStyle", "trace"]) el[id].addEventListener("change", () => {
+  for (const id of ["withAnswers", "excludeCurrent", "furigana", "hints", "ansStyle", "trace", "autoFit"]) el[id].addEventListener("change", () => {
     if (id === "ansStyle") store.set("ansStyle", el.ansStyle.value);
+    if (id === "autoFit") store.set("autoFit", el.autoFit.checked ? "1" : "0");
     if (el.preview.innerHTML) render();
   });
   var version = document.querySelector('meta[name="app-version"]')?.content || "dev";
@@ -40249,6 +40328,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     }
   };
   if (["key", "list"].includes(store.get("ansStyle"))) el.ansStyle.value = store.get("ansStyle");
+  if (store.get("autoFit") === "0") el.autoFit.checked = false;
   if (["key", "list"].includes(q.get("ansStyle"))) el.ansStyle.value = q.get("ansStyle");
   if (q.get("trace") === "1") el.trace.checked = true;
   var homeGrade = store.get("grade") !== null && GRADES[Number(store.get("grade"))] ? Number(store.get("grade")) : 1;
@@ -40529,7 +40609,13 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         hovBox.className = "hov-measure";
         document.body.appendChild(hovBox);
       }
-      hovBox.innerHTML = sheetHtml(buildSheet(spec), { policy, withAnswers: false, gradeLabel: `${spec.grade}年`, hints: el.hints.checked, answerMode: el.ansStyle.value, trace: el.trace.checked });
+      const opt2 = { policy, withAnswers: false, gradeLabel: `${spec.grade}年`, hints: el.hints.checked, answerMode: el.ansStyle.value, trace: el.trace.checked };
+      const sheet = filledSheet(spec, (sh) => {
+        hovBox.innerHTML = sheetHtml(sh, opt2);
+        paginate(hovBox);
+        return [...hovBox.querySelectorAll("article.sheet")];
+      });
+      hovBox.innerHTML = sheetHtml(sheet, opt2);
       paginate(hovBox);
       const pages = hovBox.querySelectorAll("article.sheet");
       const first = pages[0];
