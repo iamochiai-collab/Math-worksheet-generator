@@ -204,6 +204,10 @@ body[data-view="print"] .home { display: none; }
 .hg-domains .hd.on { background: #2f6f86; color: #fff; }
 .dm-stage { grid-column: 1 / -1; margin: 10px 0 0; font-size: 15px; color: var(--gc); border-bottom: 2px solid var(--gc); padding-bottom: 2px; }
 .dm-none { grid-column: 1 / -1; color: #666; }
+.hg-dsubs { flex-basis: 100%; }
+.hg-dsubs .hds { font: inherit; font-size: 13px; font-weight: bold; padding: 5px 12px; border-radius: 999px; border: 1.5px solid #6a9fb3; background: #f3f9fb; color: #2f6f86; cursor: pointer; }
+.hg-dsubs .hds.on { background: #6a9fb3; border-color: #6a9fb3; color: #fff; }
+.hg-dsubs .hds small { font-weight: normal; opacity: .8; margin-left: 2px; }
 .ucard .ugrade { flex: none; margin-left: auto; font-size: 12px; font-weight: bold; color: #fff; background: var(--gc); border-radius: 6px; padding: 1px 7px; margin-top: 2px; white-space: nowrap; }
 .uwhy { font-size: 12px; color: #555; line-height: 1.45; display: flex; flex-direction: column; gap: 1px; }
 .uwhy span::before { content: "内容:"; color: #888; }
@@ -40250,26 +40254,96 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   var LEVEL_SAY = { basic: ["guide", "まずは きほんから！<br>じっくり いこう"], normal: ["idea", "いいね！<br>ちょうどいい むずかしさ"], challenge: ["cheer", "むずかしい問題に<br>ちょうせんだ！"] };
   // ===== 特別支援:分野べつ(段階をこえて、数量の基礎・数と計算・図形・測定・変化と関係・データの活用 ごとに ならべる) =====
   var DOMAINS = ["数量の基礎", "数と計算", "図形", "測定", "変化と関係", "データの活用"];
-  var homeDomain = null;
+  var homeDomain = null, homeDSub = null;
+  // 分野の中の 小分類(測定 → 長さ・重さ・かさ…)。re は 単元名と小単元名に あてる。name:true は 単元名だけに あてる
+  var DOMAIN_SUBS = {
+    "数と計算": [
+      { label: "かず", re: /までの かず|けたの数|大きい数|すうじ|じゅんばん|どちらが おおい|いくつと/, name: true },
+      { label: "たし算・ひき算", re: /たし[ざ算]|ひき[ざ算]|くり[あ上さ下]|さくらんぼ|3つの かず/ },
+      { label: "かけ算", re: /かけ[ざ算]|九九|×/ },
+      { label: "わり算", re: /わり[ざ算]|÷|あまり/ },
+      { label: "小数", re: /小数/ },
+      { label: "分数", re: /分数|約分|通分|逆数/ },
+      { label: "がい数・倍数と約数", re: /がい数|倍数|約数/, name: true },
+      { label: "お金", re: /お金|かいもの|いくら|おつり|はらおう/ },
+      { label: "式・きまり", re: /□|式|きまり/, name: true },
+      { label: "計算パズル", g: 30 }
+    ],
+    "図形": [
+      { label: "かたち", re: /かたち/ },
+      { label: "ばしょ・じゅんばん", re: /まえ|うしろ|うえ|ひだり|なんばんめ/ },
+      { label: "三角形・四角形", re: /三角形|四角形/ },
+      { label: "角", re: /(?<![三四多]|対)角(?!形|柱)|分度器|三角定規|三角じょうぎ/ },
+      { label: "円・球", re: /円(?!柱)|球/ },
+      { label: "はこの形", re: /はこの形|面・へん|面の形|見取図|角柱|円柱/ },
+      { label: "面積", re: /(?<!底)面積/ },
+      { label: "体積", re: /体積|容積/ },
+      { label: "合同・拡大図", re: /合同|拡大|縮/ }
+    ],
+    "測定": [
+      { label: "くらべる", re: /おおきい・ちいさい|ながい・みじかい|くらべ/, name: true },
+      { label: "長さ", re: /なが|長さ|ものさし|テープ|まきじゃく|cm|はしを そろえて|ますの いくつぶん|でんしゃ|じかに/ },
+      { label: "重さ", re: /重さ|おもさ|はかり/ },
+      { label: "かさ", re: /かさ|dL|計量カップ|コップ|なんばいぶん/ },
+      { label: "ひろさ", re: /ひろさ|じんとり|タイル/ },
+      { label: "とけい", re: /とけい|時計|なんじ/ },
+      { label: "時こくと時間", re: /時こく|時間|分と秒/ }
+    ],
+    "変化と関係": [
+      { label: "変わり方", re: /変わり方|□と○|倍の|倍で/ },
+      { label: "比例・反比例", re: /比例/ },
+      { label: "速さ・単位量", re: /速さ|単位量|あたり/ },
+      { label: "割合", re: /割合|百分率|歩合/ },
+      { label: "比", re: /比(?![例べ])/ }
+    ],
+    "データの活用": [
+      { label: "えグラフ", re: /えグラフ|なかまわけ/ },
+      { label: "表", re: /表(?![すしせさ])|正の字/ },
+      { label: "ぼうグラフ", re: /ぼうグラフ|棒グラフ/ },
+      { label: "折れ線グラフ", re: /折れ線/ },
+      { label: "円グラフ・帯グラフ", re: /円グラフ|帯グラフ|百分率|割合/ },
+      { label: "平均・ちらばり", re: /平均|中央値|最頻値|ドット|度数|ヒストグラム/ }
+    ]
+  };
   // 単元の分野(「A 数と計算」→「数と計算」)。測定(29)は 測定、計算・パズル(30)は 数と計算、くらし(28)は 入れない
   var domainOf = (g3, u2) => g3 === 29 ? "測定" : g3 === 30 ? "数と計算" : g3 === 28 ? null : String(u2.domain || "").replace(/^[A-ZＡ-Ｚ]\s*/, "");
-  function domainCard(g3, u2) {
-    const subs = hasSubs(g3) ? u2.topics.map((tp, i) => [tp, i + 1]).filter(([tp]) => topicKinds(tp).length) : [];
+  var unitSubs = (g3, u2) => hasSubs(g3) ? u2.topics.map((tp, i) => [tp, i + 1]).filter(([tp]) => topicKinds(tp).length) : [];
+  // 小分類に あう 単元か → null(あわない) / { unit:単元名であう, subs:あう小単元 }
+  function dsubHit(ds, g3, u2) {
+    if (ds.g) return ds.g === g3 ? { unit: true, subs: [] } : null;
+    const unit = ds.re.test(rubyBase(u2.name));
+    const subs = ds.name ? [] : unitSubs(g3, u2).filter(([tp]) => ds.re.test(rubyBase(tp.label)));
+    return unit || subs.length ? { unit, subs } : null;
+  }
+  function domainCard(g3, u2, hit) {
+    const subs = unitSubs(g3, u2);
     const kinds = unitKindsAvailable(u2);
+    const subBtn = ([tp, n]) => topicKinds(tp).map((k) => `<li><button type="button" class="usb" data-g="${g3}" data-unit="${u2.id}" data-sub="${n}" data-kind="${k}"><span class="usub-no">${n}</span><span class="usub-name">${esc2(tp.label)}</span><span class="usub-kind">${SUB_KIND[k]}</span></button></li>`).join("");
+    // 小分類で しぼったとき:あう小単元を すぐ見せる(単元ぜんたいの ボタンは、単元名が あうときだけ)
+    // 単元名で あったときは 単元ぜんたいを 見せる(「ながさ・かさ・ひろさ」のように いくつも まざった 単元は、あう小単元を見せる)
+    const only = hit && hit.subs.length && hit.subs.length < subs.length - 1 && (!hit.unit || u2.name.includes("・")) ? hit.subs : null;
     return `<div class="ucard g${g3}">
         <div class="ucard-head"><span class="uno">${u2.order}</span><span class="uname">${esc2(u2.name)}</span><span class="ugrade">${esc2(gradeName(g3))}</span></div>
-        <div class="ukinds">${kinds.map((k) => `<button type="button" class="uk k-${k}" data-g="${g3}" data-unit="${u2.id}" data-kind="${k}">${k === "yoji" ? "えのプリント" : KIND_SHORT[k]}</button>`).join("")}</div>
-        ${subs.length > 1 ? `<details class="usubs"><summary>小単元をえらぶ(${subs.length})</summary><ol class="usub-list">${subs.map(([tp, n]) => topicKinds(tp).map((k) => `<li><button type="button" class="usb" data-g="${g3}" data-unit="${u2.id}" data-sub="${n}" data-kind="${k}"><span class="usub-no">${n}</span><span class="usub-name">${esc2(tp.label)}</span><span class="usub-kind">${SUB_KIND[k]}</span></button></li>`).join("")).join("")}</ol></details>` : ""}
+        ${!only || hit.unit ? `<div class="ukinds">${kinds.map((k) => `<button type="button" class="uk k-${k}" data-g="${g3}" data-unit="${u2.id}" data-kind="${k}">${k === "yoji" ? "えのプリント" : KIND_SHORT[k]}</button>`).join("")}</div>` : ""}
+        ${only ? `<ol class="usub-list">${only.map(subBtn).join("")}</ol>` : ""}
+        ${subs.length > 1 ? `<details class="usubs"><summary>${only ? "ほかの小単元も見る" : "小単元をえらぶ"}(${subs.length})</summary><ol class="usub-list">${subs.map(subBtn).join("")}</ol></details>` : ""}
       </div>`;
+  }
+  function domainCount(d, l) {
+    const ds = DOMAIN_SUBS[d].find((x) => x.label === l);
+    let n = 0;
+    for (const g3 of GRADE_KEYS.filter((g4) => isStage(g4))) n += GRADES[g3].units.filter((u2) => isReady(u2) && domainOf(g3, u2) === d && dsubHit(ds, g3, u2)).length;
+    return n;
   }
   function renderDomain() {
     const d = homeDomain, out = [];
+    const ds = (DOMAIN_SUBS[d] || []).find((x) => x.label === homeDSub);
     for (const g3 of GRADE_KEYS.filter((g4) => isStage(g4))) {
-      const us = GRADES[g3].units.filter((u2) => isReady(u2) && domainOf(g3, u2) === d);
-      if (us.length) out.push(`<h3 class="dm-stage g${g3}">${esc2(gradeName(g3))}</h3>${us.map((u2) => domainCard(g3, u2)).join("")}`);
+      const us = GRADES[g3].units.filter((u2) => isReady(u2) && domainOf(g3, u2) === d).map((u2) => [u2, ds ? dsubHit(ds, g3, u2) : null]).filter(([, h]) => !ds || h);
+      if (us.length) out.push(`<h3 class="dm-stage g${g3}">${esc2(gradeName(g3))}</h3>${us.map(([u2, h]) => domainCard(g3, u2, h)).join("")}`);
     }
-    $("homeUnitsTitle").textContent = `分野べつ:${d}`;
-    $("homeHint").textContent = "段階の じゅんに ならんでいます(上ほど やさしい)。ほかの段階の内容も ここから作れます";
+    $("homeUnitsTitle").textContent = `分野べつ:${d}${ds ? ` › ${ds.label}` : ""}`;
+    $("homeHint").textContent = (DOMAIN_SUBS[d] && !ds ? "上の「長さ」「かけ算」などで、もっと しぼれます。" : "") + "段階の じゅんに ならんでいます(上ほど やさしい)。ほかの段階の内容も ここから作れます";
     $("homeUnits").innerHTML = out.join("") || '<p class="dm-none">この分野の内容は まだありません</p>';
   }
   function renderHome() {
@@ -40281,7 +40355,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     $("tkBanner").className = `tk-banner${stageMode ? " back" : ""}`;
     $("tkBanner").innerHTML = stageMode ? '<span class="tk-badge">学年べつ</span><span class="tk-main"><b>学年べつ(ようじ・小学校・中学・高校)に もどる</b><small>ふつうの学年・単元のプリントは こちら</small></span><span class="tk-go">◀</span>' : '<span class="tk-badge">特別支援</span><span class="tk-main"><b>特別支援学校 各段階のプリントは こちら！</b><small>知的障害の特別支援学校の学習指導要領(算数・数学)の段階に合わせています。小学部1〜3段階・中学部1・2段階・高等部1・2段階・くらしの数学・測定・計算パズル</small></span><span class="tk-go">▶</span>';
     $("homeGrades").innerHTML = (stageMode ? [["小学部", (g3) => g3 >= 21 && g3 <= 23], ["中学部", (g3) => g3 >= 24 && g3 <= 25], ["高等部", (g3) => g3 >= 26 && g3 <= 28], ["まとめ", (g3) => g3 >= 29]] : [["ようじ・小学校", (g3) => g3 <= 6], ["中学", (g3) => g3 >= 7 && g3 <= 9], ["高校", (g3) => g3 >= 10 && g3 < 21]]).map(([cap, f]) => [cap, GRADE_KEYS.filter(f)]).filter(([, gs]) => gs.length).map(([cap, gs]) => `<div class="hg-group"><span class="hg-cap">${cap}</span><div class="hg-btns">${gs.map(hgBtn).join("")}</div></div>`).join("")
-      + (stageMode ? `<div class="hg-group hg-domains"><span class="hg-cap">分野べつ(段階を こえて 見る)</span><div class="hg-btns">${DOMAINS.map((d) => `<button type="button" class="hd${d === homeDomain ? " on" : ""}" data-domain="${d}" aria-pressed="${d === homeDomain}">${d}</button>`).join("")}</div></div>` : "");
+      + (stageMode ? `<div class="hg-group hg-domains"><span class="hg-cap">分野べつ(段階を こえて 見る)</span><div class="hg-btns">${DOMAINS.map((d) => `<button type="button" class="hd${d === homeDomain ? " on" : ""}" data-domain="${d}" aria-pressed="${d === homeDomain}">${d}</button>`).join("")}</div></div>` : "")
+      + (stageMode && homeDomain && DOMAIN_SUBS[homeDomain] ? `<div class="hg-group hg-dsubs"><span class="hg-cap">${homeDomain}の 中で しぼる</span><div class="hg-btns">${[null, ...DOMAIN_SUBS[homeDomain].map((x) => x.label)].map((l) => `<button type="button" class="hds${l === homeDSub ? " on" : ""}" data-dsub="${l ?? ""}" aria-pressed="${l === homeDSub}">${l ?? "ぜんぶ"}${l ? `<small>(${domainCount(homeDomain, l)})</small>` : ""}</button>`).join("")}</div></div>` : "");
     $("homeAges").textContent = homeGrade === 0 ? "★☆☆ 3〜4さい　★★☆ 4〜5さい　★★★ 5〜6さい" : stageMode ? `${gradeName(homeGrade)}:${GRADES[homeGrade]?.note || ""}` : "";
     $("homeAges").classList.toggle("stage-note", stageMode);
     // くらしの数学:まとめの PDF(62ページ・答えつき)をひらくリンク
@@ -40410,8 +40485,14 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     if (!b || b.disabled) return;
     if (b.dataset.domain) {
       homeDomain = homeDomain === b.dataset.domain ? null : b.dataset.domain;
+      homeDSub = null;
       renderHome();
       if (homeDomain) mascot("idea", `${homeDomain}の<br>プリントを つくろう！`);
+      return;
+    }
+    if (b.dataset.dsub !== undefined) {
+      homeDSub = b.dataset.dsub && b.dataset.dsub !== homeDSub ? b.dataset.dsub : null;
+      renderHome();
       return;
     }
     if (b.dataset.grade) {
