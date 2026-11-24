@@ -24981,6 +24981,13 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     { key: "scene", label: "場面(おきた とき など)", choices: [["auto", "あり(絵と ことば)"], ["off", "なし(時計だけ)"]] },
     { key: "per", label: "1ページの問題数", num: true, choices: [["auto", "おまかせ"], ["2", "2問(大きく)"], ["4", "4問"], ["6", "6問(小さく)"]] }
   ];
+  // 「なんじなんぷん」を よむ:答えの らんに「じ・ふん」「時・分」を 先に 書いておける
+  var CLOCK_READ_OPTS = [...CLOCK_OPTS, { key: "afmt", label: "答えの らん", choices: [["auto", "□ だけ"], ["jifun", "□じ □ふん"], ["kanji", "□時 □分"]] }];
+  function clockAnsFmt(p, t2) {
+    if (p.afmt !== "jifun" && p.afmt !== "kanji") return {};
+    const h = Math.floor(t2 / 60), m2 = t2 % 60;
+    return { ansBox: p.afmt === "kanji" ? "□時□分" : "□じ□ふん", ansBoxW: 13, fills: [String(h), m2 ? String(m2) : "00"] };
+  }
   // ===== とけいの設定(小単元の options)=====
   // tk:時こくの むずかしさ。"0" ちょうど(6じ)/"30" なんじはん まで/"5" 5ふんごと/"1" 1ぷんごと/"tricky" まちがえやすい(○じ50ぷんすぎ・○じ5ふん など)
   var TK_OK = {
@@ -25092,7 +25099,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       };
       const { scene, t: t2 } = pickSceneTime(rng, tkFilter(rng, p, ok3));
       const L = clockLayout(p), sc = sceneOn(p) ? scene.text : null;
+      const af = clockAnsFmt(p, t2);
       return {
+        ...(af.ansBox ? { ansBox: af.ansBox, ansBoxW: af.ansBoxW } : {}),
         key: `cm:${t2}`,
         softKey: sc || `cm${t2}`,
         text: sc || "",
@@ -25101,7 +25110,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         ansRight: L.ansRight,
         ansCenter: true,
         compact: !!L.compact,
-        answer: { display: timeText(t2), value: t2 },
+        answer: { display: timeText(t2), value: t2, ...(af.fills ? { fills: af.fills } : {}) },
         workspace: { type: "none" },
         meta: { t: t2, scene: scene.text }
       };
@@ -35880,7 +35889,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           "何時何分の読み方"
         ],
         topics: [
-          { label: "とけいを よむ", generator: "g1.clockMinute", kinds: ["figure", "test"], options: CLOCK_OPTS },
+          { label: "とけいを よむ", generator: "g1.clockMinute", kinds: ["figure", "test"], options: CLOCK_READ_OPTS },
           { label: "はりを かく", generator: "g1.clockDrawMinute", kinds: ["figure", "test"], options: CLOCK_OPTS }
         ],
         prerequisites: "細案 第1〜2時: はじめは10分・5分きざみ、ながい はりを5とびで数えて読む。30ぷん・45ふん を基点にした読み方。きほん=5分きざみ、ふつう=1分きざみ、チャレンジ=みじかい はりが数の近くにあって まちがえやすい時こく(45〜59分・1〜10分)と、みじかい はりを かく問題。答えは「3じ25ふん」「9じ4ぷん」のように 数字＋ふん/ぷん(一の位が 2・5・7・9 なら ふん)。30分は「30ぷん」と書く(なんじはん とも読める)",
@@ -40533,6 +40542,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/24", t: "とけい:答えの らんを「□じ □ふん」「□時 □分」にも できる", g: 1, unit: "g1-16", sub: 1, kind: "figure", opts: { afmt: "jifun" } },
     { d: "26/11/24", t: "ホームを 見やすく(ロゴ・3つの タブ・分野の 絵・右に キャラ)", domain: "測定" },
     { d: "26/11/24", t: "下が あいた プリントを うめる(問題を ふやす・図を 大きく)", g: 24, unit: "s24-02", sub: 2, kind: "word" },
     { d: "26/11/24", t: "とけい:ほじょの数字「はりの ちかくだけ」(1ぷんごとでも 6問)", g: 24, unit: "s24-12", sub: 3, kind: "figure", opts: { aux: "near", per: "6" } },

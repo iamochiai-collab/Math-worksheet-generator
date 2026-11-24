@@ -97,3 +97,4 @@ node tools/test/render.js build/test.html 単元id 種類 難易度 問題数 �
 - ホームの つくりなおし(11/24):上の帯(ロゴ assets/ui/logo.webp・教科・さがす)/タブ〔学年べつ・特別支援(段階べつ)・分野べつ〕(goTab、homeTab() は homeGrade と homeDomain から きまる)/わく(①学年・段階・分野 ②難易度)/右の列(あたらしく なったこと+キャラ)。スマホは キャラなし、「🆕あたらしく」ボタン(news-open)で ひらく。
   - アイコンは assets/ui/*.webp(tab_*, dm_*, ds_*, new, bell)。{{UI:名前}} で data URI(build.py)。
   - 古い #tkBanner は hidden で のこしてある(テストの firstopen.js が click する)。
+- とけい「なんじなんぷんを よむ」(g1.clockMinute)の 設定に「答えの らん」(afmt: auto/jifun/kanji)。CLOCK_READ_OPTS。ansBox "□じ□ふん"/"□時□分"、answer.fills [時, 分(0は"00")]。なんじ・なんじはん(clockHour)には まだ ない。
