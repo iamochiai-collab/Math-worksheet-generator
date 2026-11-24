@@ -136,6 +136,16 @@ body[data-view="print"] .home { display: none; }
 .home-pdf { display: inline-block; margin-top: 8px; padding: 7px 14px; border: 2px solid #b8641c; border-radius: 10px; background: #fff7ee; color: #8a4a12; font-size: 14px; font-weight: bold; text-decoration: none; }
 .home-pdf:hover, .home-pdf:focus-visible { background: #b8641c; color: #fff; }
 @media print { .home-pdf { display: none; } }
+/* ホーム:ボタンに カーソルを おくと、プリントの 見本(1ページめ)が ポンと出る */
+.hov-measure { position: absolute; left: -30000px; top: 0; width: 210mm; visibility: hidden; pointer-events: none; }
+.hov-pop { position: fixed; z-index: 60; background: #fff; border: 2px solid #2f6f86; border-radius: 12px; box-shadow: 0 10px 28px rgba(0,0,0,.25); padding: 8px; pointer-events: none; opacity: 0; transform: scale(.92); transition: opacity .12s, transform .12s; }
+.hov-pop.show { opacity: 1; transform: none; }
+.hov-pop .hp-cap { font-size: 12px; font-weight: bold; color: #2f6f86; margin: 0 2px 6px; max-width: 340px; line-height: 1.35; }
+.hov-pop .hp-cap small { display: block; font-weight: normal; color: #777; }
+.hov-pop .hp-page { overflow: hidden; border: 1px solid #ccc; background: #fff; position: relative; }
+.hov-pop .hp-page > .sheet { transform-origin: 0 0; margin: 0 !important; box-shadow: none !important; position: absolute; left: 0; top: 0; }
+.hov-pop .hp-wait { font-size: 12px; color: #777; padding: 30px 20px; }
+@media print { .hov-pop, .hov-measure { display: none !important; } }
 .g10 { --gc: #9a4a2c; } .g11 { --gc: #2d7a63; } .g12 { --gc: #8a3b5c; } .g13 { --gc: #44628c; } .g14 { --gc: #6b4a8f; } .g15 { --gc: #3f6d3a; }
 .home { max-width: 1100px; margin: 0 auto; padding: 26px 16px 18px; }
 /* キャラクター(画面だけ。プリントには出さない) */
@@ -24801,13 +24811,25 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     return { t: "poly", pts: [P3(-tail, wHalf), P3(len3 - tip, wHalf), P3(len3, 0), P3(len3 - tip, -wHalf), P3(-tail, -wHalf)], w: 0.15, fill: "black", lead: true, tag };
   }
   // aux:ほじょの数字(時計の外がわ)。"5" … 5ふんごと(5〜55)、"1" … 1ぷんごと(1〜59。5の倍数は太く)
+  // "near" … 5ふんごと(5〜55)と、長いはりの ある ところの 1ぷんの数字だけ(れい:20と25のあいだなら 21〜24)。時計が 小さくて すむので 6問 入る
   function clockItems(cx, cy, R5, t2, { hour = true, minute = true, aux = "none" } = {}) {
     const items = [{ t: "circle", cx, cy, r: R5, w: 0.7, fill: "white" }];
-    if (aux === "5" || aux === "1") {
+    if (aux === "5" || aux === "1" || aux === "near") {
       for (let k = 0; k < 60; k += aux === "1" ? 1 : 5) {
         const five = k % 5 === 0, fsA = aux === "1" ? (five ? 3 : 2.3) : 3.4;
         const [x, y] = at(cx, cy, k * 6, R5 + (aux === "1" ? 3.4 : 3.6));
         items.push({ t: "text", x, y: y + fsA * 0.36, s: String(k), size: fsA, bold: five && aux === "1", color: "#555", aux: true });
+      }
+    }
+    if (aux === "near") {
+      // 5の数字より 少し外に、小さく ずらして かく(となりの 5の数字と かさならないように)
+      // ちょうど 5の数字(○じ20ぷん など)のときは いらないので かかない
+      const m = t2 % 60, b = Math.floor(m / 5) * 5;
+      if (m % 5) for (let k = b + 1; k < b + 5; k++) {
+        const fsA = 2.9, [x, y] = at(cx, cy, k * 6, R5 + 8.4);
+        items.push({ t: "text", x, y: y + fsA * 0.36, s: String(k), size: fsA, color: "#333", aux: true });
+        const [x1, y1] = at(cx, cy, k * 6, R5 + 0.8), [x2, y2] = at(cx, cy, k * 6, R5 + 6.4);
+        items.push({ t: "line", x1, y1, x2, y2, w: 0.2, color: "#888", aux: true });
       }
     }
     for (let k = 0; k < 60; k++) {
@@ -24828,9 +24850,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // 1日の場面の絵(assets/illust の sc_○○)。とけいの問題の「おきた とき」などの よこに出す
   var SCENE_IMG = { "おきた　とき": "sc_wake", "あさごはん": "sc_breakfast", "いえを　でた　とき": "sc_leave", "きゅうしょく": "sc_lunch", "かえった　とき": "sc_return", "おやつ": "sc_snack", "こうえんで　あそぶ": "sc_park", "ばんごはん": "sc_dinner", "おふろ": "sc_bath", "ねた　とき": "sc_sleep", "かいものに　いく": "sc_shopping", "としょかんに　いく": "sc_library" };
   // ほじょの数字があるときは 時計を大きくする(1ぷんごとは 1行に1つの 大きな時計)
-  var CLOCK_R = { none: 20, 5: 24, 1: 36 };
+  var CLOCK_R = { none: 20, 5: 24, 1: 36, near: 24 };
   function clockWithBox(t2, { hour = true, minute = true, box: box3 = true, scene = null, aux = "none", scaleK = null } = {}) {
-    const R5 = CLOCK_R[aux] || 20, pad = aux === "5" || aux === "1" ? 6 : 0;
+    const R5 = CLOCK_R[aux] || 20, pad = aux === "near" ? 11 : aux === "5" || aux === "1" ? 6 : 0;
     const pic = scene && ILLUST[SCENE_IMG[scene]] ? (aux === "1" ? 40 : 30) : 0, cx = 4 + pad + R5 + pic, cy = R5 + 2 + pad;
     const items = clockItems(cx, cy, R5, t2, { hour, minute, aux });
     if (pic) items.unshift(illust(SCENE_IMG[scene], pic / 2 - 1, cy, pic - 2));
@@ -24873,9 +24895,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // とけいの小単元の設定(パネルにえらぶ欄が出る)
   var CLOCK_OPTS = [
     { key: "tk", label: "時こく", choices: [["auto", "★に合わせる"], ["0", "ちょうど(6じ・6じ00ぷん)"], ["30", "なんじはん まで"], ["5", "5ふんごと"], ["1", "1ぷんごと"], ["tricky", "まちがえやすい(○じ50ぷんすぎ など)"]] },
-    { key: "aux", label: "ほじょの 数字", choices: [["auto", "なし"], ["5", "5ふんごと(5・10…55)"], ["1", "1ぷんごと(1〜59)"]] },
+    { key: "aux", label: "ほじょの 数字", choices: [["auto", "なし"], ["5", "5ふんごと(5・10…55)"], ["near", "1ぷんごと(はりの ちかくだけ・6問まで できる)"], ["1", "1ぷんごと(1〜59 ぜんぶ・2問まで)"]] },
     { key: "scene", label: "場面(おきた とき など)", choices: [["auto", "あり(絵と ことば)"], ["off", "なし(時計だけ)"]] },
-    { key: "per", label: "1ページの問題数", num: true, choices: [["auto", "おまかせ"], ["2", "2問(大きく)"], ["4", "4問"], ["6", "6問(小さく・1ぷんごとは2問まで)"]] }
+    { key: "per", label: "1ページの問題数", num: true, choices: [["auto", "おまかせ"], ["2", "2問(大きく)"], ["4", "4問"], ["6", "6問(小さく)"]] }
   ];
   // ===== とけいの設定(小単元の options)=====
   // tk:時こくの むずかしさ。"0" ちょうど(6じ)/"30" なんじはん まで/"5" 5ふんごと/"1" 1ぷんごと/"tricky" まちがえやすい(○じ50ぷんすぎ・○じ5ふん など)
@@ -24895,12 +24917,13 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   }
   // 1ページの問題数(per)と ほじょの数字(aux)から、列の数・時計の大きさ・答えの四角の場所をきめる。1ぷんごとは 2問まで
   function clockLayout(p) {
-    const aux = p.aux === "1" || p.aux === "5" ? p.aux : "none";
-    const per = aux === "1" ? 2 : Number(p.per) || (aux === "5" ? 2 : 4);
+    const aux = p.aux === "1" || p.aux === "5" || p.aux === "near" ? p.aux : "none";
+    const per = aux === "1" ? 2 : Number(p.per) || (aux === "5" ? 2 : aux === "near" ? 4 : 4);
     // 答えを書く欄は いつも 時計の下(まん中)。2問は 1行に1つの 大きな時計
-    if (per <= 2) return { cols: 1, ansRight: false, scaleK: aux === "1" ? 0.86 : aux === "5" ? 1.18 : 1.7 };
+    if (per <= 2) return { cols: 1, ansRight: false, scaleK: aux === "1" ? 0.86 : aux === "5" ? 1.18 : aux === "near" ? 1.05 : 1.7 };
     // 6問:2列×3だん。答えの四角は時計の下に 少しひくく(compact)
-    if (per >= 6) return { cols: 2, ansRight: false, compact: true, scaleK: aux === "5" ? 0.76 : 1.08 };
+    if (per >= 6) return { cols: 2, ansRight: false, compact: true, scaleK: aux === "5" ? 0.76 : aux === "near" ? 0.74 : 1.08 };
+    if (aux === "near") return { cols: 2, ansRight: false, scaleK: 0.9 };
     return { cols: 2, ansRight: false, scaleK: null };
   }
   var sceneOn = (p) => p.scene !== "off";
@@ -59298,7 +59321,89 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     render();
     if (location.hash !== "#print") location.hash = "print";
   }
+  // ===== 見本のポップアップ:「計算ドリル」や小単元の ボタンに カーソルを おくと、そのプリントの 1ページめを 小さく見せる =====
+  var hovCache = new Map(), hovTimer = 0, hovBtn = null, hovPop = null, hovBox = null;
+  var HOV_K = 0.4;
+  function hovPage(g3, unitId, kind, sub) {
+    const key = [g3, unitId, kind, sub, homeLevel].join("|");
+    if (hovCache.has(key)) return hovCache.get(key);
+    let html = null;
+    try {
+      el.grade.value = String(g3);
+      refreshUnits();
+      el.unit.value = unitId;
+      refreshKinds();
+      if (!el.subWrap.hidden) {
+        el.subunit.value = String(sub || 0);
+        refreshSubKinds();
+      }
+      el.kind.value = kind;
+      refreshCounts();
+      el.level.value = homeLevel;
+      const spec = { ...currentSpec(), seed: 2024 };
+      const policy = makeKanjiPolicy(kanji_default, spec.gradeData?.grade ?? spec.grade, { excludeCurrentGrade: el.excludeCurrent.checked, furigana: el.furigana.checked });
+      if (!hovBox) {
+        hovBox = document.createElement("div");
+        hovBox.className = "hov-measure";
+        document.body.appendChild(hovBox);
+      }
+      hovBox.innerHTML = sheetHtml(buildSheet(spec), { policy, withAnswers: false, gradeLabel: `${spec.grade}年`, hints: el.hints.checked, answerMode: el.ansStyle.value, trace: el.trace.checked });
+      paginate(hovBox);
+      const pages = hovBox.querySelectorAll("article.sheet");
+      const first = pages[0];
+      if (first) html = { html: first.outerHTML, n: [...pages].filter((a) => !a.classList.contains("answers")).length, w: first.offsetWidth, h: first.offsetHeight };
+      hovBox.innerHTML = "";
+    } catch (e) {
+      console.warn("見本を作れませんでした", e);
+    }
+    hovCache.set(key, html);
+    return html;
+  }
+  function hovHide() {
+    clearTimeout(hovTimer);
+    hovBtn = null;
+    if (hovPop) hovPop.classList.remove("show");
+  }
+  function hovShow(b) {
+    const pg2 = hovPage(Number(b.dataset.g || homeGrade), b.dataset.unit, b.dataset.kind, Number(b.dataset.sub) || 0);
+    if (hovBtn !== b || !pg2) return;
+    if (!hovPop) {
+      hovPop = document.createElement("div");
+      hovPop.className = "hov-pop";
+      document.body.appendChild(hovPop);
+    }
+    const card = b.closest(".ucard");
+    const uname = card?.querySelector(".uname")?.textContent || "";
+    const sname = b.querySelector(".usub-name")?.textContent;
+    const kname = b.querySelector(".usub-kind")?.textContent || b.textContent;
+    const w = pg2.w * HOV_K, h = pg2.h * HOV_K;
+    hovPop.innerHTML = `<div class="hp-cap">${esc2(uname)}${sname ? ` › ${esc2(sname)}` : ""}(${esc2(kname)}・${LEVELS[homeLevel]?.label || ""})<small>見本(1ページめ${pg2.n > 1 ? ` / ぜんぶで ${pg2.n}ページ` : ""})。おすと 作れます。問題は 作るたびに かわります</small></div><div class="hp-page" style="width:${w}px;height:${h}px">${pg2.html}</div>`;
+    hovPop.querySelector(".hp-page > .sheet").style.transform = `scale(${HOV_K})`;
+    // ボタンの 右(入らなければ 左)に出す。上下は 画面に入るように
+    const r = b.getBoundingClientRect(), pw = w + 20, ph = hovPop.offsetHeight;
+    let x = r.right + 12;
+    if (x + pw > window.innerWidth - 8) x = r.left - pw - 12;
+    if (x < 8) x = Math.max(8, Math.min(window.innerWidth - pw - 8, r.left));
+    let y = r.top + r.height / 2 - ph / 2;
+    y = Math.max(8, Math.min(window.innerHeight - ph - 8, y));
+    hovPop.style.left = `${x}px`;
+    hovPop.style.top = `${y}px`;
+    requestAnimationFrame(() => hovPop.classList.add("show"));
+  }
+  var canHover = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  homeEl.addEventListener("mouseover", (e) => {
+    if (!canHover) return;
+    const b = e.target.closest(".uk, .usb");
+    if (b === hovBtn) return;
+    hovHide();
+    if (!b || !b.dataset.unit) return;
+    hovBtn = b;
+    hovTimer = setTimeout(() => hovShow(b), 300);
+  });
+  homeEl.addEventListener("mouseleave", hovHide);
+  window.addEventListener("scroll", hovHide, { passive: true });
   homeEl.addEventListener("click", (e) => {
+    hovHide();
     const b = e.target.closest("button");
     if (!b || b.disabled) return;
     if (b.dataset.domain) {
