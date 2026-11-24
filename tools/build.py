@@ -62,6 +62,8 @@ s = re.sub(r'\{\{CHARA:(\w+)\}\}', chara, s)
 s = re.sub(r'\{\{ICON:(\w+)\}\}', lambda m: 'data:image/png;base64,' + base64.b64encode((root / 'assets' / 'icon' / f'{m.group(1)}.png').read_bytes()).decode(), s)
 # お金の絵({{MONEY:名前}} に assets/money/名前.webp)
 s = re.sub(r'\{\{MONEY:(\w+)\}\}', lambda m: 'data:image/webp;base64,' + base64.b64encode((root / 'assets' / 'money' / f'{m.group(1)}.webp').read_bytes()).decode(), s)
+# ホームの アイコン・ロゴ({{UI:名前}} に assets/ui/名前.webp)
+s = re.sub(r'\{\{UI:(\w+)\}\}', lambda m: 'data:image/webp;base64,' + base64.b64encode((root / 'assets' / 'ui' / f'{m.group(1)}.webp').read_bytes()).decode(), s)
 # イラスト({{ILLUST_MAP}} に assets/illust/*.webp をまとめて {名前: {u: data URI, w, h}} で入れる。大きさは sizes.json)
 import json as _json
 _ill = root / 'assets' / 'illust'
@@ -69,7 +71,7 @@ _sizes = _json.loads((_ill / 'sizes.json').read_text(encoding='utf-8'))
 _imap = {n: {'u': 'data:image/webp;base64,' + base64.b64encode((_ill / f'{n}.webp').read_bytes()).decode(), 'w': wh[0], 'h': wh[1]} for n, wh in _sizes.items()}
 s = s.replace('{{ILLUST_MAP}}', _json.dumps(_imap, separators=(',', ':')))
 s = re.sub(r'\{\{VENDOR:([\w.\-]+)\}\}', lambda m: (root / 'vendor' / m.group(1)).read_text(encoding='utf-8'), s)
-assert '{{ILLUST_MAP}}' not in s and '{{CHARA:' not in s and '{{VENDOR:' not in s and '{{MONEY:' not in s and '{{ICON:' not in s
+assert '{{ILLUST_MAP}}' not in s and '{{CHARA:' not in s and '{{VENDOR:' not in s and '{{MONEY:' not in s and '{{ICON:' not in s and '{{UI:' not in s
 
 (root / 'docs').mkdir(exist_ok=True)
 # 公開ページ用に、アイコンをファイルとしても置く(iPhone・iPad のホーム画面用)
