@@ -68,6 +68,22 @@ body {
 .panel .more, .panel .basic { display: contents; }
 .panel .opt-wrap { display: contents; }
 .panel .more-toggle, .panel .sum-toggle, .panel .buttons .sm { display: none; }
+/* ページの ボタン(下に うかぶ):おすと その ページへ。いま 見ている ページに 色の 板が すべる */
+.pager { position: fixed; left: 0; right: 0; margin: 0 auto; width: max-content; bottom: 14px; z-index: 40; display: flex; align-items: center; gap: 4px; max-width: calc(100vw - 24px); overflow-x: auto; padding: 5px 8px; background: rgba(255,255,255,.96); border: 1.5px solid #d5d9e2; border-radius: 999px; box-shadow: 0 6px 18px rgba(31,42,64,.18); scrollbar-width: none; }
+.pager[hidden] { display: none; }
+.pager .pg-cap { flex: none; font-size: 11px; font-weight: bold; color: #778; padding: 0 4px 0 6px; }
+.pager .pg-cap.ans { color: #d07a00; }
+.pager .pg-sep { flex: none; width: 1px; height: 20px; background: #d5d9e2; margin: 0 4px; }
+.pager .pg { position: relative; z-index: 1; flex: none; min-width: 32px; height: 32px; border-radius: 999px; border: none; background: transparent; font: inherit; font-size: 14px; font-weight: bold; color: #2b3a55; cursor: pointer; transition: color .25s, transform .22s cubic-bezier(.34,1.8,.5,1); }
+.pager .pg.ans { color: #d07a00; }
+.pager .pg.on { color: #fff; }
+.pager .pg:active { transform: scale(.85); transition-duration: .06s; }
+.pager .seg-thumb { background: #2b3a55; border-radius: 999px; }
+.pager .seg-thumb.is-ans { background: #e08a00; }
+@media print { .pager { display: none !important; } }
+@media screen { body[data-view="print"] .preview { padding-bottom: 72px; } }
+body:not([data-view="print"]) .pager { display: none; }
+@media (max-width: 640px) { .pager { bottom: 10px; padding: 4px 6px; } .pager .pg { min-width: 30px; height: 30px; font-size: 13px; } }
 .panel .msg { width: 100%; color: #a11; font-size: 13px; min-height: 1.2em; }
 .panel .hint { width: 100%; color: #666; font-size: 12px; }
 .panel .title-row { width: 100%; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
@@ -423,7 +439,9 @@ button.nw-row:hover { background: #fff3c9; }
   .panel.show-set .basic { display: flex; flex-wrap: wrap; gap: 6px 8px; width: 100%; }
   .panel.show-set .more-toggle { display: block; width: 100%; font: inherit; font-size: 13px; color: #2b3a55; background: #fff; border: 1px solid #cfd3dc; border-radius: 6px; padding: 5px 8px; text-align: left; cursor: pointer; }
   .panel.show-set.show-more .more { display: flex; flex-wrap: wrap; gap: 6px 8px; width: 100%; }
-  .panel .buttons { width: 100%; margin-left: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+  .panel .buttons { width: 100%; margin-left: 0; display: grid; grid-template-columns: repeat(3, 1fr) 40px 1fr; gap: 5px; }
+  .panel .buttons .fav-label { display: none; }
+  .panel .fav-btn .fav-star { margin-right: 0; font-size: 17px; }
   .panel .buttons button { white-space: nowrap; padding: 7px 2px; font-size: 13.5px; }
   .panel .buttons .lg { display: none; }
   .panel .buttons .sm { display: inline; }
@@ -541,6 +559,8 @@ table.data.compact th, table.data.compact td { padding: 4pt 7pt; min-width: 38pt
 table.data.dense { font-size: 12pt; }
 table.data.dense th, table.data.dense td { padding: 3pt 4pt; min-width: 26pt; }
 .ws-lines { margin: 2pt 0 0 22pt; }
+/* 図の ない 文章題でも 式・答えの 線は 行いっぱいに(線が つぶれて 答えの 字が たてに ならんでいた) */
+.item > .ws-lines { flex: 1 1 100%; }
 .ws-line { display: flex; align-items: flex-end; gap: 8pt; height: 26pt; }
 .block.word .ws-line:first-child { height: 36pt; }
 .block.word { margin-bottom: 14pt; }
@@ -836,7 +856,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     <button type="button" id="btnMake">作成</button>
     <button type="button" id="btnRemake" class="secondary">作り直し</button>
     <button type="button" id="btnPrint" class="secondary">印刷</button>
-    <button type="button" id="btnFav" class="secondary fav-btn" aria-pressed="false" title="この設定を お気に入りに 入れる(この 端末に ほぞん)"><span class="fav-star">☆</span>お気に入り</button>
+    <button type="button" id="btnFav" class="secondary fav-btn" aria-pressed="false" title="この設定を お気に入りに 入れる(この 端末に ほぞん)"><span class="fav-star">☆</span><span class="fav-label">お気に入り</span></button>
     <button type="button" id="btnBatch" class="secondary"><span class="lg">まとめて作る・保存</span><span class="sm">まとめて</span></button>
   </div>
   <div class="hint">同じシード番号・同じ設定なら同じプリントになります。「作り直し」は新しい番号で作ります。</div>
@@ -886,6 +906,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   </ol>
 </details>
 <div class="preview" id="preview"></div>
+<nav class="pager" id="pager" aria-label="ページ" hidden></nav>
 <footer class="site-footer">算数プリント <span id="versionFoot">第4版(2026-10-19)</span></footer>
 <script>
 (() => {
@@ -25062,13 +25083,20 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   });
   // とけいの小単元の設定(パネルにえらぶ欄が出る)
   var CLOCK_OPTS = [
-    { key: "tk", label: "時こく", choices: [["auto", "★に合わせる"], ["0", "ちょうど(6じ・6じ00ぷん)"], ["30", "なんじはん まで"], ["5", "5ふんごと"], ["1", "1ぷんごと"], ["tricky", "まちがえやすい(○じ50ぷんすぎ など)"]] },
+    { key: "tk", label: "時こく", choices: [["auto", "★に合わせる"], ["0", "ちょうど(6じ・6じ00ぷん)"], ["30", "なんじはん まで"], ["15", "15ふんごと(00・15・30・45ふん)"], ["5", "5ふんごと"], ["1", "1ぷんごと"], ["tricky", "まちがえやすい(○じ50ぷんすぎ など)"]] },
     { key: "aux", label: "ほじょの 数字", choices: [["auto", "なし"], ["5", "5ふんごと(5・10…55)"], ["near", "1ぷんごと(はりの ちかくだけ・6問まで できる)"], ["1", "1ぷんごと(1〜59 ぜんぶ・2問まで)"]] },
     { key: "scene", label: "場面(おきた とき など)", choices: [["auto", "あり(絵と ことば)"], ["off", "なし(時計だけ)"]] },
     { key: "per", label: "1ページの問題数", num: true, choices: [["auto", "おまかせ"], ["2", "2問(大きく)"], ["4", "4問"], ["6", "6問(小さく)"]] }
   ];
   // 「なんじなんぷん」を よむ:答えの らんに「じ・ふん」「時・分」を 先に 書いておける
   var CLOCK_READ_OPTS = [...CLOCK_OPTS, { key: "afmt", label: "答えの らん", choices: [["auto", "□ だけ"], ["jifun", "□じ □ふん"], ["kanji", "□時 □分"]] }];
+  // 「なんじ・なんじはん」:はんは □ の あとに 書く(ちょうどの ときは 空らんの まま)
+  var CLOCK_HOUR_OPTS = [...CLOCK_OPTS, { key: "afmt", label: "答えの らん", choices: [["auto", "□ だけ"], ["jifun", "□じ □(はん)"], ["kanji", "□時 □(半)"]] }];
+  function clockHourFmt(p, t2) {
+    if (p.afmt !== "jifun" && p.afmt !== "kanji") return {};
+    const h = Math.floor(t2 / 60), half = t2 % 60 === 30;
+    return { ansBox: p.afmt === "kanji" ? "□時□" : "□じ□", ansBoxW: 13, fills: [String(h), half ? (p.afmt === "kanji" ? "半" : "はん") : ""] };
+  }
   function clockAnsFmt(p, t2) {
     if (p.afmt !== "jifun" && p.afmt !== "kanji") return {};
     const h = Math.floor(t2 / 60), m2 = t2 % 60;
@@ -25079,6 +25107,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   var TK_OK = {
     0: (m) => m === 0,
     30: (m) => m === 0 || m === 30,
+    15: (m) => m % 15 === 0,
     5: (m) => m !== 0 && m % 5 === 0,
     1: (m) => m % 5 !== 0,
     tricky: (m) => m !== 0 && (m >= 45 || m <= 10)
@@ -25130,7 +25159,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       const wantHalf = rng.chance(p.half);
       const { scene, t: t2 } = pickSceneTime(rng, tkFilter(rng, p, (t3) => t3 % 60 === (wantHalf ? 30 : 0)));
       const L = clockLayout(p), sc = sceneOn(p) ? scene.text : null;
+      const af = p.tk === "15" || p.tk === "5" || p.tk === "1" || p.tk === "tricky" ? clockAnsFmt(p, t2) : clockHourFmt(p, t2);
       return {
+        ...(af.ansBox ? { ansBox: af.ansBox, ansBoxW: af.ansBoxW } : {}),
         key: `ch:${t2}`,
         softKey: sc || `ch${t2}`,
         text: sc || "",
@@ -25139,7 +25170,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         ansRight: L.ansRight,
         ansCenter: true,
         compact: !!L.compact,
-        answer: { display: timeText(t2, { han: true }), value: t2 },
+        answer: { display: timeText(t2, { han: true }), value: t2, ...(af.fills ? { fills: af.fills } : {}) },
         workspace: { type: "none" },
         meta: { t: t2, scene: scene.text }
       };
@@ -34030,10 +34061,14 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       }
       const h = Math.floor(c.t / 60) % 12, m2 = c.t % 60;
       const am = m2 / 60 * 2 * Math.PI, ah = (h + m2 / 60) / 12 * 2 * Math.PI;
-      const LH = R5 * 0.52;
-      out += `<line x1="${cx}" y1="${cy}" x2="${(cx + LH * Math.sin(ah)).toFixed(2)}" y2="${(cy - LH * Math.cos(ah)).toFixed(2)}" stroke="#000" stroke-width="1.4" stroke-linecap="round"/>`;
-      out += `<line x1="${cx}" y1="${cy}" x2="${(cx + (R5 - 3) * Math.sin(am)).toFixed(2)}" y2="${(cy - (R5 - 3) * Math.cos(am)).toFixed(2)}" stroke="#000" stroke-width="0.8" stroke-linecap="round"/>`;
-      out += `<circle cx="${cx}" cy="${cy}" r="1" fill="#000"/>`;
+      // 1年の とけいと 同じ、細い まっすぐな 針(先だけ とがらせる)
+      const needle = (ang, len3, wHalf) => {
+        const ux = Math.sin(ang), uy = -Math.cos(ang), nx = -uy, ny = ux, tip = Math.min(1.4, wHalf * 2.2);
+        const P3 = (sl, kk) => `${(cx + ux * sl + nx * kk).toFixed(2)},${(cy + uy * sl + ny * kk).toFixed(2)}`;
+        return `<polygon points="${P3(-0.6, wHalf)} ${P3(len3 - tip, wHalf)} ${P3(len3, 0)} ${P3(len3 - tip, -wHalf)} ${P3(-0.6, -wHalf)}" fill="#000" stroke="#000" stroke-width="0.15" stroke-linejoin="round"/>`;
+      };
+      out += needle(ah, R5 * 0.55, 0.75) + needle(am, R5 - 3, 0.38);
+      out += `<circle cx="${cx}" cy="${cy}" r="1.1" fill="#000"/>`;
       if (captions[i]) out += `<text x="${cx}" y="${padT + R5 * 2 + 6.5}" font-size="3.8" text-anchor="middle">${captions[i]}</text>`;
     });
     return `<svg class="clocks" viewBox="0 0 ${W3} ${H6}" width="${W3}mm" height="${H6}mm" font-family="inherit">${out}</svg>`;
@@ -35045,7 +35080,12 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           const a = a0.need ? { ...a0, box: uniW(a0.box) } : { ...a0, text: uniW(a0.text) };
           const mv = moveAns(a, p2, filled);
           // 「→」と 答えの 四角は はなさない(→ だけが 行の さいごに のこらないように)
-          const tail = mv ? "" : a.need && !p2.figure ? `　[[nw]]→ ${a.box}[[/nw]]` : "";
+          const tail = mv ? "" : a.need && !p2.figure ? (() => {
+            const m = /\[\[(?:abox:[\d.]+|pbox:[\d.]+|tbox:[\d.]+|fbox1?|mbox|aline)\]\]/.exec(a.box);
+            if (!m) return `　[[nw]]→ ${a.box}[[/nw]]`;
+            const cut = m.index + m[0].length;
+            return `　[[nw]]→ ${a.box.slice(0, cut)}[[/nw]]${a.box.slice(cut)}`;
+          })() : "";
           if (mv) a.text = mv.text;
           const wsUsed = workOf(p2) && !filled ? wsWithoutShiki(p2.workspace) : p2.workspace;
           const K = useKey ? itemKey(p2, a0, wsUsed) : null;
@@ -35314,6 +35354,39 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       if (overflows(last) || Math.abs(usedH(pb) - usedH(lb)) >= diff0) {
         pb.appendChild(blk);
         break;
+      }
+    }
+    if (growOn()) {
+      const pL = pb.lastElementChild, lF = lb.firstElementChild, plst = pL?.querySelector("ol.items");
+      // ちがう 大問:前のページの さいごの 大問の うしろの 問題を「(つづき)」として さいごのページへ
+      if (pL && lF && pL.dataset.sec !== lF.dataset.sec && plst && plst.children.length > 1 && usedH(lb) < usedH(pb) * 0.6) {
+        const rest = makeRest(pL), rl = rest.querySelector("ol.items");
+        lb.prepend(rest);
+        let moved = 0;
+        for (let g = 0; g < 60 && plst.children.length > 1; g++) {
+          if (usedH(lb) >= usedH(pb) * 0.8) break;
+          const diff0 = Math.abs(usedH(pb) - usedH(lb)), li = plst.lastElementChild;
+          rl.prepend(li);
+          if (overflows(last) || Math.abs(usedH(pb) - usedH(lb)) >= diff0) {
+            plst.appendChild(li);
+            break;
+          }
+          moved++;
+        }
+        if (!moved) rest.remove();
+      }
+      // おなじ 大問で 前のページに 1問だけ のこっているとき:その 大問を まるごと さいごのページへ
+      const pL2 = pb.lastElementChild, lF2 = lb.firstElementChild, pl2 = pL2?.querySelector("ol.items"), ll2 = lF2?.querySelector("ol.items");
+      if (pb.children.length > 1 && pL2 && lF2 && pL2.dataset.sec === lF2.dataset.sec && pl2 && ll2 && pl2.children.length === 1 && usedH(lb) < usedH(pb) * 0.6) {
+        const diff0 = Math.abs(usedH(pb) - usedH(lb)), moved = [...ll2.children];
+        lb.prepend(pL2);
+        for (const li of moved) pl2.appendChild(li);
+        lF2.remove();
+        if (overflows(last) || Math.abs(usedH(pb) - usedH(lb)) >= diff0) {
+          for (const li of moved) ll2.appendChild(li);
+          pL2.after(lF2);
+          pb.appendChild(pL2);
+        }
       }
     }
     const pLast = pb.lastElementChild, lFirst = lb.firstElementChild;
@@ -35793,7 +35866,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           "何時、何時半の読み方"
         ],
         topics: [
-          { label: "とけいを よむ", generator: "g1.clockHour", kinds: ["figure", "test"], options: CLOCK_OPTS },
+          { label: "とけいを よむ", generator: "g1.clockHour", kinds: ["figure", "test"], options: CLOCK_HOUR_OPTS },
           { label: "はりを かく", generator: "g1.clockDraw", kinds: ["figure", "test"], options: CLOCK_OPTS }
         ],
         prerequisites: "細案 第1時(1時間): 1日の生活と結びつけて なんじ・なんじはん を読み、模型時計で指示された時刻を表す(短い針の読み取り・動き方に重点)。時計は1年用に描きなおした(はりを片方だけ描く問題があるため。3年の svgClocks は使っていない)。時計の上の言葉(おきた とき・きゅうしょく など)は教科書にない場面。きほん=なんじ、ふつう=なんじ と なんじはん、チャレンジ=なんじはん を多く・みじかい はりを かく",
@@ -40166,6 +40239,69 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     }
     return sheet;
   }
+  // ===== ページの ボタン =====
+  var pagerIO = null;
+  function pagerMark(i) {
+    const nav = $("pager");
+    if (!nav) return;
+    for (const b of nav.querySelectorAll(".pg")) b.classList.toggle("on", Number(b.dataset.pg) === i);
+    nav.querySelector(".seg-thumb")?.remove();
+    segSlide(nav);
+    const on = nav.querySelector(".pg.on");
+    nav.querySelector(".seg-thumb")?.classList.toggle("is-ans", !!on?.classList.contains("ans"));
+    if (on && nav.scrollWidth > nav.clientWidth + 2) {
+      const nr = nav.getBoundingClientRect(), br = on.getBoundingClientRect();
+      if (br.left < nr.left + 10 || br.right > nr.right - 10) nav.scrollLeft += br.left - nr.left - nr.width / 2 + br.width / 2;
+    }
+  }
+  function buildPager() {
+    const nav = $("pager");
+    if (!nav) return;
+    const pages = [...el.preview.querySelectorAll("article.sheet")];
+    nav._seg = null;
+    if (pagerIO) pagerIO.disconnect();
+    if (pages.length < 2) {
+      nav.hidden = true;
+      nav.innerHTML = "";
+      return;
+    }
+    let pn = 0, an = 0, html = "", lastAns = null;
+    pages.forEach((pg2, i) => {
+      const ans = pg2.classList.contains("answers");
+      if (ans !== lastAns) {
+        if (lastAns !== null) html += '<span class="pg-sep"></span>';
+        html += `<span class="pg-cap${ans ? " ans" : ""}">${ans ? "こたえ" : "もんだい"}</span>`;
+        lastAns = ans;
+      }
+      html += `<button type="button" class="pg${ans ? " ans" : ""}" data-pg="${i}" aria-label="${ans ? "こたえ" : "もんだい"} ${ans ? ++an : ++pn}ページ">${ans ? an : pn}</button>`;
+    });
+    nav.innerHTML = html;
+    nav.hidden = false;
+    pagerMark(0);
+    // いま 画面の まん中に ある ページに 色を つける
+    if ("IntersectionObserver" in window) {
+      const vis = new Map();
+      pagerIO = new IntersectionObserver((es) => {
+        for (const e of es) vis.set(e.target, e.intersectionRatio);
+        let best = -1, bi = 0;
+        pages.forEach((pg2, i) => {
+          const v = vis.get(pg2) || 0;
+          if (v > best + 0.01) { best = v; bi = i; }
+        });
+        pagerMark(bi);
+      }, { threshold: [0, 0.2, 0.4, 0.6, 0.8, 1] });
+      for (const pg2 of pages) pagerIO.observe(pg2);
+    }
+  }
+  $("pager")?.addEventListener("click", (e) => {
+    const b = e.target.closest(".pg");
+    if (!b) return;
+    const pg2 = el.preview.querySelectorAll("article.sheet")[Number(b.dataset.pg)];
+    if (!pg2) return;
+    const top = pg2.getBoundingClientRect().top + window.scrollY - (document.querySelector(".panel")?.getBoundingClientRect().height || 0) - 10;
+    window.scrollTo({ top, behavior: "smooth" });
+    pagerMark(Number(b.dataset.pg));
+  });
   function render() {
     // プリントの画面が出ていないと、ページ分けや図の大きさがはかれない(図が下に落ちる)ので、先に画面を出す
     if (document.body.dataset.view !== "print") document.body.dataset.view = "print";
@@ -40198,6 +40334,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       paginate(el.preview);
       fitPreview();
       updateSummary();
+      buildPager();
       document.title = `${stripRuby(renderText(sheet.title, policy))} No.${sheet.seed}`;
       el.print.disabled = false;
     } catch (e) {
@@ -40648,6 +40785,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/25", t: "計算・パズルに ピラミッド・市松・5つのマーク・時間の筆算・つるかめ算を 追加", g: 30, unit: "s30-07", sub: 1, kind: "figure" },
+    { d: "26/11/25", t: "プリント画面:下に ページの ボタン(1・2・3)/スマホで ボタンを 1行に", tag: "プリント" },
+    { d: "26/11/25", t: "とけい:なんじはんの 答えらん「□じ □」/時こく「15ふんごと」/2・3年の とけいも 細い はりに", g: 1, unit: "g1-08", sub: 1, kind: "figure", opts: { afmt: "jifun" } },
     { d: "26/11/25", t: "プリントの 字の かさなり・はみ出しを なおした(ぼうグラフの 目もり・グラフの 式・答えの メモ など)", tag: "プリント" },
     { d: "26/11/25", t: "単元カードに プリントの 見本を 小さく かたむけて のせた(国語プリントと おなじ)", tag: "ホーム" },
     { d: "26/11/25", t: "お気に入り:プリント画面の「☆お気に入り」で 入れると、ホームから すぐ 作れる", tag: "ホーム" },

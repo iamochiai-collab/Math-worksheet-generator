@@ -103,3 +103,9 @@ node tools/test/render.js build/test.html 単元id 種類 難易度 問題数 �
 - 単元カードの 見本(11/25):カードの 右下に ほんものの プリント1ページめを 小さく かたむけて おく(国語プリントの .kind-card .thumb と おなじ 見せ方)。thumbSpan/thumbWatch(IntersectionObserver で 見えたら)/thumbRun(requestIdleCallback で 1まいずつ)。hovPage(…, fast=true)は buildSheet だけ。hovPage は formSnap/formRestore で プリント画面の 設定を こわさない。
 - 見た目の 検査(11/25):tools/test/overlap.js(図の 字の かさなり・図の わくの 外・問題の わくから 字が 出る・問題どうしの かさなり・下の あき)。`node tools/test/overlap.js docs/index.html 結果.json 学年 1`(さいごの 1 で 小単元も)。
   - なおしたもの:svgDraw が 字に あわせて viewBox を 広げる(赤い 答えの字は 数えない)/ぼうグラフ(svgBarChart)の 目もり数字の 間かく/「→」と 答えの 四角を [[nw]] で はなさない/.item.has-figure は 横へ 折りかえさない(計算らんが 右へ 出ていた)/ます目の 答えメモが はみ出すと 字を 小さく/中2 直線の ①② と 数II 面積の 直線の 式を じくの 数字から よける/散布図の x/直方体の おくゆきの 長さ/ようじ「なんばんめ」8ひきの はば・点つなぎの「スタート」/つぎの 図が 入らず 下が 4わり あくときは 0.7ばいまで ちぢめて 入れる。
+- 11/25 ごご:
+  - とけい:なんじ・なんじはん(clockHour)にも「答えの らん」(CLOCK_HOUR_OPTS、clockHourFmt:□じ□ で はんは 2つめの □)。時こくに "15"(TK_OK[15] = m%15===0)。svgClocks(2・3年・特別支援の「clocks」図)の 針を hand() と 同じ 細い 針に。
+  - プリント画面:下に うかぶ ページの ボタン #pager(buildPager。IntersectionObserver で いま 見ている ページに 色。segSlide を つかう)。スマホの ボタンは 1行(☆だけ)。
+  - 計算・パズル:puzzle/part2.js に pz.pyramid(ピラミッド)・pz.ichimatsu(市松)・pz.marks(5つのマーク)・pz.timeCalc(時間の筆算)・pz.tsurukame(つるかめ算)。どれも 答えが 1つに きまる ものだけ(countFill/digHoles)。puzzleStage.units に 5つ たした(s30-07〜11)。
+  - 「→」と 答えの 四角は、さいしょの 四角だけ くっつける(四角が いくつも あるとき 折りかえせるように)。.item > .ws-lines は 行いっぱい。
+  - balanceTail:さいごのページが あいているとき、前のページの 大問の うしろの 問題を「(つづき)」で うつす/前のページに 1問だけ のこった 大問を まるごと うつす(差が へるときだけ)。
