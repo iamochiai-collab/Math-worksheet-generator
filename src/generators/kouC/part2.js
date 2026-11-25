@@ -299,7 +299,7 @@ var kouCb = (() => {
         if (Math.abs(xv) > 6.1) continue;
         d += `${d ? "L" : "M"}${pl.X(xv).toFixed(2)} ${pl.Y(yv).toFixed(2)}`;
       }
-      items.push({ t: "path", d, w: 0.7 }, dotAt(pl, p, 0), T_(pl.X(p) + 1, pl.Y(0) - 2, "F", 3.2, { bold: true }));
+      items.push({ t: "path", d, w: 0.7 }, dotAt(pl, p, 0), T_(pl.X(p) + (p < 0 ? -2.6 : 1), pl.Y(0) - 2, "F", 3.2, { bold: true }));
       const pq = K.toQ(p);
       return { text: `右の図は、焦点が F(${num(pq)}, 0) の放物線です。この放物線の方程式を求めましょう。`, fig: draw(pl.w, pl.h, items), ans: `${yy}²＝${num(qm(Q(4), pq))}${xx}`, side: true, key: `cf:p${p}`, meta: { p, kind: "p" } };
     }

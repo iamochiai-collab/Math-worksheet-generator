@@ -524,6 +524,10 @@ button.nw-row:hover { background: #fff3c9; }
 .sheet .item .ans-under { flex-wrap: wrap; max-width: 100%; }
 .item-body { min-width: 0; max-width: 100%; }
 .nw { white-space: nowrap; }
+/* 数の 下の 絵 */
+.pnum { display: inline-flex; flex-direction: column; align-items: center; margin: 0 1pt; }
+.pnum .pics { display: grid; gap: 0.5mm; justify-content: center; margin-top: 1mm; }
+.pnum .pic { display: block; width: 4.2mm; height: 4.2mm; background-position: center; background-size: contain; background-repeat: no-repeat; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .item-no { font-size: 11pt; flex: none; min-width: 22pt; padding-right: 3pt; white-space: nowrap; letter-spacing: 0; }
 .item-body { font-size: 16pt; letter-spacing: 1.5pt; }
 .item-head { display: inline-flex; align-items: center; gap: 4pt; }
@@ -761,8 +765,8 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
 .key-note { color: var(--key); font-weight: bold; font-size: 12pt; line-height: 1.6; margin: 1mm 0 0 22pt; }
 .item .key-note { margin-left: 0; flex: none; width: 100%; }
 .ws-grid { position: relative; }
-.ws-grid > .key-note { position: absolute; left: 1.5mm; top: 1mm; right: 0; margin: 0; background: rgba(255,255,255,.85); overflow-wrap: anywhere; }
-.calc > .key-note { position: absolute; left: 3mm; top: 4.5mm; right: 2mm; margin: 0; }
+.ws-grid > .key-note { position: absolute; left: 1.5mm; top: 1mm; right: 0; margin: 0; width: auto; background: rgba(255,255,255,.85); overflow-wrap: anywhere; }
+.calc > .key-note { position: absolute; left: 3mm; top: 4.5mm; right: 2mm; margin: 0; width: auto; }
 .key-note .kn-tag { display: inline-block; background: var(--key); color: #fff; border-radius: 1.5mm; padding: 0 1.8mm; font-size: 9.5pt; margin-right: 2mm; vertical-align: 1pt; }
 .keyed .key-note { display: block; }
 .fig-wrap { position: relative; max-width: 100%; display: flow-root; }
@@ -11124,6 +11128,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       const b = hull[(j + 1) % hull.length];
       return (b[0] - a[0]) * (q2[1] - a[1]) - (b[1] - a[1]) * (q2[0] - a[0]) >= 0;
     });
+    // 長さの 字の ばしょ(ちょうてんの 名前を ここから よける)
+    const dimAt = dims2 ? [[(P3[3][0] + P3[2][0]) / 2, (P3[3][1] + P3[2][1]) / 2 + 4], [(P3[2][0] + P3[6][0]) / 2 + 3.5 + 3, (P3[2][1] + P3[6][1]) / 2 + 5], [(P3[3][0] + P3[0][0]) / 2 - 2 - 3, (P3[3][1] + P3[0][1]) / 2]] : [];
     if (names) P3.forEach((p, i) => {
       const angs = EDGES.filter((e) => e.includes(i)).map(([a, b]) => {
         const q2 = P3[a === i ? b : a];
@@ -11135,7 +11141,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         const m2 = a + (next - a) / 2;
         const c = [p[0] + Math.cos(m2) * 4, p[1] - Math.sin(m2) * 4];
         const clear = Math.min(...EDGES.map(([e1, e2]) => segDist(c, P3[e1], P3[e2])));
-        const score = clear + (inHull(c) ? 0 : 5);
+        const score = clear + (inHull(c) ? 0 : 5) - (dimAt.some((d) => Math.hypot(d[0] - c[0], d[1] - c[1]) < 6.5) ? 20 : 0);
         if (score > best) {
           best = score;
           mid2 = m2;
@@ -22249,6 +22255,33 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   var MONEY_IMG = { 1: "{{MONEY:coin1}}", 5: "{{MONEY:coin5}}", 10: "{{MONEY:coin10}}", 50: "{{MONEY:coin50}}", 100: "{{MONEY:coin100}}", 500: "{{MONEY:coin500}}", 1000: "{{MONEY:bill1000}}", 5000: "{{MONEY:bill5000}}", 10000: "{{MONEY:bill10000}}" };
   // イラスト(assets/illust。チャッピーで作った絵を切りぬいたもの)。{名前: {u: data URI, w, h}}
   var ILLUST = {{ILLUST_MAP}};
+  // ===== たし算・ひき算の 数の 下に、その数だけ 小さな 絵を ならべる(かぞえる てがかり。設定「数の 下の 絵」)=====
+  var PIC_OPT = { key: "pics", label: "数の 下の 絵", choices: [["auto", "なし"], ["on", "あり(かぞえる てがかり)"]] };
+  var PIC_ICONS = ["apple", "strawberry", "acorn", "candy", "fish", "star"];
+  function picify(pr, seed) {
+    const m = /^([0-9０-９＋－+\-\s　]+)＝/.exec(pr.text || "");
+    if (!m) return pr;
+    const nums = m[1].match(/\d+/g) || [];
+    if (!nums.length || nums.some((n) => Number(n) > 20)) return pr;
+    const icon = PIC_ICONS[Math.abs(seed | 0) % PIC_ICONS.length];
+    const lhs = m[1].replace(/\d+/g, (n) => `[[pic:${n}:${icon}]]`);
+    return { ...pr, text: lhs + pr.text.slice(m[1].length), picRow: true };
+  }
+  // 絵は CSS の 背景に 1回だけ 入れて、何回も つかう(ページが 重くならないように)
+  (function picCss() {
+    try {
+      const st = document.createElement("style");
+      st.textContent = PIC_ICONS.filter((k) => ILLUST[k]).map((k) => `.pic-${k}{background-image:url(${ILLUST[k].u})}`).join("\n");
+      document.head.appendChild(st);
+    } catch (e) {
+    }
+  })();
+  function picHtml(n, icon) {
+    n = Number(n);
+    const cols = Math.min(5, Math.max(1, n));
+    const cells = Array.from({ length: n }, () => `<i class="pic pic-${icon}"></i>`).join("");
+    return `<span class="pnum"><span class="pn">${n}</span><span class="pics" style="grid-template-columns:repeat(${cols},4.2mm)">${cells}</span></span>`;
+  }
   // イラストを s×s の中に たてよこの わりあいを かえずに おく(cx, cy が まん中)
   function illust(name, cx, cy, s, o = {}) {
     const im = ILLUST[name];
@@ -25026,11 +25059,12 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       const [x1, y1] = at(cx, cy, k * 6, R5 - (big ? 2.4 : 1.2)), [x2, y2] = at(cx, cy, k * 6, R5);
       items.push({ t: "line", x1, y1, x2, y2, w: big ? 0.5 : 0.22, lead: true });
     }
-    if (hour) items.push(hand(cx, cy, hourDeg(t2), R5 * 0.55, R5 >= 16 ? 0.75 : 0.55, "hour"));
-    if (minute) items.push(hand(cx, cy, minuteDeg(t2), R5 - 3, R5 >= 16 ? 0.38 : 0.3, "minute"));
-    const fs = R5 >= 16 ? 4.3 : 3;
+    // 数字は 目もりの すぐ 内がわ。針は 数字の 手前で とめる(針と 数字が かさならないように)
+    const fs = R5 >= 16 ? 4 : 3, numR = R5 - (R5 >= 16 ? 5.2 : 4.1), lenM = numR - fs * 0.66 - 0.4;
+    if (hour) items.push(hand(cx, cy, hourDeg(t2), lenM * 0.72, R5 >= 16 ? 0.75 : 0.55, "hour"));
+    if (minute) items.push(hand(cx, cy, minuteDeg(t2), lenM, R5 >= 16 ? 0.38 : 0.3, "minute"));
     for (let n = 1; n <= 12; n++) {
-      const [x, y] = at(cx, cy, n * 30, R5 - (R5 >= 16 ? 6.2 : 4.3));
+      const [x, y] = at(cx, cy, n * 30, numR);
       items.push({ t: "text", x, y: y + fs * 0.36, s: String(n), size: fs });
     }
     items.push({ t: "circle", cx, cy, r: R5 >= 16 ? 1.1 : 0.8, w: 0, fill: "black" });
@@ -25307,6 +25341,89 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       // みじかい はりを かく(数と数の あいだの どこか)
     }
   };
+
+  // とけいと よみかたを せんで むすぶ(左に とけい、右に「4じはん」などの カード)
+  // ★1・★2 は 1つめの とけいに うすい「れい」の 線を ひいておく。答えは 赤い 線
+  var CLOCK_MATCH_OPTS = [
+    CLOCK_OPTS[0],
+    { key: "pairs", label: "1問の くみの 数", num: true, choices: [["auto", "★に合わせる"], ["3", "3つ"], ["4", "4つ"]] },
+    { key: "moji", label: "よみかたの 字", choices: [["auto", "ひらがな(4じはん)"], ["kanji", "漢字(4時半)"]] }
+  ];
+  function clockLabel(t2, tk, kanji) {
+    const h = Math.floor(t2 / 60), m2 = t2 % 60, han = tk === "0" || tk === "30";
+    if (kanji) return m2 === 0 ? `${h}時` : m2 === 30 && han ? `${h}時半` : `${h}時${m2}分`;
+    return timeText(t2, { han });
+  }
+  var clockMatch_default = {
+    id: "g1.clockMatch",
+    grade: 1,
+    instruction: null,
+    defaults: { tk: "30", pairs: 3, example: false },
+    levels: {
+      basic: { tk: "0", pairs: 3, example: true },
+      normal: { tk: "30", pairs: 3, example: true },
+      challenge: { tk: "30", pairs: 3, example: false }
+    },
+    generate(rng, p, ctx) {
+      const tk = TK_OK[p.tk] ? p.tk : "30", ok = TK_OK[tk], n = Number(p.pairs) === 4 ? 4 : 3;
+      const times = [];
+      for (let k = 0; times.length < n && k < 2000; k++) {
+        // なんじはん まで は おなじ 時の「4じ」「4じはん」を ならべて、みじかい はりを よく 見るように
+        const h = tk === "30" && times.length && rng.chance(0.4) ? Math.floor(rng.pick(times) / 60) : rng.int(1, 12);
+        const t2 = h * 60 + (tk === "30" ? (rng.chance(0.5) ? 30 : 0) : rng.int(0, 59));
+        if (ok(t2 % 60) && !times.includes(t2)) times.push(t2);
+      }
+      if (times.length < n) throw new Error("時こくが えらべない");
+      const kanji = p.moji === "kanji";
+      const labels = rng.shuffle(times.map((_, i) => i));
+      if (labels.every((v, i) => v === i)) labels.push(labels.shift());
+      const R = 16, RH = 2 * R + 3, cx = 13 + R, lDotX = cx + R + 5, cardX = CM_W - 50, rDotX = cardX - 6;
+      const items = [], lDot = [], rDot = [];
+      times.forEach((t2, i) => {
+        const cy = 2 + i * RH + RH / 2;
+        items.push(...clockItems(cx, cy, R, t2).map((it) => ({ ...it, g: `c${i}` })));
+        items.push({ t: "dot", x: lDotX, y: cy, r: 1.9 });
+        lDot.push([lDotX, cy]);
+      });
+      labels.forEach((ti, j) => {
+        const cy = 2 + j * RH + RH / 2, s = clockLabel(times[ti], tk, kanji);
+        items.push({ ...frame(cardX, cy - 10, 46, 20, 4), w: 0.5 });
+        items.push({ t: "text", x: cardX + 23, y: cy + 2.6, s, size: [...s].length > 6 ? 6.4 : 7.2, halo: false });
+        items.push({ t: "dot", x: rDotX, y: cy, r: 1.9 });
+        rDot.push([rDotX, cy]);
+      });
+      const line = (i, c) => ({ t: "line", x1: lDot[i][0], y1: lDot[i][1], x2: rDot[labels.indexOf(i)][0], y2: rDot[labels.indexOf(i)][1], w: 1, color: c, lead: true, cap: "round", from: i, to: labels.indexOf(i) });
+      const example = !!p.example;
+      if (example) items.push({ t: "text", x: 6, y: 2 + RH / 2 + 1.6, s: "れい", size: 4.4, color: "#888", halo: false });
+      const fig = (extra) => ({ type: "draw", w: CM_W + 4, h: n * RH + 3, items: [...items, ...extra], scaleK: n === 3 ? 0.84 : 1 });
+      return {
+        key: `cmt:${times.join(",")}`,
+        softKey: `cmt:${[...times].sort((a, b) => a - b).join(",")}`,
+        text: "とけいと よみかたを せんで むすびましょう。",
+        figure: fig(example ? [line(0, "#c2c2c2")] : []),
+        answer: { display: "", figure: fig(times.map((_, i) => line(i, "#d7263d"))) },
+        workspace: { type: "none" },
+        meta: { times, labels, tk, kanji }
+      };
+    },
+    verify(pr, p) {
+      const { times, labels, tk, kanji } = pr.meta;
+      if (new Set(times).size !== times.length) return "おなじ 時こくが ある";
+      for (const t2 of times) if (!TK_OK[tk](t2 % 60)) return "時こくの むずかしさが ちがう";
+      const items = pr.answer.figure.items;
+      for (let i = 0; i < times.length; i++) {
+        const r = readClock({ items: items.filter((it) => it.g === `c${i}`) });
+        const m2 = Math.round(r.minute / 6) % 60, h = Math.floor((r.hour + 0.01) / 30) || 12;
+        if (h * 60 + m2 !== times[i]) return `はりと時こくが合わない ${h}:${m2}`;
+      }
+      const cards = items.filter((it) => it.t === "text" && it.s !== "れい" && !it.g);
+      const lines = items.filter((it) => it.t === "line" && it.color === "#d7263d");
+      if (lines.length !== times.length) return "線の数が違う";
+      for (const ln of lines) if (cards[ln.to].s !== clockLabel(times[ln.from], tk, kanji)) return "ちがう カードに むすんでいる";
+      return null;
+    }
+  };
+  var CM_W = 150;
 
   // src/generators/g1/_solid1.js
   var f6 = (v) => (Math.round(v * 100) / 100).toString();
@@ -26841,6 +26958,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     // 8 なんじ なんじはん
     clockMinute_default,
     clockDrawMinute_default,
+    clockMatch_default,
     // 16 なんじ なんぷん
     solidSort_default,
     solidTrace_default,
@@ -33477,7 +33595,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         if (!pr) throw new Error(`「${topic.label}」で重複しない問題がこれ以上作れません。問題数を減らしてください。`);
         used.add(pr.key);
         if (pr.softKey) usedSoft.add(`${gen2.id}:${pr.softKey}`);
-        out.push({ ...pr, topic: topic.label, generator: gen2.id, points });
+        out.push({ ...(p.pics === "on" ? picify(pr, seed) : pr), topic: topic.label, generator: gen2.id, points });
       }
       return { instruction: (gen2.instructionFor ? gen2.instructionFor(p) : gen2.instruction) || null, topic: topic.label, problems: out, pointsEach: points, group: curGroup };
     };
@@ -34056,7 +34174,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         out += `<line x1="${(cx + r1 * Math.sin(a)).toFixed(2)}" y1="${(cy - r1 * Math.cos(a)).toFixed(2)}" x2="${(cx + R5 * Math.sin(a)).toFixed(2)}" y2="${(cy - R5 * Math.cos(a)).toFixed(2)}" stroke="#000" stroke-width="${big ? 0.45 : 0.22}"/>`;
       }
       for (let n = 1; n <= 12; n++) {
-        const a = n / 12 * 2 * Math.PI, r = R5 - 5.6;
+        const a = n / 12 * 2 * Math.PI, r = R5 - 5;
         out += `<text x="${(cx + r * Math.sin(a)).toFixed(2)}" y="${(cy - r * Math.cos(a) + 1.4).toFixed(2)}" font-size="3.9" text-anchor="middle">${n}</text>`;
       }
       const h = Math.floor(c.t / 60) % 12, m2 = c.t % 60;
@@ -34067,7 +34185,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         const P3 = (sl, kk) => `${(cx + ux * sl + nx * kk).toFixed(2)},${(cy + uy * sl + ny * kk).toFixed(2)}`;
         return `<polygon points="${P3(-0.6, wHalf)} ${P3(len3 - tip, wHalf)} ${P3(len3, 0)} ${P3(len3 - tip, -wHalf)} ${P3(-0.6, -wHalf)}" fill="#000" stroke="#000" stroke-width="0.15" stroke-linejoin="round"/>`;
       };
-      out += needle(ah, R5 * 0.55, 0.75) + needle(am, R5 - 3, 0.38);
+      // 針は 数字の 手前で とめる(数字と かさならないように)
+      const lenM = R5 - 5 - 3.9 * 0.66 - 0.4;
+      out += needle(ah, lenM * 0.72, 0.75) + needle(am, lenM, 0.38);
       out += `<circle cx="${cx}" cy="${cy}" r="1.1" fill="#000"/>`;
       if (captions[i]) out += `<text x="${cx}" y="${padT + R5 * 2 + 6.5}" font-size="3.8" text-anchor="middle">${captions[i]}</text>`;
     });
@@ -34352,7 +34472,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   }
   var unMarks = (s) => s.replace(/\ue00b([^\ue00c]*)\ue00c/g, '<i class="var">$1</i>').replace(/\ue000/g, '<sub class="sb">').replace(/\ue001/g, "</sub>").replace(/\ue002/g, "<sup>").replace(/\ue003/g, "</sup>").replace(/\ue004/g, '<span class="vec">').replace(/\ue005/g, "</span>").replace(/\ue006/g, '<span class="ovl">').replace(/\ue007/g, "</span>").replace(/\ue00d/g, '<span class="rdot">').replace(/\ue00e/g, "</span>");
   function inlineMath(text) {
-    return unMarks(sqrtHtml(mathMarks(esc2(text)).replace(/\u0001([^\u0002]*)\u0002([^\u0003]*)\u0003/g, "<ruby>$1<rt>$2</rt></ruby>").replace(/\[\[sys:(.*?):sys\]\]/g, (_, body) => `<span class="sys"><span class="brace">{</span><span class="eqs">${body.split("||").map((e) => `<span>${e}</span>`).join("")}</span></span>`).replace(/\[\[br\]\]/g, "<br>").replace(/\[\[nw\]\]/g, '<span class="nw">').replace(/\[\[\/nw\]\]/g, "</span>").replace(/\[\[(a|p|t)box:([\d.]+)\]\]/g, (_, k, w2) => `<span class="abox ans${k === "t" ? " tall" : ""}" style="width:${w2}mm"></span>`).replace(/\[\[fbox(1?)\]\]/g, (_, one) => `<span class="fbox"><span class="fb-n${one ? " gray" : ""}">${one ? "1" : ""}</span><span class="fb-bar${one ? " gray" : ""}"></span><span class="fb-d"></span></span>`).replace(/\[\[mbox\]\]/g, '<span class="abox ans" style="width:12mm"></span><span class="fbox"><span class="fb-n"></span><span class="fb-bar"></span><span class="fb-d"></span></span>').replace(/\[\[aline\]\]/g, '<span class="aline"></span>').replace(/\[\[box\]\]/g, '<span class="abox"></span>').replace(/\[\[v:([a-zA-Z])\]\]/g, '<i class="var">$1</i>').replace(/\[\[m:(\d+):(\d+)\/(\d+)\]\]/g, (_, w2, n, d) => `<span class="mixed"><span class="whole">${w2}</span><span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span></span>`).replace(/\[\[f:([^\]\/]+)\/([^\]]+)\]\]/g, (_, n, d) => `<span class="frac"><span class="num">${italVars(n)}</span><span class="den">${italVars(d)}</span></span>`)));
+    return unMarks(sqrtHtml(mathMarks(esc2(text)).replace(/\u0001([^\u0002]*)\u0002([^\u0003]*)\u0003/g, "<ruby>$1<rt>$2</rt></ruby>").replace(/\[\[sys:(.*?):sys\]\]/g, (_, body) => `<span class="sys"><span class="brace">{</span><span class="eqs">${body.split("||").map((e) => `<span>${e}</span>`).join("")}</span></span>`).replace(/\[\[br\]\]/g, "<br>").replace(/\[\[pic:(\d+):(\w+)\]\]/g, (_, n, ic) => picHtml(n, ic)).replace(/\[\[nw\]\]/g, '<span class="nw">').replace(/\[\[\/nw\]\]/g, "</span>").replace(/\[\[(a|p|t)box:([\d.]+)\]\]/g, (_, k, w2) => `<span class="abox ans${k === "t" ? " tall" : ""}" style="width:${w2}mm"></span>`).replace(/\[\[fbox(1?)\]\]/g, (_, one) => `<span class="fbox"><span class="fb-n${one ? " gray" : ""}">${one ? "1" : ""}</span><span class="fb-bar${one ? " gray" : ""}"></span><span class="fb-d"></span></span>`).replace(/\[\[mbox\]\]/g, '<span class="abox ans" style="width:12mm"></span><span class="fbox"><span class="fb-n"></span><span class="fb-bar"></span><span class="fb-d"></span></span>').replace(/\[\[aline\]\]/g, '<span class="aline"></span>').replace(/\[\[box\]\]/g, '<span class="abox"></span>').replace(/\[\[v:([a-zA-Z])\]\]/g, '<i class="var">$1</i>').replace(/\[\[m:(\d+):(\d+)\/(\d+)\]\]/g, (_, w2, n, d) => `<span class="mixed"><span class="whole">${w2}</span><span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span></span>`).replace(/\[\[f:([^\]\/]+)\/([^\]]+)\]\]/g, (_, n, d) => `<span class="frac"><span class="num">${italVars(n)}</span><span class="den">${italVars(d)}</span></span>`)));
   }
   // √ の中に √ があってもよいように、内側から順に
   var sqrtHtml = (s) => {
@@ -35118,7 +35238,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           };
           const wOf = (txt, raw) => {
             let w = 9;
-            const rest = (raw ? txt : uniW(txt)).replace(/\[\[(?:a|p|t)box:([\d.]+)\]\]/g, (m, x) => (w += Number(x) + 3.5, "")).replace(/\[\[fbox1?\]\]/g, () => (w += 16, "")).replace(/\[\[mbox\]\]/g, () => (w += 30, "")).replace(/\[\[aline\]\]/g, () => (w += 77, "")).replace(/\[\[[fm]:[^\]]*\]\]/g, () => (w += 7, "")).replace(/\[\[v:[a-zA-Z]\]\]/g, "x").replace(/\[\[br\]\]/g, "");
+            const rest = (raw ? txt : uniW(txt)).replace(/\[\[(?:a|p|t)box:([\d.]+)\]\]/g, (m, x) => (w += Number(x) + 3.5, "")).replace(/\[\[fbox1?\]\]/g, () => (w += 16, "")).replace(/\[\[mbox\]\]/g, () => (w += 30, "")).replace(/\[\[aline\]\]/g, () => (w += 77, "")).replace(/\[\[[fm]:[^\]]*\]\]/g, () => (w += 7, "")).replace(/\[\[v:[a-zA-Z]\]\]/g, "x").replace(/\[\[br\]\]/g, "").replace(/\[\[pic:(\d+):\w+\]\]/g, (m, n) => (w += Math.min(5, Number(n)) * 4.7 + 1, ""));
             const jh = sheet.grade >= 7;
             for (const ch of plainAns(rest)) w += ch.charCodeAt(0) < 8192 ? big ? 5.4 : jh ? 3.3 : 4.1 : big ? 8.6 : jh ? 5.4 : 6.5;
             return w + 4;
@@ -35219,9 +35339,11 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   function fitKeys(page) {
     for (const kv of page.querySelectorAll(".kbox > .key > .kv")) {
       const box = kv.parentElement.parentElement.firstElementChild;
-      const bw2 = box.getBoundingClientRect().width - 4, bh = box.getBoundingClientRect().height;
+      // 答えの 線(aline)は 右が あいていれば 問題の わくの はしまで つかってよい
+      const li = box.classList.contains("aline") && box.closest("li");
+      const bw2 = li ? Math.max(box.getBoundingClientRect().width, li.getBoundingClientRect().right - box.getBoundingClientRect().left - 2 * 4) - 4 : box.getBoundingClientRect().width - 4, bh = box.getBoundingClientRect().height;
       let k = 1;
-      for (let i = 0; i < 12 && kv.getBoundingClientRect().width > bw2 && k > 0.5; i++) {
+      for (let i = 0; i < 20 && kv.getBoundingClientRect().width > bw2 && k > (li ? 0.38 : 0.5); i++) {
         k -= 0.05;
         kv.style.fontSize = `${k}em`;
       }
@@ -35707,6 +35829,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           {
             label: "たしざん(10まで)",
             generator: "g1.add10",
+            options: [PIC_OPT],
             kinds: [
               "drill",
               "test"
@@ -35752,6 +35875,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           {
             label: "ひきざん(10まで)",
             generator: "g1.sub10",
+            options: [PIC_OPT],
             kinds: [
               "drill",
               "test"
@@ -35867,7 +35991,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         ],
         topics: [
           { label: "とけいを よむ", generator: "g1.clockHour", kinds: ["figure", "test"], options: CLOCK_HOUR_OPTS },
-          { label: "はりを かく", generator: "g1.clockDraw", kinds: ["figure", "test"], options: CLOCK_OPTS }
+          { label: "はりを かく", generator: "g1.clockDraw", kinds: ["figure", "test"], options: CLOCK_OPTS },
+          { label: "せんで むすぶ", generator: "g1.clockMatch", kinds: ["figure", "test"], options: CLOCK_MATCH_OPTS }
         ],
         prerequisites: "細案 第1時(1時間): 1日の生活と結びつけて なんじ・なんじはん を読み、模型時計で指示された時刻を表す(短い針の読み取り・動き方に重点)。時計は1年用に描きなおした(はりを片方だけ描く問題があるため。3年の svgClocks は使っていない)。時計の上の言葉(おきた とき・きゅうしょく など)は教科書にない場面。きほん=なんじ、ふつう=なんじ と なんじはん、チャレンジ=なんじはん を多く・みじかい はりを かく",
         testPlan: { figure: [4, 25] }
@@ -35886,7 +36011,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           "簡単な3つの数の加減計算"
         ],
         topics: [
-          { label: "3つの かずの けいさん", generator: "g1.three", kinds: ["drill", "test"] },
+          { label: "3つの かずの けいさん", generator: "g1.three", kinds: ["drill", "test"], options: [PIC_OPT] },
           { label: "3つの かずの ぶんしょうだい", generator: "g1.threeWord", kinds: ["word", "test"] }
         ],
         prerequisites: "細案 第1〜3時: ＋＋・－－・＋－・－＋ を1つの式に表して左から計算する。とちゅうの数も10まで(10より大きい数の単元の前なので)。チャレンジは 10＋4＋3 のような20までの数(くり上がり・くり下がりなし)と、4つの数の計算(第3時④)。文章題の場面はバスの のりおり など"
@@ -35932,7 +36057,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           "計算カードやゲームによる上記の加法計算の練習"
         ],
         topics: [
-          { label: "くり上がりの ある たしざん", generator: "g1.carryAdd", kinds: ["drill", "test"] },
+          { label: "くり上がりの ある たしざん", generator: "g1.carryAdd", kinds: ["drill", "test"], options: [PIC_OPT] },
           { label: "さくらんぼけいさん(たしざん)", generator: "g1.cherryAdd", kinds: ["figure", "test"] },
           { label: "たしざんの ぶんしょうだい", generator: "g1.carryAddWord", kinds: ["word", "test"] }
         ],
@@ -35977,7 +36102,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           "計算カードやゲームによる上記の減法計算の練習"
         ],
         topics: [
-          { label: "くり下がりの ある ひきざん", generator: "g1.borrowSub", kinds: ["drill", "test"] },
+          { label: "くり下がりの ある ひきざん", generator: "g1.borrowSub", kinds: ["drill", "test"], options: [PIC_OPT] },
           { label: "さくらんぼけいさん(ひきざん)", generator: "g1.cherrySub", kinds: ["figure", "test"] },
           { label: "けいさんぴらみっど", generator: "g1.pyramid", kinds: ["figure"] },
           { label: "ひきざんの ぶんしょうだい", generator: "g1.borrowSubWord", kinds: ["word", "test"] },
@@ -36055,7 +36180,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         ],
         topics: [
           { label: "とけいを よむ", generator: "g1.clockMinute", kinds: ["figure", "test"], options: CLOCK_READ_OPTS },
-          { label: "はりを かく", generator: "g1.clockDrawMinute", kinds: ["figure", "test"], options: CLOCK_OPTS }
+          { label: "はりを かく", generator: "g1.clockDrawMinute", kinds: ["figure", "test"], options: CLOCK_OPTS },
+          { label: "せんで むすぶ", generator: "g1.clockMatch", kinds: ["figure", "test"], options: CLOCK_MATCH_OPTS, levels: { basic: { tk: "0", pairs: 3, example: true }, normal: { tk: "5", pairs: 3, example: true }, challenge: { tk: "1", pairs: 3, example: false } } }
         ],
         prerequisites: "細案 第1〜2時: はじめは10分・5分きざみ、ながい はりを5とびで数えて読む。30ぷん・45ふん を基点にした読み方。きほん=5分きざみ、ふつう=1分きざみ、チャレンジ=みじかい はりが数の近くにあって まちがえやすい時こく(45〜59分・1〜10分)と、みじかい はりを かく問題。答えは「3じ25ふん」「9じ4ぷん」のように 数字＋ふん/ぷん(一の位が 2・5・7・9 なら ふん)。30分は「30ぷん」と書く(なんじはん とも読める)",
         testPlan: { figure: [4, 25] }
@@ -40785,6 +40911,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/25", t: "とけい:針と 数字が かさならないように(針を 数字の 手前で とめる)", g: 1, unit: "g1-16", sub: 1, kind: "figure" },
+    { d: "26/11/25", t: "とけい:とけいと よみかた(4じはん など)を せんで むすぶ プリントを 追加", g: 1, unit: "g1-08", sub: 3, kind: "figure" },
+    { d: "26/11/25", t: "たしざん・ひきざん:数の 下に 絵(りんご など)を 出せる 設定", g: 1, unit: "g1-03", sub: 1, kind: "drill", opts: { pics: "on" } },
     { d: "26/11/25", t: "計算・パズルに ピラミッド・市松・5つのマーク・時間の筆算・つるかめ算を 追加", g: 30, unit: "s30-07", sub: 1, kind: "figure" },
     { d: "26/11/25", t: "プリント画面:下に ページの ボタン(1・2・3)/スマホで ボタンを 1行に", tag: "プリント" },
     { d: "26/11/25", t: "とけい:なんじはんの 答えらん「□じ □」/時こく「15ふんごと」/2・3年の とけいも 細い はりに", g: 1, unit: "g1-08", sub: 1, kind: "figure", opts: { afmt: "jifun" } },

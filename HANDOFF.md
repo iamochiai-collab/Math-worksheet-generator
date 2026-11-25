@@ -109,3 +109,8 @@ node tools/test/render.js build/test.html 単元id 種類 難易度 問題数 �
   - 計算・パズル:puzzle/part2.js に pz.pyramid(ピラミッド)・pz.ichimatsu(市松)・pz.marks(5つのマーク)・pz.timeCalc(時間の筆算)・pz.tsurukame(つるかめ算)。どれも 答えが 1つに きまる ものだけ(countFill/digHoles)。puzzleStage.units に 5つ たした(s30-07〜11)。
   - 「→」と 答えの 四角は、さいしょの 四角だけ くっつける(四角が いくつも あるとき 折りかえせるように)。.item > .ws-lines は 行いっぱい。
   - balanceTail:さいごのページが あいているとき、前のページの 大問の うしろの 問題を「(つづき)」で うつす/前のページに 1問だけ のこった 大問を まるごと うつす(差が へるときだけ)。
+- 11/25 よる:
+  - たしざん・ひきざん「数の 下の 絵」(PIC_OPT、key pics。auto=なし/on=あり):make3 で picify(式の 左の 数を [[pic:N:icon]] に。20より 大きい 数が あれば しない)。picHtml は 数の 下に 小さい 絵を 5こずつ ならべる(ILLUST の 絵。.pic-<名前> の background-image。印刷は print-color-adjust:exact)。g1.add10・g1.sub10・g1.three・g1.carryAdd・g1.borrowSub に options。
+  - とけい「せんで むすぶ」(g1.clockMatch、template.html の clockDrawMinute の すぐ下):左に とけい(clockItems、g:"c0"…)、右に よみかたの カード。★1・★2 は 1つめの とけいに うすい「れい」の 線(p.example)。答えは 赤い 線(from=とけい, to=カード)。verify は 針を 読んで 時こくと カードを たしかめる。設定 CLOCK_MATCH_OPTS(時こく tk・くみの数 pairs 3/4・字 moji ひらがな/漢字)。g1-08 は ★1 ちょうど/★2・★3 なんじはん まで、g1-16 は ★1 ちょうど/★2 5ふんごと/★3 1ぷんごと(topic.levels)。3くみは scaleK 0.84 で 1ページ 2問。特別支援 s24-12・測定 s29-04 にも from で 足した。お金の 絵の プリントは 先生の いけんで つくらない。
+  - とけいの 針が 数字に かさなっていた → 針を 数字の 手前で とめる(clockItems:numR = R-5.2、長い針 = numR - 字の大きさ×0.66 - 0.4、短い針は その 0.72。svgClocks・ようじの clock も おなじ 考え)。たしかめ:scratchpad の clockov.js(針の 線の 上の 点が 数字の はこに 入らないか)。
+  - ついでに:数C 放物線の F(焦点が マイナスの とき 左に)/ます目の 答えメモの はば(width:auto)/答えの 線の 字は 問題の はしまで つかい、0.38まで 小さく/直方体の ちょうてんの 名前を 長さの 字から よける。

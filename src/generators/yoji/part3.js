@@ -119,11 +119,13 @@
     }
     for (let k = 1; k <= 12; k++) {
       const a = k * Math.PI / 6;
-      items.push(txt(cx + (R - 7) * Math.sin(a), cy - (R - 7) * Math.cos(a) + 2, k, 5.4));
+      items.push(txt(cx + (R - 5.6) * Math.sin(a), cy - (R - 5.6) * Math.cos(a) + 2, k, 5.4));
     }
     const ha = (h % 12 + m / 60) * Math.PI / 6, ma = m * Math.PI / 30;
-    items.push({ t: "line", x1: cx, y1: cy, x2: cx + R * 0.5 * Math.sin(ha), y2: cy - R * 0.5 * Math.cos(ha), w: 2.2, lead: true, cap: "round", hand: "h" });
-    items.push({ t: "line", x1: cx, y1: cy, x2: cx + R * 0.8 * Math.sin(ma), y2: cy - R * 0.8 * Math.cos(ma), w: 1.2, lead: true, cap: "round", hand: "m" });
+    // 針は 数字の 手前で とめる(数字と かさならないように)
+    const lm = R - 5.6 - 5.4 * 0.66 - 1, lh = lm * 0.72;
+    items.push({ t: "line", x1: cx, y1: cy, x2: cx + lh * Math.sin(ha), y2: cy - lh * Math.cos(ha), w: 2.2, lead: true, cap: "round", hand: "h" });
+    items.push({ t: "line", x1: cx, y1: cy, x2: cx + lm * Math.sin(ma), y2: cy - lm * Math.cos(ma), w: 1.2, lead: true, cap: "round", hand: "m" });
     items.push({ t: "circle", cx, cy, r: 1.3, w: 0, fill: "black", lead: true });
     return items;
   }
