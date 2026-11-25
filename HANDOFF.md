@@ -122,3 +122,4 @@ node tools/test/render.js build/test.html 単元id 種類 難易度 問題数 �
   - (17:37)まとめて作る に 出し方「画面に 出す」(bOut=view、さいしょから えらばれている)。print と おなじ ように #preview に ならべ、window.print() は せず、dialog を とじて buildPager。国語プリントの「画面に 出す」と おなじ。
   - (17:41)ページボタン:りょうはしに ‹ ›(.pg-arr、nav._cur から ±1)。ページの 数字が 入りきらない(または 12まい より 多い)ときは .compact:数字ボタンを 出さず、いまの なかまの .pg-cap に「3/10」(.pg-cnt)、.on で すべる 板。
   - (18:14)おしらせ ポップアップ(#noticeDlg、NOTICE={id:"fav-2611", until:"2026-12-09T23:59:59+09:00"}):ホームを ひらいて 0.7びょう あとに 出す。「とじる」は sessionStorage(この タブの あいだ 出さない)、「今後 表示しない」は store "notice:fav-2611"=hide。navigator.webdriver(テスト)の ときは 出さない。?notice=1 で いつでも 出せる。画像は assets/ui/how_fav1〜3.webp(scratchpad の probe/favslides.js で スマホ画面から つくった)。3まいを 3.5びょうごとに じどうで めくる・‹ ›・点・スワイプ。つぎの おしらせは NOTICE の id と until と 中身を かえれば よい。
+  - (18:21)おしらせは「ご要望に合わせて！」コーナー(.nt-badge)。右上に キャラ(chara-idea、ときどき はねる)と ふきだし「つかってみてね！」。
