@@ -25026,11 +25026,16 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   var minuteDeg = (t2) => t2 % 60 * 6;
   // 針:小学校のプリントのような 細い まっすぐな針(先だけ少しとがらせる)。うしろに出っぱりを作らない(読みまちがえないように)
   function hand(cx, cy, deg2, len3, wHalf, tag) {
+    // 根もとが 太く、先へ いくほど 細い 針(見本の プリントのように)。点は 5つ(readClock が つかう)
     const u2 = at(0, 0, deg2, 1), n = [-u2[1], u2[0]];
-    const tail = 0.6, tip = Math.min(1.4, wHalf * 2.2);
+    const tail = 0.6, tip = Math.min(len3 * 0.3, wHalf * 5);
     const P3 = (s, k) => [cx + u2[0] * s + n[0] * k, cy + u2[1] * s + n[1] * k];
-    return { t: "poly", pts: [P3(-tail, wHalf), P3(len3 - tip, wHalf), P3(len3, 0), P3(len3 - tip, -wHalf), P3(-tail, -wHalf)], w: 0.15, fill: "black", lead: true, tag };
+    const col = CLOCK_COL.on ? (tag === "hour" ? CLOCK_COL.hour : CLOCK_COL.minute) : "black";
+    return { t: "poly", pts: [P3(-tail, wHalf), P3(len3 - tip, wHalf * 0.55), P3(len3, 0), P3(len3 - tip, -wHalf * 0.55), P3(-tail, -wHalf)], w: 0.15, fill: col, ...(CLOCK_COL.on ? { color: col } : {}), lead: true, tag };
   }
+  // 針の 色:みじかい はり=あか、ながい はり=あお(設定「はりの 色」で くろにも できる)。生成器が clockColor(p) で きりかえる
+  var CLOCK_COL = { on: true, hour: "#d93b2b", minute: "#2f7fd6" };
+  var clockColor = (p) => (CLOCK_COL.on = !(p && p.hcol === "bw"));
   // aux:ほじょの数字(時計の外がわ)。"5" … 5ふんごと(5〜55)、"1" … 1ぷんごと(1〜59。5の倍数は太く)
   // "near" … 5ふんごと(5〜55)と、長いはりの ある ところの 1ぷんの数字だけ(れい:20と25のあいだなら 21〜24)。時計が 小さくて すむので 6問 入る
   function clockItems(cx, cy, R5, t2, { hour = true, minute = true, aux = "none" } = {}) {
@@ -25054,15 +25059,18 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         items.push({ t: "line", x1, y1, x2, y2, w: 0.2, color: "#888", aux: true });
       }
     }
+    // ふちは 太く、5ふんの 目もりは 太く 長く(見本の プリントのように)
+    items[0].w = R5 >= 16 ? 1.2 : 0.9;
+    const bigL = R5 * 0.12, smL = R5 * 0.06;
     for (let k = 0; k < 60; k++) {
       const big = k % 5 === 0;
-      const [x1, y1] = at(cx, cy, k * 6, R5 - (big ? 2.4 : 1.2)), [x2, y2] = at(cx, cy, k * 6, R5);
-      items.push({ t: "line", x1, y1, x2, y2, w: big ? 0.5 : 0.22, lead: true });
+      const [x1, y1] = at(cx, cy, k * 6, R5 - 0.4 - (big ? bigL : smL)), [x2, y2] = at(cx, cy, k * 6, R5 - 0.2);
+      items.push({ t: "line", x1, y1, x2, y2, w: big ? (R5 >= 16 ? 0.75 : 0.55) : 0.28, lead: true });
     }
-    // 数字は 目もりの すぐ 内がわ。針は 数字の 手前で とめる(針と 数字が かさならないように)
-    const fs = R5 >= 16 ? 4 : 3, numR = R5 - (R5 >= 16 ? 5.2 : 4.1), lenM = numR - fs * 0.66 - 0.4;
-    if (hour) items.push(hand(cx, cy, hourDeg(t2), lenM * 0.72, R5 >= 16 ? 0.75 : 0.55, "hour"));
-    if (minute) items.push(hand(cx, cy, minuteDeg(t2), lenM, R5 >= 16 ? 0.38 : 0.3, "minute"));
+    // 数字は 小さめで 目もりの すぐ 内がわ。ながい はりは 数字の 手前まで のばす(かさならない)
+    const fs = R5 >= 16 ? Math.min(4, Math.max(3.2, R5 * 0.16)) : 2.7, numR = R5 - 0.4 - bigL - 0.5 - fs * 0.5, lenM = numR - fs * 0.62 - 0.3;
+    if (hour) items.push(hand(cx, cy, hourDeg(t2), lenM * 0.68, R5 >= 16 ? 1.05 : 0.8, "hour"));
+    if (minute) items.push(hand(cx, cy, minuteDeg(t2), lenM, R5 >= 16 ? 0.75 : 0.6, "minute"));
     for (let n = 1; n <= 12; n++) {
       const [x, y] = at(cx, cy, n * 30, numR);
       items.push({ t: "text", x, y: y + fs * 0.36, s: String(n), size: fs });
@@ -25120,7 +25128,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     { key: "tk", label: "時こく", choices: [["auto", "★に合わせる"], ["0", "ちょうど(6じ・6じ00ぷん)"], ["30", "なんじはん まで"], ["15", "15ふんごと(00・15・30・45ふん)"], ["5", "5ふんごと"], ["1", "1ぷんごと"], ["tricky", "まちがえやすい(○じ50ぷんすぎ など)"]] },
     { key: "aux", label: "ほじょの 数字", choices: [["auto", "なし"], ["5", "5ふんごと(5・10…55)"], ["near", "1ぷんごと(はりの ちかくだけ・6問まで できる)"], ["1", "1ぷんごと(1〜59 ぜんぶ・2問まで)"]] },
     { key: "scene", label: "場面(おきた とき など)", choices: [["auto", "あり(絵と ことば)"], ["off", "なし(時計だけ)"]] },
-    { key: "per", label: "1ページの問題数", num: true, choices: [["auto", "おまかせ"], ["2", "2問(大きく)"], ["4", "4問"], ["6", "6問(小さく)"]] }
+    { key: "per", label: "1ページの問題数", num: true, choices: [["auto", "おまかせ"], ["2", "2問(大きく)"], ["4", "4問"], ["6", "6問(小さく)"]] },
+    { key: "hcol", label: "はりの 色", choices: [["auto", "いろつき(みじかい=あか・ながい=あお)"], ["bw", "くろ"]] }
   ];
   // 「なんじなんぷん」を よむ:答えの らんに「じ・ふん」「時・分」を 先に 書いておける
   var CLOCK_READ_OPTS = [...CLOCK_OPTS, { key: "afmt", label: "答えの らん", choices: [["auto", "□ だけ"], ["jifun", "□じ □ふん"], ["kanji", "□時 □分"]] }];
@@ -25190,6 +25199,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       // なんじはん を多く(みじかい はりが 数と数の あいだ)
     },
     generate(rng, p) {
+      clockColor(p);
       const wantHalf = rng.chance(p.half);
       const { scene, t: t2 } = pickSceneTime(rng, tkFilter(rng, p, (t3) => t3 % 60 === (wantHalf ? 30 : 0)));
       const L = clockLayout(p), sc = sceneOn(p) ? scene.text : null;
@@ -25240,6 +25250,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       challenge: { step: 1, tricky: false }
     },
     generate(rng, p) {
+      clockColor(p);
       const odd = p.step === 1 && rng.chance(0.7);
       const ok3 = (t3) => {
         const m2 = t3 % 60;
@@ -25297,6 +25308,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       challenge: { mins: [0, 30], step: 30, hand: "hour" }
     },
     generate(rng, p) {
+      clockColor(p);
       const ok3 = (t3) => t3 % p.step === 0 && (p.mins === null || p.mins.includes(t3 % 60));
       const { t: t2 } = pickSceneTime(rng, tkFilter(rng, p, ok3));
       const show4 = p.hand === "minute" ? { hour: true, minute: false } : { hour: false, minute: true };
@@ -25347,7 +25359,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   var CLOCK_MATCH_OPTS = [
     CLOCK_OPTS[0],
     { key: "pairs", label: "1問の くみの 数", num: true, choices: [["auto", "★に合わせる"], ["3", "3つ"], ["4", "4つ"]] },
-    { key: "moji", label: "よみかたの 字", choices: [["auto", "ひらがな(4じはん)"], ["kanji", "漢字(4時半)"]] }
+    { key: "moji", label: "よみかたの 字", choices: [["auto", "ひらがな(4じはん)"], ["kanji", "漢字(4時半)"]] },
+    CLOCK_OPTS[CLOCK_OPTS.length - 1]
   ];
   function clockLabel(t2, tk, kanji) {
     const h = Math.floor(t2 / 60), m2 = t2 % 60, han = tk === "0" || tk === "30";
@@ -25365,6 +25378,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       challenge: { tk: "30", pairs: 3, example: false }
     },
     generate(rng, p, ctx) {
+      clockColor(p);
       const tk = TK_OK[p.tk] ? p.tk : "30", ok = TK_OK[tk], n = Number(p.pairs) === 4 ? 4 : 3;
       const times = [];
       for (let k = 0; times.length < n && k < 2000; k++) {
@@ -52596,8 +52610,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       const ha = (h % 12 + m / 60) * Math.PI / 6, ma = m * Math.PI / 30;
       // 針は 数字の 手前で とめる(数字と かさならないように)
       const lm = R - 5.6 - 5.4 * 0.66 - 1, lh = lm * 0.72;
-      items.push({ t: "line", x1: cx, y1: cy, x2: cx + lh * Math.sin(ha), y2: cy - lh * Math.cos(ha), w: 2.2, lead: true, cap: "round", hand: "h" });
-      items.push({ t: "line", x1: cx, y1: cy, x2: cx + lm * Math.sin(ma), y2: cy - lm * Math.cos(ma), w: 1.2, lead: true, cap: "round", hand: "m" });
+      items.push({ t: "line", x1: cx, y1: cy, x2: cx + lh * Math.sin(ha), y2: cy - lh * Math.cos(ha), w: 2.2, color: "#d93b2b", lead: true, cap: "round", hand: "h" });
+      items.push({ t: "line", x1: cx, y1: cy, x2: cx + lm * Math.sin(ma), y2: cy - lm * Math.cos(ma), w: 1.2, color: "#2f7fd6", lead: true, cap: "round", hand: "m" });
       items.push({ t: "circle", cx, cy, r: 1.3, w: 0, fill: "black", lead: true });
       return items;
     }
@@ -53424,26 +53438,26 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     let out = "";
     clocks.forEach((c, i) => {
       const cx = 3 + R5 + i * (R5 * 2 + 6 + gap), cy = padT + R5;
-      out += `<circle cx="${cx}" cy="${cy}" r="${R5}" fill="#fff" stroke="#000" stroke-width="0.6"/>`;
+      out += `<circle cx="${cx}" cy="${cy}" r="${R5}" fill="#fff" stroke="#000" stroke-width="1.2"/>`;
       for (let k = 0; k < 60; k++) {
-        const a = k / 60 * 2 * Math.PI, big = k % 5 === 0, r1 = R5 - (big ? 2.2 : 1.1);
-        out += `<line x1="${(cx + r1 * Math.sin(a)).toFixed(2)}" y1="${(cy - r1 * Math.cos(a)).toFixed(2)}" x2="${(cx + R5 * Math.sin(a)).toFixed(2)}" y2="${(cy - R5 * Math.cos(a)).toFixed(2)}" stroke="#000" stroke-width="${big ? 0.45 : 0.22}"/>`;
+        const a = k / 60 * 2 * Math.PI, big = k % 5 === 0, r1 = R5 - 0.4 - (big ? 2.4 : 1.2), r2 = R5 - 0.2;
+        out += `<line x1="${(cx + r1 * Math.sin(a)).toFixed(2)}" y1="${(cy - r1 * Math.cos(a)).toFixed(2)}" x2="${(cx + r2 * Math.sin(a)).toFixed(2)}" y2="${(cy - r2 * Math.cos(a)).toFixed(2)}" stroke="#000" stroke-width="${big ? 0.75 : 0.28}"/>`;
       }
       for (let n = 1; n <= 12; n++) {
-        const a = n / 12 * 2 * Math.PI, r = R5 - 5;
-        out += `<text x="${(cx + r * Math.sin(a)).toFixed(2)}" y="${(cy - r * Math.cos(a) + 1.4).toFixed(2)}" font-size="3.9" text-anchor="middle">${n}</text>`;
+        const a = n / 12 * 2 * Math.PI, r = R5 - 0.4 - 2.4 - 0.5 - 1.6;
+        out += `<text x="${(cx + r * Math.sin(a)).toFixed(2)}" y="${(cy - r * Math.cos(a) + 1.15).toFixed(2)}" font-size="3.2" text-anchor="middle">${n}</text>`;
       }
       const h = Math.floor(c.t / 60) % 12, m2 = c.t % 60;
       const am = m2 / 60 * 2 * Math.PI, ah = (h + m2 / 60) / 12 * 2 * Math.PI;
       // 1年の とけいと 同じ、細い まっすぐな 針(先だけ とがらせる)
-      const needle = (ang, len3, wHalf) => {
-        const ux = Math.sin(ang), uy = -Math.cos(ang), nx = -uy, ny = ux, tip = Math.min(1.4, wHalf * 2.2);
+      const needle = (ang, len3, wHalf, col) => {
+        const ux = Math.sin(ang), uy = -Math.cos(ang), nx = -uy, ny = ux, tip = Math.min(len3 * 0.3, wHalf * 5);
         const P3 = (sl, kk) => `${(cx + ux * sl + nx * kk).toFixed(2)},${(cy + uy * sl + ny * kk).toFixed(2)}`;
-        return `<polygon points="${P3(-0.6, wHalf)} ${P3(len3 - tip, wHalf)} ${P3(len3, 0)} ${P3(len3 - tip, -wHalf)} ${P3(-0.6, -wHalf)}" fill="#000" stroke="#000" stroke-width="0.15" stroke-linejoin="round"/>`;
+        return `<polygon points="${P3(-0.6, wHalf)} ${P3(len3 - tip, wHalf * 0.55)} ${P3(len3, 0)} ${P3(len3 - tip, -wHalf * 0.55)} ${P3(-0.6, -wHalf)}" fill="${col}" stroke="${col}" stroke-width="0.15" stroke-linejoin="round"/>`;
       };
       // 針は 数字の 手前で とめる(数字と かさならないように)
-      const lenM = R5 - 5 - 3.9 * 0.66 - 0.4;
-      out += needle(ah, lenM * 0.72, 0.75) + needle(am, lenM, 0.38);
+      const lenM = R5 - 0.4 - 2.4 - 0.5 - 1.6 - 3.2 * 0.62 - 0.3;
+      out += needle(ah, lenM * 0.68, 1.05, CLOCK_COL.hour) + needle(am, lenM, 0.75, CLOCK_COL.minute);
       out += `<circle cx="${cx}" cy="${cy}" r="1.1" fill="#000"/>`;
       if (captions[i]) out += `<text x="${cx}" y="${padT + R5 * 2 + 6.5}" font-size="3.8" text-anchor="middle">${captions[i]}</text>`;
     });
@@ -60107,6 +60121,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/25", t: "とけいの 見た目を 新しく(ふちと 目もりを 太く・はりを 長く・みじかい はり=あか、ながい はり=あお。くろにも できる)", g: 1, unit: "g1-08", sub: 1, kind: "figure" },
     { d: "26/11/25", t: "とけい:針と 数字が かさならないように(針を 数字の 手前で とめる)", g: 1, unit: "g1-16", sub: 1, kind: "figure" },
     { d: "26/11/25", t: "とけい:とけいと よみかた(4じはん など)を せんで むすぶ プリントを 追加", g: 1, unit: "g1-08", sub: 3, kind: "figure" },
     { d: "26/11/25", t: "たしざん・ひきざん:数の 下に 絵(りんご など)を 出せる 設定", g: 1, unit: "g1-03", sub: 1, kind: "drill", opts: { pics: "on" } },
