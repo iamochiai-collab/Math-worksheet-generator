@@ -884,7 +884,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       <label><input type="radio" name="bAns" value="end"> さいごにまとめてつける</label>
     </fieldset>
     <fieldset class="batch-row"><legend>出し方</legend>
-      <label><input type="radio" name="bOut" value="print" checked> 印刷する(まとめて印刷の画面を開く)</label>
+      <label><input type="radio" name="bOut" value="view" checked> 画面に 出す(見てから 印刷・保存できる)</label>
+      <label><input type="radio" name="bOut" value="print"> 印刷する(まとめて印刷の画面を開く)</label>
       <label><input type="radio" name="bOut" value="pdf"> PDF(ぜんぶで 1つのファイル)</label>
       <label><input type="radio" name="bOut" value="pdfs"> PDF(1ページ 1ファイル・zip でまとめる)</label>
       <label><input type="radio" name="bOut" value="jpg"> JPG(1ページ 1まい・zip でまとめる)</label>
@@ -40577,7 +40578,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     document.body.appendChild(stage);
     const printPages = [], answerLater = [];
     let pdf = null, zip = null, pageNo = 0, title = "", files = [];
-    if (opt.out !== "print") {
+    if (opt.out !== "print" && opt.out !== "view") {
       loadLibs();
       if (opt.out === "pdf") pdf = new window.jspdf.jsPDF({ unit: "mm", format: "a4", orientation: "portrait", compress: true });
       else zip = new window.JSZip();
@@ -40667,7 +40668,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         probs.forEach((a, j) => setSheetNo(a, made + j + 1));
         if (ans[0]?.classList.contains("keyed")) ans.forEach((a, j) => setSheetNo(a, made + j + 1));
         made += probs.length;
-        if (opt.out === "print") {
+        if (opt.out === "print" || opt.out === "view") {
           printPages.push(...probs);
           if (opt.answers === "each") printPages.push(...ans);
           else answerLater.push(...ans);
@@ -40676,14 +40677,24 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           if (opt.answers === "each") for (const a of ans) await capture(a, true);
           else answerLater.push(...ans);
         }
-        prog(made, n + (answerLater.length && opt.out !== "print" ? 1 : 0), `${made} / ${n} ページ つくりました`);
+        prog(made, n + (answerLater.length && opt.out !== "print" && opt.out !== "view" ? 1 : 0), `${made} / ${n} ページ つくりました`);
         await sleep(0);
       }
-      if (opt.out === "print") {
+      if (opt.out === "print" || opt.out === "view") {
         el.preview.innerHTML = "";
         for (const a of [...printPages, ...answerLater]) el.preview.appendChild(a);
         fitPreview();
         document.title = `${title}_${n}ページ`;
+        if (opt.out === "view") {
+          // 画面に 出すだけ(国語プリントと おなじ)。見てから「印刷」ボタンや 保存が できる
+          buildPager();
+          el.print.disabled = false;
+          el.msg.textContent = "";
+          if (dlg.close) dlg.close(); else dlg.removeAttribute("open");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          const total = printPages.length + answerLater.length;
+          return batchCancel ? "とちゅうで やめました" : `できました(問題 ${made}ページ${opt.answers !== "none" ? `＋答え ${total - made}ページ` : ""})`;
+        }
         prog(1, 1, "印刷の画面を開きます");
         await sleep(300);
         window.print();
@@ -40932,6 +40943,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/25", t: "まとめて作る:「画面に 出す」を 追加(何ページも 作って、見てから 印刷・保存できる)" },
     { d: "26/11/25", t: "プリント画面の 下の ボタン:「もんだい」「こたえ」の 字を おしても その ページへ とぶように" },
     { d: "26/11/25", t: "とけいを 大きく(場面の 絵は 文の よこへ/せんで むすぶ は 上に とけい・下に カード)", g: 1, unit: "g1-16", sub: 1, kind: "figure" },
     { d: "26/11/25", t: "とけいの 見た目を 新しく(ふちと 目もりを 太く・はりを 長く・みじかい はりは 太く)", g: 1, unit: "g1-08", sub: 1, kind: "figure" },
