@@ -183,6 +183,24 @@ body[data-view="print"] .home { display: none; }
 .htab.on img { background: #fff; border-radius: 8px; padding: 2px; box-sizing: border-box; }
 .home-steps { background: #fff; border: 1.5px solid var(--tabc, #c94a3b); border-top: none; border-radius: 0 0 14px 14px; padding: 12px 16px 14px; }
 .home-steps .home-row { margin-top: 0; }
+/* ===== お気に入り ===== */
+.home-favs { margin-top: 12px; background: #fff; border: 1.5px solid #f0c94a; border-radius: 12px; padding: 8px 12px 10px; }
+.home-favs[hidden] { display: none; }
+.fv-head { display: flex; align-items: baseline; gap: 8px; font-weight: bold; color: #a07800; font-size: 13px; }
+.fv-head small { font-weight: normal; color: #a99a6a; font-size: 11px; }
+.fv-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; max-height: 92px; overflow-y: auto; }
+.fv-chip { position: relative; display: inline-flex; align-items: center; gap: 6px; max-width: 100%; font: inherit; font-size: 13px; padding: 5px 28px 5px 6px; border-radius: 999px; border: 1.5px solid #ecd98f; background: #fffbea; color: #333; cursor: pointer; text-align: left; }
+.fv-chip:hover { background: #fff3c4; }
+.fv-chip .nw-tag { font-size: 11px; }
+.fv-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.fv-kind { color: #777; font-size: 11px; white-space: nowrap; }
+.fv-x { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #a99a6a; font-size: 13px; line-height: 1; }
+.fv-x:hover { background: #f3e2a6; color: #6a5000; }
+.panel .fav-btn .fav-star { display: inline-block; margin-right: 3px; color: #d9a400; transition: transform .3s cubic-bezier(.34,1.8,.5,1); }
+.panel .fav-btn.on { background: #fff6cf; border-color: #d9a400; color: #6a5000; }
+.panel .fav-btn.on .fav-star { transform: scale(1.25) rotate(-12deg); }
+@media (max-width: 700px) { .fv-list { flex-wrap: nowrap; overflow-x: auto; max-height: none; padding-bottom: 2px; } .fv-chip { flex: none; max-width: 80vw; } }
+@media print { .home-favs, .fav-btn { display: none !important; } }
 /* ===== うごく UI ===== */
 /* えらんだ色が すっと 横に うごく(タブ・★) */
 .home-tabs, .home-levels { position: relative; }
@@ -202,8 +220,8 @@ body[data-view="print"] .home { display: none; }
 .stepper select.pop { animation: st-pop .35s cubic-bezier(.34,1.6,.5,1); }
 @keyframes st-pop { 0% { transform: scale(.82); } 100% { transform: scale(1); } }
 /* おすと ぷにっと へこんで はねる */
-.hg, .hl, .htab, .hd, .hds, .uk, .usb, .nw-row, .hn-btn, .st-btn, .xsite-a, .panel .buttons button, .btn-home, .hs-clear { transition: transform .22s cubic-bezier(.34,1.8,.5,1); }
-.hg:active, .hd:active, .hds:active, .uk:active, .usb:active, .nw-row:active, .hn-btn:active, .st-btn:active, .xsite-a:active, .panel .buttons button:active, .btn-home:active, .hs-clear:active { transform: scale(.9); transition-duration: .06s; }
+.hg, .hl, .htab, .hd, .hds, .uk, .usb, .nw-row, .fv-chip, .hn-btn, .st-btn, .xsite-a, .panel .buttons button, .btn-home, .hs-clear { transition: transform .22s cubic-bezier(.34,1.8,.5,1); }
+.hg:active, .hd:active, .hds:active, .uk:active, .usb:active, .nw-row:active, .fv-chip:active, .hn-btn:active, .st-btn:active, .xsite-a:active, .panel .buttons button:active, .btn-home:active, .hs-clear:active { transform: scale(.9); transition-duration: .06s; }
 .hl:active, .htab:active { transform: scale(.95); transition-duration: .06s; }
 .hg:hover, .uk:hover, .hd:hover { transform: translateY(-2px); }
 @media (prefers-reduced-motion: reduce) {
@@ -742,6 +760,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   <div class="home-search"><input type="search" id="homeQ" autocomplete="off" enterkeyhint="search" aria-label="単元・小単元をさがす"><button type="button" class="hs-clear" id="homeQClear" hidden>× けす</button><button type="button" class="hn-btn" id="homeNewsBtn" aria-expanded="false"><img src="{{UI:new}}" alt="">あたらしく<b id="homeNewsN"></b></button></div>
   </div>
   <div class="home-found" id="homeFound" hidden></div>
+  <div class="home-favs" id="homeFavs" hidden></div>
   <div class="home-tabs" id="homeTabs" role="tablist" aria-label="えらび方"></div>
   <button type="button" class="tk-banner" id="tkBanner" hidden></button>
   <div class="home-steps" id="homeSteps">
@@ -796,6 +815,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     <button type="button" id="btnMake">作成</button>
     <button type="button" id="btnRemake" class="secondary">作り直し</button>
     <button type="button" id="btnPrint" class="secondary">印刷</button>
+    <button type="button" id="btnFav" class="secondary fav-btn" aria-pressed="false" title="この設定を お気に入りに 入れる(この 端末に ほぞん)"><span class="fav-star">☆</span>お気に入り</button>
     <button type="button" id="btnBatch" class="secondary"><span class="lg">まとめて作る・保存</span><span class="sm">まとめて</span></button>
   </div>
   <div class="hint">同じシード番号・同じ設定なら同じプリントになります。「作り直し」は新しい番号で作ります。</div>
@@ -40447,6 +40467,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   };
   if (["key", "list"].includes(store.get("ansStyle"))) el.ansStyle.value = store.get("ansStyle");
   if (store.get("autoFit") === "0") el.autoFit.checked = false;
+  $("btnFav").addEventListener("click", favToggle);
+  $("panel").addEventListener("change", () => favSync());
   // 問題数の −/＋:となりの 数に うごかして、数字を ぴょこっと
   for (const b of document.querySelectorAll(".stepper .st-btn")) b.addEventListener("click", () => {
     const sel = el.count, i = sel.selectedIndex + Number(b.dataset.step);
@@ -40580,6 +40602,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/25", t: "お気に入り:プリント画面の「☆お気に入り」で 入れると、ホームから すぐ 作れる", tag: "ホーム" },
     { d: "26/11/24", t: "うごく UI:タブ・★が すっと うごく/問題数の −・＋/おすと ぷにっと", tag: "ホーム" },
     { d: "26/11/24", t: "とけい:答えの らんを「□じ □ふん」「□時 □分」にも できる", g: 1, unit: "g1-16", sub: 1, kind: "figure", opts: { afmt: "jifun" } },
     { d: "26/11/24", t: "ホームを 見やすく(ロゴ・3つの タブ・分野の 絵・右に キャラ)", domain: "測定" },
@@ -40691,6 +40714,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   });
   function renderHome() {
     renderNews();
+    renderFavs();
     const keep = ["news-open"].filter((c) => homeEl.classList.contains(c));
     homeEl.className = `home g${homeGrade}`;
     const stageMode = isStage(homeGrade);
@@ -40815,7 +40839,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     if (v === "home") reSeg();
     window.scrollTo(0, 0);
   }
-  function openPrint(unitId, kind, sub = 0, opts = null) {
+  function openPrint(unitId, kind, sub = 0, opts = null, count = null) {
     el.grade.value = String(homeGrade);
     refreshUnits();
     el.unit.value = unitId;
@@ -40836,11 +40860,62 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         el.count.value = String(v);
       }
     }
+    if (count != null && !el.count.disabled && [...el.count.options].some((o) => o.value === String(count))) el.count.value = String(count);
     el.level.value = homeLevel;
     el.seed.value = randomSeed();
     showView("print");
     render();
+    favSync();
     if (location.hash !== "#print") location.hash = "print";
+  }
+  // ===== お気に入り(この 端末の ブラウザに ほぞん。学年・単元・小単元・種類・★・問題数・設定) =====
+  var FAV_MAX = 30;
+  function favList() {
+    try {
+      const a = JSON.parse(store.get("favs") || "[]");
+      return Array.isArray(a) ? a.filter((f) => f && GRADES[f.g]?.units.some((u2) => u2.id === f.unit)) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+  var favSave = (a) => store.set("favs", JSON.stringify(a.slice(0, FAV_MAX)));
+  var favKey = (f) => [f.g, f.unit, f.sub || 0, f.kind, f.level].join("|");
+  var favCurrent = () => ({ g: Number(el.grade.value), unit: el.unit.value, sub: el.subWrap.hidden ? 0 : Number(el.subunit.value) || 0, kind: el.kind.value, level: el.level.value, count: el.count.value, opts: currentOpts() });
+  function favSync() {
+    const b = $("btnFav");
+    if (!b) return;
+    const on = favList().some((f) => favKey(f) === favKey(favCurrent()));
+    b.classList.toggle("on", on);
+    b.setAttribute("aria-pressed", String(on));
+    b.querySelector(".fav-star").textContent = on ? "★" : "☆";
+  }
+  function favToggle() {
+    const cur = favCurrent(), k = favKey(cur);
+    if (!cur.unit || !GRADES[cur.g]) return;
+    const a = favList(), i = a.findIndex((f) => favKey(f) === k);
+    if (i >= 0) a.splice(i, 1);
+    else a.unshift(cur);
+    favSave(a);
+    favSync();
+    el.msg.textContent = i >= 0 ? "お気に入りから はずしました。" : "お気に入りに 入れました(この 端末に ほぞん)。ホームの「お気に入り」から すぐ 作れます。";
+  }
+  function renderFavs() {
+    const box = $("homeFavs");
+    if (!box) return;
+    const a = favList();
+    box.hidden = !a.length;
+    if (!a.length) return void (box.innerHTML = "");
+    box.innerHTML = `<div class="fv-head"><span>★ お気に入り</span><small>この 端末に ほぞん しています</small></div><div class="fv-list">${a.map((f, i) => {
+      const u2 = GRADES[f.g].units.find((x) => x.id === f.unit), tp = f.sub ? u2.topics[f.sub - 1] : null;
+      const tag = isStage(f.g) ? gradeName(f.g).replace(/段階$/, "") : gradeName(f.g);
+      const name = `${u2.name}${tp ? ` › ${rubyBase(tp.label)}` : ""}`;
+      return `<button type="button" class="fv-chip" data-fi="${i}" data-g="${f.g}" data-unit="${f.unit}" data-kind="${f.kind}" data-sub="${f.sub || 0}" title="${esc2(`${gradeName(f.g)} › ${name}`)}"><span class="nw-tag g${f.g}">${esc2(tag)}</span><span class="fv-name">${esc2(name)}</span><span class="fv-kind">${esc2(KIND_SHORT[f.kind] || "")} ${LEVELS[f.level]?.label || ""}</span><span class="fv-x" data-fx="${i}" role="button" aria-label="お気に入りから はずす">×</span></button>`;
+    }).join("")}</div>`;
+  }
+  function goFav(f) {
+    homeGrade = f.g;
+    if (LEVELS[f.level]) homeLevel = f.level;
+    openPrint(f.unit, f.kind, f.sub || 0, f.opts || null, f.count);
   }
   // ===== 見本のポップアップ:「計算ドリル」や小単元の ボタンに カーソルを おくと、そのプリントの 1ページめを 小さく見せる =====
   var hovCache = new Map(), hovTimer = 0, hovBtn = null, hovPop = null, hovBox = null;
@@ -40902,7 +40977,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     const card = b.closest(".ucard");
     const uname = card?.querySelector(".uname")?.textContent || b.title || "";
     const sname = b.querySelector(".usub-name")?.textContent;
-    const kname = b.querySelector(".usub-kind")?.textContent || (b.classList.contains("nw-row") ? KIND_SHORT[b.dataset.kind] || "" : b.textContent);
+    const kname = b.querySelector(".usub-kind")?.textContent || (b.classList.contains("nw-row") || b.classList.contains("fv-chip") ? KIND_SHORT[b.dataset.kind] || "" : b.textContent);
     const w = pg2.w * HOV_K, h = pg2.h * HOV_K;
     hovPop.innerHTML = `<div class="hp-cap">${esc2(uname)}${sname ? ` › ${esc2(sname)}` : ""}(${esc2(kname)}・${LEVELS[homeLevel]?.label || ""})<small>見本(1ページめ${pg2.n > 1 ? ` / ぜんぶで ${pg2.n}ページ` : ""})。おすと 作れます。問題は 作るたびに かわります</small></div><div class="hp-page" style="width:${w}px;height:${h}px">${pg2.html}</div>`;
     hovPop.querySelector(".hp-page > .sheet").style.transform = `scale(${HOV_K})`;
@@ -40920,7 +40995,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   var canHover = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   homeEl.addEventListener("mouseover", (e) => {
     if (!canHover) return;
-    const b = e.target.closest(".uk, .usb, .nw-row[data-unit]");
+    const b = e.target.closest(".uk, .usb, .nw-row[data-unit], .fv-chip");
     if (b === hovBtn) return;
     hovHide();
     if (!b || !b.dataset.unit) return;
@@ -40934,6 +41009,19 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     const b = e.target.closest("button");
     if (b && b.dataset.tab) {
       goTab(b.dataset.tab);
+      return;
+    }
+    const fx = e.target.closest(".fv-x");
+    if (fx) {
+      const a = favList();
+      a.splice(Number(fx.dataset.fx), 1);
+      favSave(a);
+      renderFavs();
+      return;
+    }
+    if (b && b.dataset.fi !== undefined) {
+      const f = favList()[Number(b.dataset.fi)];
+      if (f) goFav(f);
       return;
     }
     if (b && b.id === "homeNewsBtn") {

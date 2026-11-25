@@ -99,3 +99,4 @@ node tools/test/render.js build/test.html 単元id 種類 難易度 問題数 �
   - 古い #tkBanner は hidden で のこしてある(テストの firstopen.js が click する)。
 - とけい「なんじなんぷんを よむ」(g1.clockMinute)の 設定に「答えの らん」(afmt: auto/jifun/kanji)。CLOCK_READ_OPTS。ansBox "□じ□ふん"/"□時□分"、answer.fills [時, 分(0は"00")]。なんじ・なんじはん(clockHour)には まだ ない。
 - うごく UI(11/24):segSlide(box) で .on の うしろに .seg-thumb を おいて すっと うごかす(homeLevels・homeTabs。box._seg に まえの 場所)。ホームに もどったとき・画面の 大きさが かわったときは reSeg()。問題数は .stepper(−/＋ ボタン → el.count の selectedIndex を うごかして change)。ボタンは :active で scale、もどりは はねる cubic-bezier。prefers-reduced-motion では うごかさない。
+- お気に入り(11/25):プリント画面の「☆お気に入り」(btnFav)で いまの 設定(学年・単元・小単元・種類・★・問題数・opts)を localStorage "favs"(30こまで)に。ホームの 帯の 下に #homeFavs(チップ。×で はずす。カーソルで 見本)。同じかは favKey(学年|単元|小単元|種類|★)。端末ごとの ほぞん(ほかの 端末には うつらない)。
