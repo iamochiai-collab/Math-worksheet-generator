@@ -58890,7 +58890,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       unitId: el.unit.value,
       kind: el.kind.value,
       level: el.level.value,
-      count: el.count.disabled ? null : Number(el.count.value),
+      count: el.count.disabled ? null : Number(el.count.selectedOptions[0]?.dataset.base || el.count.value),
       seed: Number(el.seed.value) || 1,
       from: el.fromWrap.hidden ? 0 : Number(el.from.value) || 0,
       topicNo: el.subWrap.hidden ? 0 : Number(el.subunit.value) || 0,
@@ -59027,6 +59027,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       if (sheet.filledCount && !el.count.disabled) {
         if (![...el.count.options].some((o) => Number(o.value) === sheet.filledCount)) {
           const o = new Option(`${sheet.filledCount}問(下が あいたので ふやした)`, String(sheet.filledCount));
+          // つぎに 作るときは もとの 数から ふやしなおす(★を かえると その数は 作れないことが あるため)
+          o.dataset.base = String(spec.count);
           const after = [...el.count.options].find((x) => Number(x.value) > sheet.filledCount);
           el.count.add(o, after || null);
         }
