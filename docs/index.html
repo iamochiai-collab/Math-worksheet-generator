@@ -330,8 +330,25 @@ button.nw-row:hover { background: #fff3c9; }
 .uwhy span::before { content: "内容:"; color: #888; }
 .usb mark, .uname mark, .uwhy mark, .udomain mark { background: #ffe58a; color: inherit; border-radius: 2px; padding: 0 1px; }
 .home.searching .home-units-head, .home.searching #homeUnits, .home.searching .home-cheer { display: none; }
-.home-units { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
-.ucard { background: #fff; border-radius: 10px; border: 1px solid #d5d7de; border-top: 4px solid var(--gc); padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; }
+.home-units { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+.ucard { background: #fff; border-radius: 10px; border: 1px solid #d5d7de; border-top: 4px solid var(--gc); padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; position: relative; overflow: hidden; }
+/* 単元カードの 見本(右下に かたむけた プリント+うすい 色の まる) */
+.ucard:has(.uthumb)::before { content: ""; position: absolute; right: -34px; bottom: -34px; width: 140px; height: 140px; border-radius: 50%; background: var(--gc); opacity: .09; pointer-events: none; }
+.ucard:has(.uthumb) { min-height: 168px; }
+.ucard > * { position: relative; z-index: 1; }
+.uthumb { position: absolute !important; z-index: 0 !important; right: 12px; bottom: -30px; width: 84px; height: 119px; background: #fff; overflow: hidden; border: 1px solid #d9dde6; border-radius: 2px; box-shadow: 0 3px 10px rgba(31,42,64,.18); transform: rotate(-5deg); transition: transform .25s cubic-bezier(.34,1.6,.5,1), opacity .3s; pointer-events: none; opacity: 0; }
+.uthumb.on { opacity: 1; }
+.ucard:hover .uthumb { transform: rotate(-2deg) translateY(-8px); }
+.uthumb-in { display: block; width: 210mm; transform: scale(0.1058); transform-origin: 0 0; }
+.uthumb-in .sheet { margin: 0 !important; box-shadow: none !important; }
+.ucard:has(.uthumb) .ukinds, .ucard:has(.uthumb) .usubs > summary { padding-right: 92px; }
+.ucard:has(.usubs[open]) .uthumb { display: none; }
+.ucard:has(.usubs[open]) .ukinds { padding-right: 0; }
+@media (max-width: 700px) {
+  .uthumb { width: 112px; height: 158px; bottom: -40px; }
+  .uthumb-in { transform: scale(0.1411); }
+  .ucard:has(.uthumb) .ukinds, .ucard:has(.uthumb) .usubs > summary { padding-right: 122px; }
+}
 .ucard-head { display: flex; gap: 8px; align-items: flex-start; }
 .uno { flex: none; min-width: 26px; height: 26px; border-radius: 13px; background: var(--gc); color: #fff; font-weight: bold; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; padding: 0 6px; margin-top: 1px; }
 .uno.extra { background: #fff; color: var(--gc); border: 1.5px solid var(--gc); font-size: 11px; }
@@ -59394,7 +59411,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     // 単元名で あったときは 単元ぜんたいを 見せる(「ながさ・かさ・ひろさ」のように いくつも まざった 単元は、あう小単元を見せる)
     const only = hit && hit.subs.length && hit.subs.length < subs.length - 1 && (!hit.unit || u2.name.includes("・")) ? hit.subs : null;
     return `<div class="ucard g${g3}">
-        <div class="ucard-head"><span class="uno">${u2.order}</span><span class="uname">${esc2(u2.name)}</span><span class="ugrade">${esc2(gradeName(g3))}</span></div>
+        ${thumbSpan(g3, u2)}<div class="ucard-head"><span class="uno">${u2.order}</span><span class="uname">${esc2(u2.name)}</span><span class="ugrade">${esc2(gradeName(g3))}</span></div>
         ${!only || hit.unit ? `<div class="ukinds">${kinds.map((k) => `<button type="button" class="uk k-${k}" data-g="${g3}" data-unit="${u2.id}" data-kind="${k}">${k === "yoji" ? "えのプリント" : KIND_SHORT[k]}</button>`).join("")}</div>` : ""}
         ${only ? `<ol class="usub-list">${only.map(subBtn).join("")}</ol>` : ""}
         ${subs.length > 1 ? `<details class="usubs"><summary>${only ? "ほかの小単元も見る" : "小単元をえらぶ"}(${subs.length})</summary><ol class="usub-list">${subs.map(subBtn).join("")}</ol></details>` : ""}
@@ -59420,6 +59437,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/25", t: "単元カードに プリントの 見本を 小さく かたむけて のせた(国語プリントと おなじ)", tag: "ホーム" },
     { d: "26/11/25", t: "お気に入り:プリント画面の「☆お気に入り」で 入れると、ホームから すぐ 作れる", tag: "ホーム" },
     { d: "26/11/24", t: "うごく UI:タブ・★が すっと うごく/問題数の −・＋/おすと ぷにっと", tag: "ホーム" },
     { d: "26/11/24", t: "とけい:答えの らんを「□じ □ふん」「□時 □分」にも できる", g: 1, unit: "g1-16", sub: 1, kind: "figure", opts: { afmt: "jifun" } },
@@ -59564,7 +59582,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       const kinds = ready ? unitKindsAvailable(u2) : [];
       const subs = ready && hasSubs(homeGrade) ? u2.topics.map((tp, i) => [tp, i + 1]).filter(([tp]) => topicKinds(tp).length) : [];
       return `<div class="ucard${ready ? "" : " off"}">
-        <div class="ucard-head"><span class="uno${u2.numberless ? " extra" : ""}">${u2.numberless ? "補" : u2.order}</span><span class="uname">${esc2(u2.name)}</span></div>
+        ${ready ? thumbSpan(homeGrade, u2) : ""}<div class="ucard-head"><span class="uno${u2.numberless ? " extra" : ""}">${u2.numberless ? "補" : u2.order}</span><span class="uname">${esc2(u2.name)}</span></div>
         ${u2.domain ? `<div class="udomain">${esc2(u2.domain)}</div>` : ""}
         <div class="ukinds">${ready ? kinds.map((k) => `<button type="button" class="uk k-${k}" data-unit="${u2.id}" data-kind="${k}">${stageMode && k === "yoji" ? "えのプリント" : KIND_SHORT[k]}</button>`).join("") : '<span class="soon">準備中</span>'}</div>
         ${subs.length > 1 ? `<details class="usubs"><summary>小単元をえらぶ(${subs.length})</summary><ol class="usub-list">${subs.map(([tp, n]) => topicKinds(tp).map((k) => `<li><button type="button" class="usb" data-unit="${u2.id}" data-sub="${n}" data-kind="${k}"><span class="usub-no">${n}</span><span class="usub-name">${esc2(tp.label)}</span><span class="usub-kind">${SUB_KIND[k]}</span></button></li>`).join("")).join("")}</ol></details>` : ""}
@@ -59572,6 +59590,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     }).join("");
     if (homeDomain) renderDomain();
     if ($("homeQ").value) renderSearch();
+    thumbWatch();
   }
   // ===== さがす:単元名・小単元名・内容のことばで、学年をこえてさがす(カタカナ・ひらがな、全角・半角は同じとみる) =====
   var rubyBase = (x) => String(x ?? "").replace(/\{([^{}|]+)\|[^{}]*\}/g, "$1");
@@ -59738,10 +59757,33 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== 見本のポップアップ:「計算ドリル」や小単元の ボタンに カーソルを おくと、そのプリントの 1ページめを 小さく見せる =====
   var hovCache = new Map(), hovTimer = 0, hovBtn = null, hovPop = null, hovBox = null;
   var HOV_K = 0.4;
-  function hovPage(g3, unitId, kind, sub) {
-    const key = [g3, unitId, kind, sub, homeLevel].join("|");
+  // プリント画面の 設定を いったん おぼえて、見本を 作ったあとに もどす
+  function formSnap() {
+    return { g: el.grade.value, u: el.unit.value, s: el.subunit.value, k: el.kind.value, c: el.count.value, l: el.level.value, o: currentOpts() };
+  }
+  function formRestore(f) {
+    try {
+      el.grade.value = f.g;
+      refreshUnits();
+      el.unit.value = f.u;
+      refreshKinds();
+      if (!el.subWrap.hidden) {
+        el.subunit.value = f.s;
+        refreshSubKinds();
+      }
+      el.kind.value = f.k;
+      refreshCounts();
+      if ([...el.count.options].some((o) => o.value === f.c)) el.count.value = f.c;
+      el.level.value = f.l;
+      for (const s2 of $("optWrap").querySelectorAll("select")) if (f.o && f.o[s2.dataset.opt] != null) s2.value = String(f.o[s2.dataset.opt]);
+    } catch (e) {
+    }
+  }
+  function hovPage(g3, unitId, kind, sub, fast = false) {
+    const key = [g3, unitId, kind, sub, homeLevel, fast ? "f" : ""].join("|");
     if (hovCache.has(key)) return hovCache.get(key);
     let html = null;
+    const snap = formSnap();
     try {
       el.grade.value = String(g3);
       refreshUnits();
@@ -59762,7 +59804,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         document.body.appendChild(hovBox);
       }
       const opt2 = { policy, withAnswers: false, gradeLabel: `${spec.grade}年`, hints: el.hints.checked, answerMode: el.ansStyle.value, trace: el.trace.checked };
-      const sheet = filledSheet(spec, (sh) => {
+      const sheet = fast ? buildSheet(spec) : filledSheet(spec, (sh) => {
         hovBox.innerHTML = sheetHtml(sh, opt2);
         paginate(hovBox);
         return [...hovBox.querySelectorAll("article.sheet")];
@@ -59776,8 +59818,49 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     } catch (e) {
       console.warn("見本を作れませんでした", e);
     }
+    formRestore(snap);
     hovCache.set(key, html);
     return html;
+  }
+  // ===== 単元カードの 見本:ほんものの プリントを 小さく かたむけて おく(国語プリントと おなじ。カードが 見えたら 1まいずつ 作る) =====
+  var thumbQ = [], thumbBusy = false, thumbIO = null;
+  function thumbSpan(g3, u2) {
+    const k = unitKindsAvailable(u2)[0];
+    return k ? `<span class="uthumb" aria-hidden="true" data-g="${g3}" data-unit="${u2.id}" data-kind="${k}"></span>` : "";
+  }
+  function thumbRun() {
+    if (thumbBusy) return;
+    const t = thumbQ.shift();
+    if (!t) return;
+    thumbBusy = true;
+    const go = () => {
+      thumbBusy = false;
+      if (document.body.dataset.view !== "print" && t.isConnected && !t.firstChild) {
+        const pg2 = hovPage(Number(t.dataset.g), t.dataset.unit, t.dataset.kind, 0, true);
+        if (pg2) {
+          t.innerHTML = `<span class="uthumb-in">${pg2.html}</span>`;
+          t.classList.add("on");
+        }
+      }
+      thumbRun();
+    };
+    (window.requestIdleCallback || ((f) => setTimeout(f, 30)))(go, { timeout: 400 });
+  }
+  function thumbWatch() {
+    const ts = [...homeEl.querySelectorAll(".uthumb:empty")];
+    if (!ts.length) return;
+    if (!("IntersectionObserver" in window)) {
+      thumbQ.push(...ts);
+      return thumbRun();
+    }
+    if (!thumbIO) thumbIO = new IntersectionObserver((es) => {
+      for (const e of es) if (e.isIntersecting) {
+        thumbIO.unobserve(e.target);
+        thumbQ.push(e.target);
+      }
+      thumbRun();
+    }, { rootMargin: "200px" });
+    for (const t of ts) thumbIO.observe(t);
   }
   function hovHide() {
     clearTimeout(hovTimer);
