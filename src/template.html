@@ -71,7 +71,9 @@ body {
 /* ページの ボタン(下に うかぶ):おすと その ページへ。いま 見ている ページに 色の 板が すべる */
 .pager { position: fixed; left: 0; right: 0; margin: 0 auto; width: max-content; bottom: 14px; z-index: 40; display: flex; align-items: center; gap: 4px; max-width: calc(100vw - 24px); overflow-x: auto; padding: 5px 8px; background: rgba(255,255,255,.96); border: 1.5px solid #d5d9e2; border-radius: 999px; box-shadow: 0 6px 18px rgba(31,42,64,.18); scrollbar-width: none; }
 .pager[hidden] { display: none; }
-.pager .pg-cap { flex: none; font-size: 11px; font-weight: bold; color: #778; padding: 0 4px 0 6px; }
+.pager .pg-cap { flex: none; height: 32px; border: none; border-radius: 999px; background: transparent; font: inherit; font-size: 11px; font-weight: bold; color: #778; padding: 0 6px 0 8px; cursor: pointer; transition: background .2s, transform .22s cubic-bezier(.34,1.8,.5,1); }
+.pager .pg-cap:hover { background: #eef1f6; }
+.pager .pg-cap:active { transform: scale(.9); transition-duration: .06s; }
 .pager .pg-cap.ans { color: #d07a00; }
 .pager .pg-sep { flex: none; width: 1px; height: 20px; background: #d5d9e2; margin: 0 4px; }
 .pager .pg { position: relative; z-index: 1; flex: none; min-width: 32px; height: 32px; border-radius: 999px; border: none; background: transparent; font: inherit; font-size: 14px; font-weight: bold; color: #2b3a55; cursor: pointer; transition: color .25s, transform .22s cubic-bezier(.34,1.8,.5,1); }
@@ -40414,7 +40416,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       const ans = pg2.classList.contains("answers");
       if (ans !== lastAns) {
         if (lastAns !== null) html += '<span class="pg-sep"></span>';
-        html += `<span class="pg-cap${ans ? " ans" : ""}">${ans ? "こたえ" : "もんだい"}</span>`;
+        // 「もんだい」「こたえ」の 字も おせる(その はじめの ページへ)
+        html += `<button type="button" class="pg-cap${ans ? " ans" : ""}" data-pg="${i}">${ans ? "こたえ" : "もんだい"}</button>`;
         lastAns = ans;
       }
       html += `<button type="button" class="pg${ans ? " ans" : ""}" data-pg="${i}" aria-label="${ans ? "こたえ" : "もんだい"} ${ans ? ++an : ++pn}ページ">${ans ? an : pn}</button>`;
@@ -40438,7 +40441,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     }
   }
   $("pager")?.addEventListener("click", (e) => {
-    const b = e.target.closest(".pg");
+    const b = e.target.closest(".pg, .pg-cap");
     if (!b) return;
     const pg2 = el.preview.querySelectorAll("article.sheet")[Number(b.dataset.pg)];
     if (!pg2) return;
@@ -40929,6 +40932,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/25", t: "プリント画面の 下の ボタン:「もんだい」「こたえ」の 字を おしても その ページへ とぶように" },
     { d: "26/11/25", t: "とけいを 大きく(場面の 絵は 文の よこへ/せんで むすぶ は 上に とけい・下に カード)", g: 1, unit: "g1-16", sub: 1, kind: "figure" },
     { d: "26/11/25", t: "とけいの 見た目を 新しく(ふちと 目もりを 太く・はりを 長く・みじかい はりは 太く)", g: 1, unit: "g1-08", sub: 1, kind: "figure" },
     { d: "26/11/25", t: "とけい:針と 数字が かさならないように(針を 数字の 手前で とめる)", g: 1, unit: "g1-16", sub: 1, kind: "figure" },

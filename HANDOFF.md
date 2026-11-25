@@ -118,3 +118,4 @@ node tools/test/render.js build/test.html 単元id 種類 難易度 問題数 �
   - (15:46)先生:「赤青 やめて、白黒で わかるように」→ 色は なし(CLOCK_COL.on=false、hcol の 設定も けした)。みじかい はりは 太く(はば1.35)みじかく(0.64)、ながい はりは 細く(0.6)長く。
   - (15:50)先生:「時計が大事なので 大きく」→ CLOCK_R none 25(5・near は 27)。場面の 絵は 図の 中から 出して、問題の 文の 前に [[ill:sc_○○]](.ill 11mm、compact は 7.5mm。.pic-名前 の CSS は picCss を setTimeout で さいごに つくる)。clockLayout の scaleK を 合わせなおし(2問 1.4/5ふん 1.02/near 0.92、near4問 0.78、6問 0.84・5ふん 0.6・near 0.56)。どれも 1ページの 問題数は まえと おなじ(per.js で たしかめ)。
   - せんで むすぶ は 上に とけい(R 19、4くみは 16)・下に カード、たての 線。1ページ 2問。
+  - (17:35)ページボタン(#pager)の「もんだい」「こたえ」も button.pg-cap(data-pg=その はじめの ページ)に。クリックは .pg, .pg-cap の どちらも。
