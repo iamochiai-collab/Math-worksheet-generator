@@ -527,6 +527,8 @@ button.nw-row:hover { background: #fff3c9; }
 /* 数の 下の 絵 */
 .pnum { display: inline-flex; flex-direction: column; align-items: center; margin: 0 1pt; }
 .pnum .pics { display: grid; gap: 0.5mm; justify-content: center; margin-top: 1mm; }
+.ill { display: inline-block; width: 11mm; height: 11mm; vertical-align: middle; margin: -2mm 1.5mm -2mm 0; background-position: center; background-size: contain; background-repeat: no-repeat; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.item.compact .ill { width: 7.5mm; height: 7.5mm; margin: -1.5mm 1mm -1.5mm 0; }
 .pnum .pic { display: block; width: 4.2mm; height: 4.2mm; background-position: center; background-size: contain; background-repeat: no-repeat; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .item-no { font-size: 11pt; flex: none; min-width: 22pt; padding-right: 3pt; white-space: nowrap; letter-spacing: 0; }
 .item-body { font-size: 16pt; letter-spacing: 1.5pt; }
@@ -22268,14 +22270,15 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     return { ...pr, text: lhs + pr.text.slice(m[1].length), picRow: true };
   }
   // 絵は CSS の 背景に 1回だけ 入れて、何回も つかう(ページが 重くならないように)
-  (function picCss() {
+  // 絵の クラス(.pic-名前)。SCENE_IMG は あとで きまるので、スクリプトの さいごに つくる
+  setTimeout(function picCss() {
     try {
       const st = document.createElement("style");
-      st.textContent = PIC_ICONS.filter((k) => ILLUST[k]).map((k) => `.pic-${k}{background-image:url(${ILLUST[k].u})}`).join("\n");
+      st.textContent = [...PIC_ICONS, ...Object.values(SCENE_IMG)].filter((k) => ILLUST[k]).map((k) => `.pic-${k}{background-image:url(${ILLUST[k].u})}`).join("\n");
       document.head.appendChild(st);
     } catch (e) {
     }
-  })();
+  }, 0);
   function picHtml(n, icon) {
     n = Number(n);
     const cols = Math.min(5, Math.max(1, n));
@@ -25082,7 +25085,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // 1日の場面の絵(assets/illust の sc_○○)。とけいの問題の「おきた とき」などの よこに出す
   var SCENE_IMG = { "おきた　とき": "sc_wake", "あさごはん": "sc_breakfast", "いえを　でた　とき": "sc_leave", "きゅうしょく": "sc_lunch", "かえった　とき": "sc_return", "おやつ": "sc_snack", "こうえんで　あそぶ": "sc_park", "ばんごはん": "sc_dinner", "おふろ": "sc_bath", "ねた　とき": "sc_sleep", "かいものに　いく": "sc_shopping", "としょかんに　いく": "sc_library" };
   // ほじょの数字があるときは 時計を大きくする(1ぷんごとは 1行に1つの 大きな時計)
-  var CLOCK_R = { none: 20, 5: 24, 1: 36, near: 24 };
+  var CLOCK_R = { none: 25, 5: 27, 1: 36, near: 27 };
   function clockWithBox(t2, { hour = true, minute = true, box: box3 = true, scene = null, aux = "none", scaleK = null } = {}) {
     const R5 = CLOCK_R[aux] || 20, pad = aux === "near" ? 12.5 : aux === "5" || aux === "1" ? 6 : 0;
     const pic = scene && ILLUST[SCENE_IMG[scene]] ? (aux === "1" ? 40 : 30) : 0, cx = 4 + pad + R5 + pic, cy = R5 + 2 + pad;
@@ -25167,10 +25170,10 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     const aux = p.aux === "1" || p.aux === "5" || p.aux === "near" ? p.aux : "none";
     const per = aux === "1" ? 2 : Number(p.per) || (aux === "5" ? 2 : aux === "near" ? 4 : 4);
     // 答えを書く欄は いつも 時計の下(まん中)。2問は 1行に1つの 大きな時計
-    if (per <= 2) return { cols: 1, ansRight: false, scaleK: aux === "1" ? 0.86 : aux === "5" ? 1.18 : aux === "near" ? 1.05 : 1.7 };
+    if (per <= 2) return { cols: 1, ansRight: false, scaleK: aux === "1" ? 0.86 : aux === "5" ? 1.02 : aux === "near" ? 0.92 : 1.4 };
     // 6問:2列×3だん。答えの四角は時計の下に 少しひくく(compact)
-    if (per >= 6) return { cols: 2, ansRight: false, compact: true, scaleK: aux === "5" ? 0.76 : aux === "near" ? 0.74 : 1.08 };
-    if (aux === "near") return { cols: 2, ansRight: false, scaleK: 0.9 };
+    if (per >= 6) return { cols: 2, ansRight: false, compact: true, scaleK: aux === "5" ? 0.6 : aux === "near" ? 0.56 : 0.84 };
+    if (aux === "near") return { cols: 2, ansRight: false, scaleK: 0.78 };
     return { cols: 2, ansRight: false, scaleK: null };
   }
   var sceneOn = (p) => p.scene !== "off";
@@ -25208,9 +25211,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         ...(af.ansBox ? { ansBox: af.ansBox, ansBoxW: af.ansBoxW } : {}),
         key: `ch:${t2}`,
         softKey: sc || `ch${t2}`,
-        text: sc || "",
+        text: sc ? (ILLUST[SCENE_IMG[sc]] ? `[[ill:${SCENE_IMG[sc]}]]` : "") + sc : "",
         cols: L.cols,
-        figure: clockWithBox(t2, { box: false, scene: sc, aux: p.aux, scaleK: L.scaleK }),
+        figure: clockWithBox(t2, { box: false, aux: p.aux, scaleK: L.scaleK }),
         ansRight: L.ansRight,
         ansCenter: true,
         compact: !!L.compact,
@@ -25266,9 +25269,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         ...(af.ansBox ? { ansBox: af.ansBox, ansBoxW: af.ansBoxW } : {}),
         key: `cm:${t2}`,
         softKey: sc || `cm${t2}`,
-        text: sc || "",
+        text: sc ? (ILLUST[SCENE_IMG[sc]] ? `[[ill:${SCENE_IMG[sc]}]]` : "") + sc : "",
         cols: L.cols,
-        figure: clockWithBox(t2, { box: false, scene: sc, aux: p.aux, scaleK: L.scaleK }),
+        figure: clockWithBox(t2, { box: false, aux: p.aux, scaleK: L.scaleK }),
         ansRight: L.ansRight,
         ansCenter: true,
         compact: !!L.compact,
@@ -25390,25 +25393,27 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       const kanji = p.moji === "kanji";
       const labels = rng.shuffle(times.map((_, i) => i));
       if (labels.every((v, i) => v === i)) labels.push(labels.shift());
-      const R = 16, RH = 2 * R + 3, cx = 13 + R, lDotX = cx + R + 5, cardX = CM_W - 50, rDotX = cardX - 6;
+      // 上に とけい(大きく)、下に よみかたの カード。たての 線で むすぶ
+      const example = !!p.example, colW = CM_W / n, R = Math.min(19, colW / 2 - 2.5);
+      const top = example ? 7 : 2, dY1 = top + 2 * R + 4, dY2 = dY1 + 22, cw = colW - 8, ch = 17;
       const items = [], lDot = [], rDot = [];
       times.forEach((t2, i) => {
-        const cy = 2 + i * RH + RH / 2;
-        items.push(...clockItems(cx, cy, R, t2).map((it) => ({ ...it, g: `c${i}` })));
-        items.push({ t: "dot", x: lDotX, y: cy, r: 1.9 });
-        lDot.push([lDotX, cy]);
+        const cx = 2 + colW * (i + 0.5);
+        items.push(...clockItems(cx, top + R, R, t2).map((it) => ({ ...it, g: `c${i}` })));
+        items.push({ t: "dot", x: cx, y: dY1, r: 1.9 });
+        lDot.push([cx, dY1]);
       });
       labels.forEach((ti, j) => {
-        const cy = 2 + j * RH + RH / 2, s = clockLabel(times[ti], tk, kanji);
-        items.push({ ...frame(cardX, cy - 10, 46, 20, 4), w: 0.5 });
-        items.push({ t: "text", x: cardX + 23, y: cy + 2.6, s, size: [...s].length > 6 ? 6.4 : 7.2, halo: false });
-        items.push({ t: "dot", x: rDotX, y: cy, r: 1.9 });
-        rDot.push([rDotX, cy]);
+        const cx = 2 + colW * (j + 0.5), s = clockLabel(times[ti], tk, kanji);
+        const em = [...s].reduce((a, c) => a + (/[0-9]/.test(c) ? 0.58 : 1), 0), fs = Math.min(7.2, (cw - 4) / em);
+        items.push({ ...frame(cx - cw / 2, dY2 + 3.5, cw, ch, 4), w: 0.5 });
+        items.push({ t: "text", x: cx, y: dY2 + 3.5 + ch / 2 + fs * 0.36, s, size: fs, halo: false });
+        items.push({ t: "dot", x: cx, y: dY2, r: 1.9 });
+        rDot.push([cx, dY2]);
       });
       const line = (i, c) => ({ t: "line", x1: lDot[i][0], y1: lDot[i][1], x2: rDot[labels.indexOf(i)][0], y2: rDot[labels.indexOf(i)][1], w: 1, color: c, lead: true, cap: "round", from: i, to: labels.indexOf(i) });
-      const example = !!p.example;
-      if (example) items.push({ t: "text", x: 6, y: 2 + RH / 2 + 1.6, s: "れい", size: 4.4, color: "#888", halo: false });
-      const fig = (extra) => ({ type: "draw", w: CM_W + 4, h: n * RH + 3, items: [...items, ...extra], scaleK: n === 3 ? 0.84 : 1 });
+      if (example) items.push({ t: "text", x: lDot[0][0], y: 4.6, s: "れい", size: 4.2, color: "#888", halo: false });
+      const fig = (extra) => ({ type: "draw", w: CM_W + 4, h: dY2 + 3.5 + ch + 2, items: [...items, ...extra], scaleK: 1 });
       return {
         key: `cmt:${times.join(",")}`,
         softKey: `cmt:${[...times].sort((a, b) => a - b).join(",")}`,
@@ -53741,7 +53746,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   }
   var unMarks = (s) => s.replace(/\ue00b([^\ue00c]*)\ue00c/g, '<i class="var">$1</i>').replace(/\ue000/g, '<sub class="sb">').replace(/\ue001/g, "</sub>").replace(/\ue002/g, "<sup>").replace(/\ue003/g, "</sup>").replace(/\ue004/g, '<span class="vec">').replace(/\ue005/g, "</span>").replace(/\ue006/g, '<span class="ovl">').replace(/\ue007/g, "</span>").replace(/\ue00d/g, '<span class="rdot">').replace(/\ue00e/g, "</span>");
   function inlineMath(text) {
-    return unMarks(sqrtHtml(mathMarks(esc2(text)).replace(/\u0001([^\u0002]*)\u0002([^\u0003]*)\u0003/g, "<ruby>$1<rt>$2</rt></ruby>").replace(/\[\[sys:(.*?):sys\]\]/g, (_, body) => `<span class="sys"><span class="brace">{</span><span class="eqs">${body.split("||").map((e) => `<span>${e}</span>`).join("")}</span></span>`).replace(/\[\[br\]\]/g, "<br>").replace(/\[\[pic:(\d+):(\w+)\]\]/g, (_, n, ic) => picHtml(n, ic)).replace(/\[\[nw\]\]/g, '<span class="nw">').replace(/\[\[\/nw\]\]/g, "</span>").replace(/\[\[(a|p|t)box:([\d.]+)\]\]/g, (_, k, w2) => `<span class="abox ans${k === "t" ? " tall" : ""}" style="width:${w2}mm"></span>`).replace(/\[\[fbox(1?)\]\]/g, (_, one) => `<span class="fbox"><span class="fb-n${one ? " gray" : ""}">${one ? "1" : ""}</span><span class="fb-bar${one ? " gray" : ""}"></span><span class="fb-d"></span></span>`).replace(/\[\[mbox\]\]/g, '<span class="abox ans" style="width:12mm"></span><span class="fbox"><span class="fb-n"></span><span class="fb-bar"></span><span class="fb-d"></span></span>').replace(/\[\[aline\]\]/g, '<span class="aline"></span>').replace(/\[\[box\]\]/g, '<span class="abox"></span>').replace(/\[\[v:([a-zA-Z])\]\]/g, '<i class="var">$1</i>').replace(/\[\[m:(\d+):(\d+)\/(\d+)\]\]/g, (_, w2, n, d) => `<span class="mixed"><span class="whole">${w2}</span><span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span></span>`).replace(/\[\[f:([^\]\/]+)\/([^\]]+)\]\]/g, (_, n, d) => `<span class="frac"><span class="num">${italVars(n)}</span><span class="den">${italVars(d)}</span></span>`)));
+    return unMarks(sqrtHtml(mathMarks(esc2(text)).replace(/\u0001([^\u0002]*)\u0002([^\u0003]*)\u0003/g, "<ruby>$1<rt>$2</rt></ruby>").replace(/\[\[sys:(.*?):sys\]\]/g, (_, body) => `<span class="sys"><span class="brace">{</span><span class="eqs">${body.split("||").map((e) => `<span>${e}</span>`).join("")}</span></span>`).replace(/\[\[br\]\]/g, "<br>").replace(/\[\[pic:(\d+):(\w+)\]\]/g, (_, n, ic) => picHtml(n, ic)).replace(/\[\[ill:(\w+)\]\]/g, (_, k) => `<i class="ill pic-${k}"></i>`).replace(/\[\[nw\]\]/g, '<span class="nw">').replace(/\[\[\/nw\]\]/g, "</span>").replace(/\[\[(a|p|t)box:([\d.]+)\]\]/g, (_, k, w2) => `<span class="abox ans${k === "t" ? " tall" : ""}" style="width:${w2}mm"></span>`).replace(/\[\[fbox(1?)\]\]/g, (_, one) => `<span class="fbox"><span class="fb-n${one ? " gray" : ""}">${one ? "1" : ""}</span><span class="fb-bar${one ? " gray" : ""}"></span><span class="fb-d"></span></span>`).replace(/\[\[mbox\]\]/g, '<span class="abox ans" style="width:12mm"></span><span class="fbox"><span class="fb-n"></span><span class="fb-bar"></span><span class="fb-d"></span></span>').replace(/\[\[aline\]\]/g, '<span class="aline"></span>').replace(/\[\[box\]\]/g, '<span class="abox"></span>').replace(/\[\[v:([a-zA-Z])\]\]/g, '<i class="var">$1</i>').replace(/\[\[m:(\d+):(\d+)\/(\d+)\]\]/g, (_, w2, n, d) => `<span class="mixed"><span class="whole">${w2}</span><span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span></span>`).replace(/\[\[f:([^\]\/]+)\/([^\]]+)\]\]/g, (_, n, d) => `<span class="frac"><span class="num">${italVars(n)}</span><span class="den">${italVars(d)}</span></span>`)));
   }
   // √ の中に √ があってもよいように、内側から順に
   var sqrtHtml = (s) => {
@@ -54507,7 +54512,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           };
           const wOf = (txt, raw) => {
             let w = 9;
-            const rest = (raw ? txt : uniW(txt)).replace(/\[\[(?:a|p|t)box:([\d.]+)\]\]/g, (m, x) => (w += Number(x) + 3.5, "")).replace(/\[\[fbox1?\]\]/g, () => (w += 16, "")).replace(/\[\[mbox\]\]/g, () => (w += 30, "")).replace(/\[\[aline\]\]/g, () => (w += 77, "")).replace(/\[\[[fm]:[^\]]*\]\]/g, () => (w += 7, "")).replace(/\[\[v:[a-zA-Z]\]\]/g, "x").replace(/\[\[br\]\]/g, "").replace(/\[\[pic:(\d+):\w+\]\]/g, (m, n) => (w += Math.min(5, Number(n)) * 4.7 + 1, ""));
+            const rest = (raw ? txt : uniW(txt)).replace(/\[\[(?:a|p|t)box:([\d.]+)\]\]/g, (m, x) => (w += Number(x) + 3.5, "")).replace(/\[\[fbox1?\]\]/g, () => (w += 16, "")).replace(/\[\[mbox\]\]/g, () => (w += 30, "")).replace(/\[\[aline\]\]/g, () => (w += 77, "")).replace(/\[\[[fm]:[^\]]*\]\]/g, () => (w += 7, "")).replace(/\[\[v:[a-zA-Z]\]\]/g, "x").replace(/\[\[br\]\]/g, "").replace(/\[\[pic:(\d+):\w+\]\]/g, (m, n) => (w += Math.min(5, Number(n)) * 4.7 + 1, "")).replace(/\[\[ill:\w+\]\]/g, () => (w += 16, ""));
             const jh = sheet.grade >= 7;
             for (const ch of plainAns(rest)) w += ch.charCodeAt(0) < 8192 ? big ? 5.4 : jh ? 3.3 : 4.1 : big ? 8.6 : jh ? 5.4 : 6.5;
             return w + 4;
@@ -60120,6 +60125,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/25", t: "とけいを 大きく(場面の 絵は 文の よこへ/せんで むすぶ は 上に とけい・下に カード)", g: 1, unit: "g1-16", sub: 1, kind: "figure" },
     { d: "26/11/25", t: "とけいの 見た目を 新しく(ふちと 目もりを 太く・はりを 長く・みじかい はりは 太く)", g: 1, unit: "g1-08", sub: 1, kind: "figure" },
     { d: "26/11/25", t: "とけい:針と 数字が かさならないように(針を 数字の 手前で とめる)", g: 1, unit: "g1-16", sub: 1, kind: "figure" },
     { d: "26/11/25", t: "とけい:とけいと よみかた(4じはん など)を せんで むすぶ プリントを 追加", g: 1, unit: "g1-08", sub: 3, kind: "figure" },
