@@ -315,8 +315,23 @@ var kou2c = (() => {
     const items = [...pl.items];
     items.splice(1, 0, { t: "poly", pts, fill: "#d9d9d9", w: 0 });
     items.push(curve(pl, f, -3.3, 5.3), ...type === "line" ? [curve(pl, g, -3.3, 5.3, { w: 0.5 })] : []);
-    items.push(T_(pl.X(be + 0.6) + 2, pl.Y(Math.min(f(be + 0.6), pl.y1 - 0.4)), `[[v:y]]＝${pTex(cs)}`, 3, { anchor: "start" }));
-    if (type === "line" && (m || n)) items.push(T_(pl.X(-2.6), pl.Y(g(-2.6)) - 2, `[[v:y]]＝${pTex([Q(m), Q(n)])}`, 3, { anchor: "start" }));
+    const fl = [pl.X(be + 0.6) + 2, pl.Y(Math.min(f(be + 0.6), pl.y1 - 0.4))];
+    items.push(T_(fl[0], fl[1], `[[v:y]]＝${pTex(cs)}`, 3, { anchor: "start" }));
+    if (type === "line" && (m || n)) {
+      // 直線の 式は、じくの 目もりの 数字・放物線の 式と かさならない ところに おく
+      const lab = `[[v:y]]＝${pTex([Q(m), Q(n)])}`, lw = 3 * 0.62 * (lab.replace(/\[\[v:(\w)\]\]/g, "$1").length + 1);
+      const X0 = pl.X(0), Y0 = pl.Y(0), hit = (x1, y1, x2, y2, bx) => x1 < bx[2] && bx[0] < x2 && y1 < bx[3] && bx[1] < y2;
+      const avoid = [[pl.X(pl.x0) - 3, Y0 + 0.8, pl.X(pl.x1) + 3, Y0 + 4.6], [X0 - 6, pl.Y(pl.y1) - 2, X0 + 0.6, pl.Y(pl.y0) + 2], [fl[0], fl[1] - 3.2, fl[0] + 30, fl[1] + 1]];
+      let spot = null;
+      for (const x of [-2.6, -2.2, -1.8, 3.2, 2.6, 4.0, -1.2, 1.6])
+        for (const dy of [-2, 4.4]) {
+          const lx = pl.X(x), ly = pl.Y(g(x)) + dy;
+          if (spot || ly < pl.Y(pl.y1) + 3 || ly > pl.Y(pl.y0) || lx + lw > pl.X(pl.x1) + 16) continue;
+          if (!avoid.some((bx) => hit(lx, ly - 3, lx + lw, ly + 0.8, bx))) spot = [lx, ly];
+        }
+      spot = spot || [pl.X(-2.6), pl.Y(g(-2.6)) - 2];
+      items.push(T_(spot[0], spot[1], lab, 3, { anchor: "start" }));
+    }
     const v = Q((be - al) ** 3, 6);
     return { text: "右の図の灰色の部分の面積を求めましょう。", fig: draw(pl.w + 18, pl.h, items), ans: num(v), side: true, key: `af:${type}:${al}:${be}:${m}:${n}`, meta: { f: (x) => Math.abs(f(x) - g(x)), a: al, b: be, v: qv(v) } };
   }, (pr) => {

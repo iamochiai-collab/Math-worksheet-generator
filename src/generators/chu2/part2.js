@@ -47,9 +47,12 @@
         let okLab = true;
         pair.forEach((a, i) => {
           const [lo, hi] = segOf(a, bs[i], n), k = qv(a), c = qv(bs[i]);
-          const f = [0.85, 0.15, 0.7, 0.3, 0.5].find((fr) => {
+          const f = [0.85, 0.15, 0.7, 0.3, 0.5, 0.92, 0.08, 0.6, 0.4].find((fr) => {
             const x = lo + (hi - lo) * fr, y = k * x + c;
-            return Math.hypot(x - qv(X0), y - qv(Y0)) > 2 && placed.every(([px, py]) => Math.hypot(x - px, y - py) > 2.2);
+            // ①② の しるしが じくの 目もりの 数字に かさならない ところ
+            const l2 = Math.hypot(1, k), sg2 = k >= 0 ? 1 : -1, lx = pl.X(x) + sg2 * k / l2 * 4.2, ly = pl.Y(y) + sg2 / l2 * 4.2;
+            const offAxis = Math.abs(lx - pl.X(0)) > 4.5 && Math.abs(ly - pl.Y(0)) > 4.5;
+            return offAxis && Math.hypot(x - qv(X0), y - qv(Y0)) > 2 && placed.every(([px, py]) => Math.hypot(x - px, y - py) > 2.2);
           });
           if (f === void 0) okLab = false;
           const fr = f ?? 0.85, x = lo + (hi - lo) * fr, l = Math.hypot(1, k), sg = k >= 0 ? 1 : -1;

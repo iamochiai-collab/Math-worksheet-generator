@@ -505,12 +505,16 @@ button.nw-row:hover { background: #fff3c9; }
 .item-head { min-width: 0; max-width: 100%; flex-wrap: wrap; }
 .sheet .item .ans-under { flex-wrap: wrap; max-width: 100%; }
 .item-body { min-width: 0; max-width: 100%; }
+.nw { white-space: nowrap; }
 .item-no { font-size: 11pt; flex: none; min-width: 22pt; padding-right: 3pt; white-space: nowrap; letter-spacing: 0; }
 .item-body { font-size: 16pt; letter-spacing: 1.5pt; }
 .item-head { display: inline-flex; align-items: center; gap: 4pt; }
 .item.has-grid { flex-direction: column; align-items: flex-start; gap: 2pt; }
 .ws-grid { margin: 2pt 0 2pt 20pt; }
 .item.has-figure { flex-direction: column; align-items: stretch; gap: 2pt; break-inside: avoid; }
+/* たて ならびの 問題は 横へ 折りかえさない(計算らんが 高いと 右へ はみ出していた) */
+.item.has-figure, .item.has-grid { flex-wrap: nowrap; }
+.item.has-figure > .calc, .item.has-grid > .calc { flex: none; width: 100%; }
 .item.has-figure .item-body { font-size: 12pt; letter-spacing: 0.5pt; }
 .item.has-figure .figure { margin: 0 0 0 10pt; }
 .item.has-figure .ws-lines { margin: 0 0 4pt 10pt; }
@@ -737,7 +741,7 @@ ruby rt { font-size: 0.5em; letter-spacing: 0; font-weight: normal; }
 .key-note { color: var(--key); font-weight: bold; font-size: 12pt; line-height: 1.6; margin: 1mm 0 0 22pt; }
 .item .key-note { margin-left: 0; flex: none; width: 100%; }
 .ws-grid { position: relative; }
-.ws-grid > .key-note { position: absolute; left: 1.5mm; top: 1mm; right: 0; margin: 0; background: rgba(255,255,255,.85); }
+.ws-grid > .key-note { position: absolute; left: 1.5mm; top: 1mm; right: 0; margin: 0; background: rgba(255,255,255,.85); overflow-wrap: anywhere; }
 .calc > .key-note { position: absolute; left: 3mm; top: 4.5mm; right: 2mm; margin: 0; }
 .key-note .kn-tag { display: inline-block; background: var(--key); color: #fff; border-radius: 1.5mm; padding: 0 1.8mm; font-size: 9.5pt; margin-right: 2mm; vertical-align: 1pt; }
 .keyed .key-note { display: block; }
@@ -9190,6 +9194,21 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   function svgDraw(fig, textFn = (s) => s) {
     const k = fig.scale || 1;
     let out = "";
+    // 字が 図の わくから 少し 出るときは、わくを 広げる(字が 切れないように)
+    let bx0 = 0, by0 = 0, bx1 = fig.w, by1 = fig.h;
+    for (const it of fig.items) {
+      // 答えの 赤い字は 数えない(問題の 図と 答えの 図で わくが ずれないように)
+      if (it.t !== "text" || fig.noGrow || it.color && /^#d7263d$/i.test(it.color)) continue;
+      try {
+        const fs = it.size || 4.2, W3 = parseRich(textFn(String(it.s))).reduce((a, t2) => a + tokW(t2, fs), 0);
+        const anchor = it.anchor || "middle", x0 = anchor === "middle" ? it.x - W3 / 2 : anchor === "end" ? it.x - W3 : it.x;
+        bx0 = Math.min(bx0, x0 - 0.6);
+        bx1 = Math.max(bx1, x0 + W3 + 0.6);
+        by0 = Math.min(by0, it.y - fs * 0.9 - 0.4);
+        by1 = Math.max(by1, it.y + fs * 0.28 + 0.4);
+      } catch (e) {
+      }
+    }
     for (const it of fig.items) {
       switch (it.t) {
         case "grid": {
@@ -9228,7 +9247,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           throw new Error(`図の部品がない: ${it.t}`);
       }
     }
-    return `<svg class="draw" viewBox="0 0 ${n2(fig.w)} ${n2(fig.h)}" width="${n2(fig.w * k)}mm" height="${n2(fig.h * k)}mm" font-family="inherit">${out}</svg>`;
+    const vw = bx1 - bx0, vh = by1 - by0;
+    return `<svg class="draw" viewBox="${n2(bx0)} ${n2(by0)} ${n2(vw)} ${n2(vh)}" width="${n2(vw * k)}mm" height="${n2(vh * k)}mm" font-family="inherit">${out}</svg>`;
   }
 
   // src/generators/g4/quadProps.js
@@ -11106,7 +11126,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       const mid2 = (a, b) => [(P3[a][0] + P3[b][0]) / 2, (P3[a][1] + P3[b][1]) / 2];
       const [m1, m2, m3] = [mid2(3, 2), mid2(2, 6), mid2(3, 0)];
       items.push({ t: "text", x: m1[0], y: m1[1] + 5.2, s: dims2[0], size: 4 });
-      items.push({ t: "text", x: m2[0] + 3, y: m2[1] + 3.6, s: dims2[1], size: 4, anchor: "start" });
+      // おくゆきの 長さは 下に 少し はなす(おくの ちょうてんの 名前と かさならない)
+      items.push({ t: "text", x: m2[0] + 3.5, y: m2[1] + 6.4, s: dims2[1], size: 4, anchor: "start" });
       items.push({ t: "text", x: m3[0] - 2, y: m3[1] + 1.4, s: dims2[2], size: 4, anchor: "end" });
     }
     return { fig: { type: "draw", w: ML + w2 + M7 + (dims2 ? 10 : 0), h: M7 * 2 + h2 + (dims2 ? 4 : 0), items }, V: V5, P: P3 };
@@ -36410,9 +36431,12 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           let okLab = true;
           pair.forEach((a, i) => {
             const [lo, hi] = segOf(a, bs[i], n), k = qv(a), c = qv(bs[i]);
-            const f = [0.85, 0.15, 0.7, 0.3, 0.5].find((fr) => {
+            const f = [0.85, 0.15, 0.7, 0.3, 0.5, 0.92, 0.08, 0.6, 0.4].find((fr) => {
               const x = lo + (hi - lo) * fr, y = k * x + c;
-              return Math.hypot(x - qv(X0), y - qv(Y0)) > 2 && placed.every(([px, py]) => Math.hypot(x - px, y - py) > 2.2);
+              // ①② の しるしが じくの 目もりの 数字に かさならない ところ
+              const l2 = Math.hypot(1, k), sg2 = k >= 0 ? 1 : -1, lx = pl.X(x) + sg2 * k / l2 * 4.2, ly = pl.Y(y) + sg2 / l2 * 4.2;
+              const offAxis = Math.abs(lx - pl.X(0)) > 4.5 && Math.abs(ly - pl.Y(0)) > 4.5;
+              return offAxis && Math.hypot(x - qv(X0), y - qv(Y0)) > 2 && placed.every(([px, py]) => Math.hypot(x - px, y - py) > 2.2);
             });
             if (f === void 0) okLab = false;
             const fr = f ?? 0.85, x = lo + (hi - lo) * fr, l = Math.hypot(1, k), sg = k >= 0 ? 1 : -1;
@@ -43001,7 +43025,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           items.push(L_(ox - 1.2, oy + Hh - v / 100 * Hh, ox, oy + Hh - v / 100 * Hh, { w: 0.3 }), T_(ox - 2, oy + Hh - v / 100 * Hh + 0.9, String(v), 2.6, { anchor: "end" }));
         }
         X0.forEach((x, i) => items.push({ t: "dot", x: ox + x / 100 * W, y: oy + Hh - Y0[i] / 100 * Hh, r: 0.8 }));
-        items.push(T_(ox + W + 1, oy + Hh + 4.4, "[[v:x]]", 3.2, { anchor: "start" }), T_(ox, oy - 2, "[[v:y]]", 3.2));
+        items.push(T_(ox + W + 2.5, oy + Hh + 1.1, "[[v:x]]", 3.2, { anchor: "start" }), T_(ox, oy - 2, "[[v:y]]", 3.2)); // x は じくの 右はし(「100」と かさならない)
         const ci = RS.indexOf(target);
         return { text: `右の散布図は、ある20人の2つのテストの点数 [[v:x]]，[[v:y]] を表したものです。[[v:x]] と [[v:y]] の相関係数に最も近いものを、次から選びましょう。[[br]]ア 0.9　イ 0.5　ウ 0　エ －0.5　オ －0.9`, fig: draw(ox + W + 8, oy + Hh + 8, items), ans: RCH[ci], side: true, key: `sc:${zx.slice(0, 4)}:${target}`, softKey: String(target), meta: { r, target } };
       }
@@ -44591,8 +44615,23 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       const items = [...pl.items];
       items.splice(1, 0, { t: "poly", pts, fill: "#d9d9d9", w: 0 });
       items.push(curve(pl, f, -3.3, 5.3), ...type === "line" ? [curve(pl, g, -3.3, 5.3, { w: 0.5 })] : []);
-      items.push(T_(pl.X(be + 0.6) + 2, pl.Y(Math.min(f(be + 0.6), pl.y1 - 0.4)), `[[v:y]]＝${pTex(cs)}`, 3, { anchor: "start" }));
-      if (type === "line" && (m || n)) items.push(T_(pl.X(-2.6), pl.Y(g(-2.6)) - 2, `[[v:y]]＝${pTex([Q(m), Q(n)])}`, 3, { anchor: "start" }));
+      const fl = [pl.X(be + 0.6) + 2, pl.Y(Math.min(f(be + 0.6), pl.y1 - 0.4))];
+      items.push(T_(fl[0], fl[1], `[[v:y]]＝${pTex(cs)}`, 3, { anchor: "start" }));
+      if (type === "line" && (m || n)) {
+        // 直線の 式は、じくの 目もりの 数字・放物線の 式と かさならない ところに おく
+        const lab = `[[v:y]]＝${pTex([Q(m), Q(n)])}`, lw = 3 * 0.62 * (lab.replace(/\[\[v:(\w)\]\]/g, "$1").length + 1);
+        const X0 = pl.X(0), Y0 = pl.Y(0), hit = (x1, y1, x2, y2, bx) => x1 < bx[2] && bx[0] < x2 && y1 < bx[3] && bx[1] < y2;
+        const avoid = [[pl.X(pl.x0) - 3, Y0 + 0.8, pl.X(pl.x1) + 3, Y0 + 4.6], [X0 - 6, pl.Y(pl.y1) - 2, X0 + 0.6, pl.Y(pl.y0) + 2], [fl[0], fl[1] - 3.2, fl[0] + 30, fl[1] + 1]];
+        let spot = null;
+        for (const x of [-2.6, -2.2, -1.8, 3.2, 2.6, 4.0, -1.2, 1.6])
+          for (const dy of [-2, 4.4]) {
+            const lx = pl.X(x), ly = pl.Y(g(x)) + dy;
+            if (spot || ly < pl.Y(pl.y1) + 3 || ly > pl.Y(pl.y0) || lx + lw > pl.X(pl.x1) + 16) continue;
+            if (!avoid.some((bx) => hit(lx, ly - 3, lx + lw, ly + 0.8, bx))) spot = [lx, ly];
+          }
+        spot = spot || [pl.X(-2.6), pl.Y(g(-2.6)) - 2];
+        items.push(T_(spot[0], spot[1], lab, 3, { anchor: "start" }));
+      }
       const v = Q((be - al) ** 3, 6);
       return { text: "右の図の灰色の部分の面積を求めましょう。", fig: draw(pl.w + 18, pl.h, items), ans: num(v), side: true, key: `af:${type}:${al}:${be}:${m}:${n}`, meta: { f: (x) => Math.abs(f(x) - g(x)), a: al, b: be, v: qv(v) } };
     }, (pr) => {
@@ -51635,7 +51674,10 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         // 1ばんは目立たせる
         items.push(ring(P[0][0], P[0][1], 2.6, INK, 0.5));
         const l0 = Math.hypot(P[0][0] - cx, P[0][1] - cy) || 1;
-        items.push(txt(P[0][0] + (P[0][0] - cx) / l0 * 11, P[0][1] + (P[0][1] - cy) / l0 * 11 + 5.5, "スタート", 3.4, { color: "#555", halo: true }));
+        // 「スタート」は 1の 数字の さらに 外がわに(よこ向きの ときは 字の はばの ぶん 遠くに)。絵の わくから 出ない
+        const ux = (P[0][0] - cx) / l0, uy = (P[0][1] - cy) / l0, d0 = 10 + 6 * Math.abs(ux);
+        const sx = Math.min(W - 7.5, Math.max(7.5, P[0][0] + ux * d0)), sy = Math.min(SZ + 20, Math.max(4, P[0][1] + uy * d0 + 1.2));
+        items.push(txt(sx, sy, "スタート", 3.4, { color: "#555", halo: true }));
         return made(rng, p, ctx, {
           key: `yd:${name}:${n}:${off}`,
           softKey: name,
@@ -51667,7 +51709,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         const fromBack = p.back && rng.chance(0.4);
         const group = p.group && rng.chance(0.5);
         const k = rng.int(group ? 2 : 1, group ? p.n - 2 : p.n);
-        const S = 16, P = 19.5, X0 = 30, CY = 15;
+        // 8ひき でも 絵の わくに おさまるように 間かくを つめる
+        const X0 = 30, CY = 15, P = Math.min(19.5, (W - X0 - 3) / p.n), S = Math.min(16, P - 1.5);
         const items = [];
         items.push({ t: "path", d: `M4 ${CY}L14 ${CY - 6}L14 ${CY - 2.5}L24 ${CY - 2.5}L24 ${CY + 2.5}L14 ${CY + 2.5}L14 ${CY + 6}Z`, w: 0.5, fill: "light", lead: true });
         items.push(txt(14, CY + 13, "まえ", 4.6, { bold: true }));
@@ -52536,15 +52579,17 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   function svgBarChart({ labels, values, unit, max }, labelTexts, unitText) {
     const n = values.length;
     const top = Math.max(max, ...values);
-    const padL = 14, padB = 12, padT = 10, barW = 12, gap = 8, h = 50;
+    const padL = 14, padB = 12, padT = 10, barW = 12, gap = 8, h = 58;
     const plotH = h - padB - padT;
     const w2 = padL + n * (barW + gap) + 6;
     const y = (v) => padT + plotH - v / top * plotH;
     let out = "";
     const stepV = top > 10 ? 2 : 1;
+    // 目もりの 数字は、となりと かさならない 間かく(4.6 いじょう)で かく
+    const stepL = [1, 2, 5, 10, 20, 50].find((k) => k % stepV === 0 && plotH / top * k >= 4.6) || stepV;
     for (let v = 0; v <= top; v += stepV) {
       out += `<line x1="${padL}" y1="${y(v)}" x2="${w2 - 2}" y2="${y(v)}" stroke="${v === 0 ? "#000" : "#bbb"}" stroke-width="${v === 0 ? 0.4 : 0.2}"/>`;
-      out += `<text x="${padL - 1.5}" y="${y(v) + 1.6}" font-size="4" text-anchor="end">${v}</text>`;
+      if (v % stepL === 0) out += `<text x="${padL - 1.5}" y="${y(v) + 1.6}" font-size="4" text-anchor="end">${v}</text>`;
     }
     out += `<text x="${padL - 1.5}" y="4" font-size="3.8" text-anchor="end">(${unitText})</text>`;
     values.forEach((v, i) => {
@@ -53172,7 +53217,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   }
   var unMarks = (s) => s.replace(/\ue00b([^\ue00c]*)\ue00c/g, '<i class="var">$1</i>').replace(/\ue000/g, '<sub class="sb">').replace(/\ue001/g, "</sub>").replace(/\ue002/g, "<sup>").replace(/\ue003/g, "</sup>").replace(/\ue004/g, '<span class="vec">').replace(/\ue005/g, "</span>").replace(/\ue006/g, '<span class="ovl">').replace(/\ue007/g, "</span>").replace(/\ue00d/g, '<span class="rdot">').replace(/\ue00e/g, "</span>");
   function inlineMath(text) {
-    return unMarks(sqrtHtml(mathMarks(esc2(text)).replace(/\u0001([^\u0002]*)\u0002([^\u0003]*)\u0003/g, "<ruby>$1<rt>$2</rt></ruby>").replace(/\[\[sys:(.*?):sys\]\]/g, (_, body) => `<span class="sys"><span class="brace">{</span><span class="eqs">${body.split("||").map((e) => `<span>${e}</span>`).join("")}</span></span>`).replace(/\[\[br\]\]/g, "<br>").replace(/\[\[(a|p|t)box:([\d.]+)\]\]/g, (_, k, w2) => `<span class="abox ans${k === "t" ? " tall" : ""}" style="width:${w2}mm"></span>`).replace(/\[\[fbox(1?)\]\]/g, (_, one) => `<span class="fbox"><span class="fb-n${one ? " gray" : ""}">${one ? "1" : ""}</span><span class="fb-bar${one ? " gray" : ""}"></span><span class="fb-d"></span></span>`).replace(/\[\[mbox\]\]/g, '<span class="abox ans" style="width:12mm"></span><span class="fbox"><span class="fb-n"></span><span class="fb-bar"></span><span class="fb-d"></span></span>').replace(/\[\[aline\]\]/g, '<span class="aline"></span>').replace(/\[\[box\]\]/g, '<span class="abox"></span>').replace(/\[\[v:([a-zA-Z])\]\]/g, '<i class="var">$1</i>').replace(/\[\[m:(\d+):(\d+)\/(\d+)\]\]/g, (_, w2, n, d) => `<span class="mixed"><span class="whole">${w2}</span><span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span></span>`).replace(/\[\[f:([^\]\/]+)\/([^\]]+)\]\]/g, (_, n, d) => `<span class="frac"><span class="num">${italVars(n)}</span><span class="den">${italVars(d)}</span></span>`)));
+    return unMarks(sqrtHtml(mathMarks(esc2(text)).replace(/\u0001([^\u0002]*)\u0002([^\u0003]*)\u0003/g, "<ruby>$1<rt>$2</rt></ruby>").replace(/\[\[sys:(.*?):sys\]\]/g, (_, body) => `<span class="sys"><span class="brace">{</span><span class="eqs">${body.split("||").map((e) => `<span>${e}</span>`).join("")}</span></span>`).replace(/\[\[br\]\]/g, "<br>").replace(/\[\[nw\]\]/g, '<span class="nw">').replace(/\[\[\/nw\]\]/g, "</span>").replace(/\[\[(a|p|t)box:([\d.]+)\]\]/g, (_, k, w2) => `<span class="abox ans${k === "t" ? " tall" : ""}" style="width:${w2}mm"></span>`).replace(/\[\[fbox(1?)\]\]/g, (_, one) => `<span class="fbox"><span class="fb-n${one ? " gray" : ""}">${one ? "1" : ""}</span><span class="fb-bar${one ? " gray" : ""}"></span><span class="fb-d"></span></span>`).replace(/\[\[mbox\]\]/g, '<span class="abox ans" style="width:12mm"></span><span class="fbox"><span class="fb-n"></span><span class="fb-bar"></span><span class="fb-d"></span></span>').replace(/\[\[aline\]\]/g, '<span class="aline"></span>').replace(/\[\[box\]\]/g, '<span class="abox"></span>').replace(/\[\[v:([a-zA-Z])\]\]/g, '<i class="var">$1</i>').replace(/\[\[m:(\d+):(\d+)\/(\d+)\]\]/g, (_, w2, n, d) => `<span class="mixed"><span class="whole">${w2}</span><span class="frac"><span class="num">${n}</span><span class="den">${d}</span></span></span>`).replace(/\[\[f:([^\]\/]+)\/([^\]]+)\]\]/g, (_, n, d) => `<span class="frac"><span class="num">${italVars(n)}</span><span class="den">${italVars(d)}</span></span>`)));
   }
   // √ の中に √ があってもよいように、内側から順に
   var sqrtHtml = (s) => {
@@ -53899,7 +53944,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           const a0 = filled || yoji ? { text: p2.text, need: false } : ansify(p2, s.instruction);
           const a = a0.need ? { ...a0, box: uniW(a0.box) } : { ...a0, text: uniW(a0.text) };
           const mv = moveAns(a, p2, filled);
-          const tail = mv ? "" : a.need && !p2.figure ? `　→ ${a.box}` : "";
+          // 「→」と 答えの 四角は はなさない(→ だけが 行の さいごに のこらないように)
+          const tail = mv ? "" : a.need && !p2.figure ? `　[[nw]]→ ${a.box}[[/nw]]` : "";
           if (mv) a.text = mv.text;
           const wsUsed = workOf(p2) && !filled ? wsWithoutShiki(p2.workspace) : p2.workspace;
           const K = useKey ? itemKey(p2, a0, wsUsed) : null;
@@ -54053,10 +54099,11 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         kl.style.width = `${w}px`;
       }
     }
-    for (const kn of page.querySelectorAll(".calc > .key-note")) {
+    // 答えの メモが ます目や 計算らんから はみ出すときは、字を 小さくする(よこに 出る・下に 出る の どちらも)
+    for (const kn of page.querySelectorAll(".calc > .key-note, .ws-grid > .key-note")) {
       const c = kn.parentElement, ch = c.getBoundingClientRect().height;
       let k = 1;
-      for (let i = 0; i < 10 && kn.offsetTop + kn.offsetHeight > ch && k > 0.6; i++) {
+      for (let i = 0; i < 10 && (kn.offsetTop + kn.offsetHeight > ch || kn.scrollWidth > kn.clientWidth + 1) && k > 0.6; i++) {
         k -= 0.05;
         kn.style.fontSize = `${(12 * k).toFixed(2)}pt`;
       }
@@ -54113,7 +54160,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         }
         while (restList.firstElementChild) list2.appendChild(restList.firstElementChild);
       }
-      if (tryShrink(page, blk) || page.classList.contains("fillpage") && tryShrinkAll(page)) {
+      // ページの 下が 4わり いじょう あくときは、つぎの 図を もう少し(0.7ばいまで) ちぢめて 入れる
+      const freeTop = (body.getBoundingClientRect().bottom - blk.getBoundingClientRect().top) / Math.max(1, body.clientHeight);
+      if (tryShrink(page, blk) || freeTop > 0.38 && body.children.length > 1 && tryShrink(page, blk, 0.7) || page.classList.contains("fillpage") && tryShrinkAll(page)) {
         queue.shift();
         continue;
       }
@@ -59437,6 +59486,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/25", t: "プリントの 字の かさなり・はみ出しを なおした(ぼうグラフの 目もり・グラフの 式・答えの メモ など)", tag: "プリント" },
     { d: "26/11/25", t: "単元カードに プリントの 見本を 小さく かたむけて のせた(国語プリントと おなじ)", tag: "ホーム" },
     { d: "26/11/25", t: "お気に入り:プリント画面の「☆お気に入り」で 入れると、ホームから すぐ 作れる", tag: "ホーム" },
     { d: "26/11/24", t: "うごく UI:タブ・★が すっと うごく/問題数の −・＋/おすと ぷにっと", tag: "ホーム" },

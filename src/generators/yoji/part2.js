@@ -66,7 +66,10 @@
       // 1ばんは目立たせる
       items.push(ring(P[0][0], P[0][1], 2.6, INK, 0.5));
       const l0 = Math.hypot(P[0][0] - cx, P[0][1] - cy) || 1;
-      items.push(txt(P[0][0] + (P[0][0] - cx) / l0 * 11, P[0][1] + (P[0][1] - cy) / l0 * 11 + 5.5, "スタート", 3.4, { color: "#555", halo: true }));
+      // 「スタート」は 1の 数字の さらに 外がわに(よこ向きの ときは 字の はばの ぶん 遠くに)。絵の わくから 出ない
+      const ux = (P[0][0] - cx) / l0, uy = (P[0][1] - cy) / l0, d0 = 10 + 6 * Math.abs(ux);
+      const sx = Math.min(W - 7.5, Math.max(7.5, P[0][0] + ux * d0)), sy = Math.min(SZ + 20, Math.max(4, P[0][1] + uy * d0 + 1.2));
+      items.push(txt(sx, sy, "スタート", 3.4, { color: "#555", halo: true }));
       return made(rng, p, ctx, {
         key: `yd:${name}:${n}:${off}`,
         softKey: name,
@@ -98,7 +101,8 @@
       const fromBack = p.back && rng.chance(0.4);
       const group = p.group && rng.chance(0.5);
       const k = rng.int(group ? 2 : 1, group ? p.n - 2 : p.n);
-      const S = 16, P = 19.5, X0 = 30, CY = 15;
+      // 8ひき でも 絵の わくに おさまるように 間かくを つめる
+      const X0 = 30, CY = 15, P = Math.min(19.5, (W - X0 - 3) / p.n), S = Math.min(16, P - 1.5);
       const items = [];
       items.push({ t: "path", d: `M4 ${CY}L14 ${CY - 6}L14 ${CY - 2.5}L24 ${CY - 2.5}L24 ${CY + 2.5}L14 ${CY + 2.5}L14 ${CY + 6}Z`, w: 0.5, fill: "light", lead: true });
       items.push(txt(14, CY + 13, "まえ", 4.6, { bold: true }));

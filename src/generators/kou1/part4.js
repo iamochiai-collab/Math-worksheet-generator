@@ -123,7 +123,7 @@ var kou1d = (() => {
         items.push(L_(ox - 1.2, oy + Hh - v / 100 * Hh, ox, oy + Hh - v / 100 * Hh, { w: 0.3 }), T_(ox - 2, oy + Hh - v / 100 * Hh + 0.9, String(v), 2.6, { anchor: "end" }));
       }
       X0.forEach((x, i) => items.push({ t: "dot", x: ox + x / 100 * W, y: oy + Hh - Y0[i] / 100 * Hh, r: 0.8 }));
-      items.push(T_(ox + W + 1, oy + Hh + 4.4, "[[v:x]]", 3.2, { anchor: "start" }), T_(ox, oy - 2, "[[v:y]]", 3.2));
+      items.push(T_(ox + W + 2.5, oy + Hh + 1.1, "[[v:x]]", 3.2, { anchor: "start" }), T_(ox, oy - 2, "[[v:y]]", 3.2)); // x は じくの 右はし(「100」と かさならない)
       const ci = RS.indexOf(target);
       return { text: `右の散布図は、ある20人の2つのテストの点数 [[v:x]]，[[v:y]] を表したものです。[[v:x]] と [[v:y]] の相関係数に最も近いものを、次から選びましょう。[[br]]ア 0.9　イ 0.5　ウ 0　エ －0.5　オ －0.9`, fig: draw(ox + W + 8, oy + Hh + 8, items), ans: RCH[ci], side: true, key: `sc:${zx.slice(0, 4)}:${target}`, softKey: String(target), meta: { r, target } };
     }
