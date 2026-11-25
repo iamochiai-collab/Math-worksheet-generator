@@ -25034,8 +25034,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     return { t: "poly", pts: [P3(-tail, wHalf), P3(len3 - tip, wHalf * 0.55), P3(len3, 0), P3(len3 - tip, -wHalf * 0.55), P3(-tail, -wHalf)], w: 0.15, fill: col, ...(CLOCK_COL.on ? { color: col } : {}), lead: true, tag };
   }
   // 針の 色:みじかい はり=あか、ながい はり=あお(設定「はりの 色」で くろにも できる)。生成器が clockColor(p) で きりかえる
-  var CLOCK_COL = { on: true, hour: "#d93b2b", minute: "#2f7fd6" };
-  var clockColor = (p) => (CLOCK_COL.on = !(p && p.hcol === "bw"));
+  var CLOCK_COL = { on: false, hour: "black", minute: "black" };
+  var clockColor = () => (CLOCK_COL.on = false);
   // aux:ほじょの数字(時計の外がわ)。"5" … 5ふんごと(5〜55)、"1" … 1ぷんごと(1〜59。5の倍数は太く)
   // "near" … 5ふんごと(5〜55)と、長いはりの ある ところの 1ぷんの数字だけ(れい:20と25のあいだなら 21〜24)。時計が 小さくて すむので 6問 入る
   function clockItems(cx, cy, R5, t2, { hour = true, minute = true, aux = "none" } = {}) {
@@ -25069,8 +25069,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     }
     // 数字は 小さめで 目もりの すぐ 内がわ。ながい はりは 数字の 手前まで のばす(かさならない)
     const fs = R5 >= 16 ? Math.min(4, Math.max(3.2, R5 * 0.16)) : 2.7, numR = R5 - 0.4 - bigL - 0.5 - fs * 0.5, lenM = numR - fs * 0.62 - 0.3;
-    if (hour) items.push(hand(cx, cy, hourDeg(t2), lenM * 0.68, R5 >= 16 ? 1.05 : 0.8, "hour"));
-    if (minute) items.push(hand(cx, cy, minuteDeg(t2), lenM, R5 >= 16 ? 0.75 : 0.6, "minute"));
+    // 白黒でも わかるように:みじかい はりは 太く みじかく、ながい はりは 細く 長く
+    if (hour) items.push(hand(cx, cy, hourDeg(t2), lenM * 0.64, R5 >= 16 ? 1.35 : 1, "hour"));
+    if (minute) items.push(hand(cx, cy, minuteDeg(t2), lenM, R5 >= 16 ? 0.6 : 0.45, "minute"));
     for (let n = 1; n <= 12; n++) {
       const [x, y] = at(cx, cy, n * 30, numR);
       items.push({ t: "text", x, y: y + fs * 0.36, s: String(n), size: fs });
@@ -25128,8 +25129,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     { key: "tk", label: "時こく", choices: [["auto", "★に合わせる"], ["0", "ちょうど(6じ・6じ00ぷん)"], ["30", "なんじはん まで"], ["15", "15ふんごと(00・15・30・45ふん)"], ["5", "5ふんごと"], ["1", "1ぷんごと"], ["tricky", "まちがえやすい(○じ50ぷんすぎ など)"]] },
     { key: "aux", label: "ほじょの 数字", choices: [["auto", "なし"], ["5", "5ふんごと(5・10…55)"], ["near", "1ぷんごと(はりの ちかくだけ・6問まで できる)"], ["1", "1ぷんごと(1〜59 ぜんぶ・2問まで)"]] },
     { key: "scene", label: "場面(おきた とき など)", choices: [["auto", "あり(絵と ことば)"], ["off", "なし(時計だけ)"]] },
-    { key: "per", label: "1ページの問題数", num: true, choices: [["auto", "おまかせ"], ["2", "2問(大きく)"], ["4", "4問"], ["6", "6問(小さく)"]] },
-    { key: "hcol", label: "はりの 色", choices: [["auto", "いろつき(みじかい=あか・ながい=あお)"], ["bw", "くろ"]] }
+    { key: "per", label: "1ページの問題数", num: true, choices: [["auto", "おまかせ"], ["2", "2問(大きく)"], ["4", "4問"], ["6", "6問(小さく)"]] }
   ];
   // 「なんじなんぷん」を よむ:答えの らんに「じ・ふん」「時・分」を 先に 書いておける
   var CLOCK_READ_OPTS = [...CLOCK_OPTS, { key: "afmt", label: "答えの らん", choices: [["auto", "□ だけ"], ["jifun", "□じ □ふん"], ["kanji", "□時 □分"]] }];
@@ -25359,8 +25359,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   var CLOCK_MATCH_OPTS = [
     CLOCK_OPTS[0],
     { key: "pairs", label: "1問の くみの 数", num: true, choices: [["auto", "★に合わせる"], ["3", "3つ"], ["4", "4つ"]] },
-    { key: "moji", label: "よみかたの 字", choices: [["auto", "ひらがな(4じはん)"], ["kanji", "漢字(4時半)"]] },
-    CLOCK_OPTS[CLOCK_OPTS.length - 1]
+    { key: "moji", label: "よみかたの 字", choices: [["auto", "ひらがな(4じはん)"], ["kanji", "漢字(4時半)"]] }
   ];
   function clockLabel(t2, tk, kanji) {
     const h = Math.floor(t2 / 60), m2 = t2 % 60, han = tk === "0" || tk === "30";
@@ -52610,8 +52609,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       const ha = (h % 12 + m / 60) * Math.PI / 6, ma = m * Math.PI / 30;
       // 針は 数字の 手前で とめる(数字と かさならないように)
       const lm = R - 5.6 - 5.4 * 0.66 - 1, lh = lm * 0.72;
-      items.push({ t: "line", x1: cx, y1: cy, x2: cx + lh * Math.sin(ha), y2: cy - lh * Math.cos(ha), w: 2.2, color: "#d93b2b", lead: true, cap: "round", hand: "h" });
-      items.push({ t: "line", x1: cx, y1: cy, x2: cx + lm * Math.sin(ma), y2: cy - lm * Math.cos(ma), w: 1.2, color: "#2f7fd6", lead: true, cap: "round", hand: "m" });
+      items.push({ t: "line", x1: cx, y1: cy, x2: cx + lh * Math.sin(ha), y2: cy - lh * Math.cos(ha), w: 2.2, lead: true, cap: "round", hand: "h" });
+      items.push({ t: "line", x1: cx, y1: cy, x2: cx + lm * Math.sin(ma), y2: cy - lm * Math.cos(ma), w: 1.2, lead: true, cap: "round", hand: "m" });
       items.push({ t: "circle", cx, cy, r: 1.3, w: 0, fill: "black", lead: true });
       return items;
     }
@@ -53457,7 +53456,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       };
       // 針は 数字の 手前で とめる(数字と かさならないように)
       const lenM = R5 - 0.4 - 2.4 - 0.5 - 1.6 - 3.2 * 0.62 - 0.3;
-      out += needle(ah, lenM * 0.68, 1.05, CLOCK_COL.hour) + needle(am, lenM, 0.75, CLOCK_COL.minute);
+      out += needle(ah, lenM * 0.64, 1.35, "#000") + needle(am, lenM, 0.6, "#000");
       out += `<circle cx="${cx}" cy="${cy}" r="1.1" fill="#000"/>`;
       if (captions[i]) out += `<text x="${cx}" y="${padT + R5 * 2 + 6.5}" font-size="3.8" text-anchor="middle">${captions[i]}</text>`;
     });
@@ -60121,7 +60120,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
-    { d: "26/11/25", t: "とけいの 見た目を 新しく(ふちと 目もりを 太く・はりを 長く・みじかい はり=あか、ながい はり=あお。くろにも できる)", g: 1, unit: "g1-08", sub: 1, kind: "figure" },
+    { d: "26/11/25", t: "とけいの 見た目を 新しく(ふちと 目もりを 太く・はりを 長く・みじかい はりは 太く)", g: 1, unit: "g1-08", sub: 1, kind: "figure" },
     { d: "26/11/25", t: "とけい:針と 数字が かさならないように(針を 数字の 手前で とめる)", g: 1, unit: "g1-16", sub: 1, kind: "figure" },
     { d: "26/11/25", t: "とけい:とけいと よみかた(4じはん など)を せんで むすぶ プリントを 追加", g: 1, unit: "g1-08", sub: 3, kind: "figure" },
     { d: "26/11/25", t: "たしざん・ひきざん:数の 下に 絵(りんご など)を 出せる 設定", g: 1, unit: "g1-03", sub: 1, kind: "drill", opts: { pics: "on" } },
