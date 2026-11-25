@@ -112,6 +112,30 @@ body.panel-mini .help { display: none; }
 /* ===== まとめて作る・保存 ===== */
 .batch { border: 1px solid #aaa; border-radius: 12px; padding: 0; max-width: 520px; width: calc(100% - 32px); box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
 .batch::backdrop { background: rgba(20, 25, 40, 0.45); }
+/* おしらせ(アップデートの しょうかい):3まいの 画面を じどうで めくる */
+.notice { border: 0; border-top: 6px solid #e5a000; border-radius: 18px; padding: 16px 18px 14px; max-width: 460px; width: calc(100% - 24px); max-height: calc(100dvh - 24px); overflow: auto; box-shadow: 0 14px 44px rgba(0,0,0,.3); color: #2b3a55; background: #fff; }
+.notice[open] { animation: ntIn .35s cubic-bezier(.34,1.5,.5,1); }
+@keyframes ntIn { from { transform: translateY(16px) scale(.94); opacity: 0; } }
+.notice::backdrop { background: rgba(20, 25, 40, 0.45); }
+.notice .nt-head { display: flex; flex-direction: column; gap: 4px; }
+.notice .nt-badge { align-self: flex-start; background: #e5484d; color: #fff; font-weight: bold; font-size: 13px; padding: 3px 12px; border-radius: 999px; }
+.notice h2 { margin: 0; font-size: 21px; }
+.notice .nt-lead { margin: 6px 0 10px; font-size: 14.5px; line-height: 1.6; }
+.notice .nt-show { overflow: hidden; border-radius: 12px; border: 1.5px solid #d5d9e2; background: #f3f4f7; }
+.notice .nt-track { display: flex; transition: transform .45s cubic-bezier(.4,.1,.2,1); }
+.notice figure { flex: 0 0 100%; margin: 0; }
+.notice figure img { display: block; width: 100%; aspect-ratio: 780 / 500; object-fit: cover; background: #e9eaee; }
+.notice figcaption { padding: 8px 10px 10px; font-size: 14.5px; font-weight: bold; line-height: 1.5; display: flex; gap: 8px; align-items: flex-start; background: #fff; min-height: 3.4em; }
+.notice figcaption b { flex: none; width: 24px; height: 24px; border-radius: 50%; background: #2b3a55; color: #fff; display: grid; place-items: center; font-size: 14px; }
+.notice .nt-nav { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 8px; }
+.notice .nt-arr { width: 34px; height: 34px; border-radius: 999px; border: 1.5px solid #d5d9e2; background: #fff; font: inherit; font-size: 22px; font-weight: bold; color: #2b3a55; cursor: pointer; padding: 0 0 3px; }
+.notice .nt-dots { display: flex; gap: 7px; }
+.notice .nt-dots i { width: 9px; height: 9px; border-radius: 999px; background: #cfd4de; cursor: pointer; transition: width .3s, background .3s; }
+.notice .nt-dots i.on { width: 24px; background: #2b3a55; }
+.notice .nt-note { margin: 8px 0 10px; font-size: 12.5px; color: #667; line-height: 1.5; }
+.notice .nt-btns { display: flex; gap: 10px; }
+.notice .nt-btns button { flex: 1; font: inherit; font-size: 15px; font-weight: bold; padding: 11px 8px; border-radius: 10px; border: 1.5px solid #2b3a55; background: #2b3a55; color: #fff; cursor: pointer; }
+.notice .nt-btns button.secondary { background: #fff; color: #2b3a55; }
 .batch-form { padding: 18px 20px; font-size: 15px; display: flex; flex-direction: column; gap: 12px; }
 .batch-form h2 { margin: 0; font-size: 19px; color: #1f2a40; }
 .batch-note { margin: 0; font-size: 13px; color: #555; line-height: 1.6; }
@@ -904,6 +928,21 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       <button type="button" id="batchCancel" class="secondary">とじる</button>
     </div>
   </form>
+</dialog>
+<!-- おしらせ(アップデートの しょうかい)。NOTICE.until まで ホームを ひらいた ときに 出す。「今後 表示しない」で もう 出さない -->
+<dialog class="notice" id="noticeDlg" aria-labelledby="ntTitle">
+  <div class="nt-head"><span class="nt-badge">アップデート！</span><h2 id="ntTitle">「お気に入り」が できました</h2></div>
+  <p class="nt-lead">よく つかう プリントを ★で とうろくすると、ホームから すぐ 作れます。</p>
+  <div class="nt-show" id="ntShow">
+    <div class="nt-track">
+      <figure><img src="{{UI:how_fav1}}" alt="プリントの 画面の ☆ ボタン"><figcaption><b>1</b>プリントの 画面で「☆」(お気に入り)を おす</figcaption></figure>
+      <figure><img src="{{UI:how_fav2}}" alt="★に かわった ボタンと メッセージ"><figcaption><b>2</b>「★」に かわったら とうろく できました</figcaption></figure>
+      <figure><img src="{{UI:how_fav3}}" alt="ホームの お気に入り"><figcaption><b>3</b>ホームの いちばん 上の「★お気に入り」を おすと、すぐ 作れます</figcaption></figure>
+    </div>
+  </div>
+  <div class="nt-nav"><button type="button" class="nt-arr" data-d="-1" aria-label="まえ">‹</button><span class="nt-dots" id="ntDots"></span><button type="button" class="nt-arr" data-d="1" aria-label="つぎ">›</button></div>
+  <p class="nt-note">※ この 端末(ブラウザ)に ほぞん されます。はずす ときは もう いちど ★を おすか、ホームの「×」を おします。</p>
+  <div class="nt-btns"><button type="button" class="secondary" id="ntHide">今後 表示しない</button><button type="button" id="ntClose" autofocus>とじる</button></div>
 </dialog>
 <details class="help" id="help">
   <summary>使い方</summary>
@@ -41310,6 +41349,60 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       return `<button type="button" class="fv-chip" data-fi="${i}" data-g="${f.g}" data-unit="${f.unit}" data-kind="${f.kind}" data-sub="${f.sub || 0}" title="${esc2(`${gradeName(f.g)} › ${name}`)}"><span class="nw-tag g${f.g}">${esc2(tag)}</span><span class="fv-name">${esc2(name)}</span><span class="fv-kind">${esc2(KIND_SHORT[f.kind] || "")} ${LEVELS[f.level]?.label || ""}</span><span class="fv-x" data-fx="${i}" role="button" aria-label="お気に入りから はずす">×</span></button>`;
     }).join("")}</div>`;
   }
+  // ===== おしらせ(アップデートの しょうかい) =====
+  // NOTICE.until を すぎたら 出さない。「とじる」は この タブの あいだ だけ、「今後 表示しない」は ずっと 出さない
+  var NOTICE = { id: "fav-2611", until: "2026-12-09T23:59:59+09:00" };
+  var ntIdx = 0, ntTimer = 0;
+  function ntGo(i, user) {
+    const d = $("noticeDlg"), n = d.querySelectorAll(".nt-track figure").length;
+    ntIdx = (i + n) % n;
+    d.querySelector(".nt-track").style.transform = `translateX(-${ntIdx * 100}%)`;
+    d.querySelectorAll("#ntDots i").forEach((x, k) => x.classList.toggle("on", k === ntIdx));
+    clearTimeout(ntTimer);
+    // じどうで めくる(じぶんで おしたら すこし ながく まつ)
+    if (d.open) ntTimer = setTimeout(() => ntGo(ntIdx + 1), user ? 6000 : 3500);
+  }
+  function showNotice(force) {
+    const d = $("noticeDlg");
+    if (!d) return;
+    const key = "notice:" + NOTICE.id;
+    if (!force) {
+      if (Date.now() > Date.parse(NOTICE.until) || store.get(key) === "hide" || navigator.webdriver) return;
+      try { if (sessionStorage.getItem(key)) return; } catch (e) {}
+    }
+    $("ntDots").innerHTML = [...d.querySelectorAll(".nt-track figure")].map((_, k) => `<i data-k="${k}"></i>`).join("");
+    d.showModal ? d.showModal() : d.setAttribute("open", "");
+    ntGo(0);
+  }
+  function closeNotice(hide) {
+    const d = $("noticeDlg"), key = "notice:" + NOTICE.id;
+    if (hide) store.set(key, "hide");
+    try { sessionStorage.setItem(key, "1"); } catch (e) {}
+    clearTimeout(ntTimer);
+    d.close ? d.close() : d.removeAttribute("open");
+  }
+  $("ntClose")?.addEventListener("click", () => closeNotice(false));
+  $("ntHide")?.addEventListener("click", () => closeNotice(true));
+  $("noticeDlg")?.addEventListener("cancel", () => closeNotice(false));
+  $("noticeDlg")?.addEventListener("click", (e) => {
+    const a = e.target.closest(".nt-arr"), dot = e.target.closest("#ntDots i");
+    if (a) ntGo(ntIdx + Number(a.dataset.d), true);
+    else if (dot) ntGo(Number(dot.dataset.k), true);
+  });
+  // スワイプでも めくれる
+  (() => {
+    const sh = $("ntShow");
+    if (!sh) return;
+    let x0 = null;
+    sh.addEventListener("touchstart", (e) => x0 = e.touches[0].clientX, { passive: true });
+    sh.addEventListener("touchend", (e) => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 40) ntGo(ntIdx + (dx < 0 ? 1 : -1), true);
+      x0 = null;
+    });
+  })();
+  setTimeout(() => showNotice(new URLSearchParams(location.search).get("notice") === "1"), 700);
   function goFav(f) {
     homeGrade = f.g;
     if (LEVELS[f.level]) homeLevel = f.level;
