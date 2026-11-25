@@ -82,6 +82,13 @@ body {
 .pager .pg:active { transform: scale(.85); transition-duration: .06s; }
 .pager .seg-thumb { background: #2b3a55; border-radius: 999px; }
 .pager .seg-thumb.is-ans { background: #e08a00; }
+.pager .pg-arr { flex: none; width: 34px; height: 34px; border-radius: 999px; border: 1.5px solid #d5d9e2; background: #fff; font: inherit; font-size: 22px; line-height: 1; font-weight: bold; color: #2b3a55; cursor: pointer; padding: 0 0 3px; transition: transform .22s cubic-bezier(.34,1.8,.5,1), opacity .2s; }
+.pager .pg-arr:active { transform: scale(.85); transition-duration: .06s; }
+.pager .pg-arr:disabled { opacity: .3; cursor: default; }
+.pager .pg-cap { position: relative; z-index: 1; }
+.pager.compact .pg-cap { font-size: 13px; padding: 0 12px; transition: color .25s, transform .22s cubic-bezier(.34,1.8,.5,1); }
+.pager.compact .pg-cap .pg-cnt { font-size: 15px; margin-left: 2px; }
+.pager.compact .pg-cap.on { color: #fff; background: transparent; }
 @media print { .pager { display: none !important; } }
 @media screen { body[data-view="print"] .preview { padding-bottom: 72px; } }
 body:not([data-view="print"]) .pager { display: none; }
@@ -59587,11 +59594,23 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   function pagerMark(i) {
     const nav = $("pager");
     if (!nav) return;
-    for (const b of nav.querySelectorAll(".pg")) b.classList.toggle("on", Number(b.dataset.pg) === i);
+    nav._cur = i;
+    const pages = el.preview.querySelectorAll("article.sheet");
+    const isAns = !!pages[i]?.classList.contains("answers");
+    if (nav.classList.contains("compact")) {
+      // ページが 多い とき:いまの なかま(もんだい/こたえ)に「3/10」を 出す
+      for (const c of nav.querySelectorAll(".pg-cap")) {
+        const mine = c.classList.contains("ans") === isAns;
+        c.classList.toggle("on", mine);
+        const grp = [...pages].filter((x) => x.classList.contains("answers") === c.classList.contains("ans"));
+        c.querySelector(".pg-cnt").textContent = mine ? `${grp.indexOf(pages[i]) + 1}/${grp.length}` : String(grp.length);
+      }
+    } else for (const b of nav.querySelectorAll(".pg")) b.classList.toggle("on", Number(b.dataset.pg) === i);
+    for (const ar of nav.querySelectorAll(".pg-arr")) ar.disabled = ar.dataset.dir === "-1" ? i <= 0 : i >= pages.length - 1;
     nav.querySelector(".seg-thumb")?.remove();
     segSlide(nav);
+    nav.querySelector(".seg-thumb")?.classList.toggle("is-ans", isAns);
     const on = nav.querySelector(".pg.on");
-    nav.querySelector(".seg-thumb")?.classList.toggle("is-ans", !!on?.classList.contains("ans"));
     if (on && nav.scrollWidth > nav.clientWidth + 2) {
       const nr = nav.getBoundingClientRect(), br = on.getBoundingClientRect();
       if (br.left < nr.left + 10 || br.right > nr.right - 10) nav.scrollLeft += br.left - nr.left - nr.width / 2 + br.width / 2;
@@ -59608,43 +59627,67 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       nav.innerHTML = "";
       return;
     }
-    let pn = 0, an = 0, html = "", lastAns = null;
-    pages.forEach((pg2, i) => {
-      const ans = pg2.classList.contains("answers");
-      if (ans !== lastAns) {
-        if (lastAns !== null) html += '<span class="pg-sep"></span>';
-        // 「もんだい」「こたえ」の 字も おせる(その はじめの ページへ)
-        html += `<button type="button" class="pg-cap${ans ? " ans" : ""}" data-pg="${i}">${ans ? "こたえ" : "もんだい"}</button>`;
-        lastAns = ans;
-      }
-      html += `<button type="button" class="pg${ans ? " ans" : ""}" data-pg="${i}" aria-label="${ans ? "こたえ" : "もんだい"} ${ans ? ++an : ++pn}ページ">${ans ? an : pn}</button>`;
-    });
-    nav.innerHTML = html;
+    // ← → で 1ページずつ。ページの 数字が 入りきらない ときは「もんだい 3/10 | こたえ 10」の 形に する
+    const make = (compact) => {
+      let pn = 0, an = 0, html = '<button type="button" class="pg-arr" data-dir="-1" aria-label="まえの ページ">‹</button>', lastAns = null;
+      pages.forEach((pg2, i) => {
+        const ans = pg2.classList.contains("answers");
+        if (ans !== lastAns) {
+          if (lastAns !== null) html += '<span class="pg-sep"></span>';
+          // 「もんだい」「こたえ」の 字も おせる(その はじめの ページへ)
+          html += `<button type="button" class="pg-cap${ans ? " ans" : ""}" data-pg="${i}">${ans ? "こたえ" : "もんだい"}${compact ? ' <span class="pg-cnt"></span>' : ""}</button>`;
+          lastAns = ans;
+        }
+        if (!compact) html += `<button type="button" class="pg${ans ? " ans" : ""}" data-pg="${i}" aria-label="${ans ? "こたえ" : "もんだい"} ${ans ? ++an : ++pn}ページ">${ans ? an : pn}</button>`;
+      });
+      nav.classList.toggle("compact", compact);
+      nav.innerHTML = html + '<button type="button" class="pg-arr" data-dir="1" aria-label="つぎの ページ">›</button>';
+    };
     nav.hidden = false;
+    make(pages.length > 12);
+    if (!nav.classList.contains("compact") && nav.scrollWidth > nav.clientWidth + 2) make(true);
     pagerMark(0);
     // いま 画面の まん中に ある ページに 色を つける
     if ("IntersectionObserver" in window) {
       const vis = new Map();
       pagerIO = new IntersectionObserver((es) => {
         for (const e of es) vis.set(e.target, e.intersectionRatio);
-        let best = -1, bi = 0;
+        // ボタンで うごいている とちゅうは かえない(とちゅうの ページに なって しまうので)
+        if (nav._lock) return;
+        // 画面の 上から 3わりの ところに ある ページを「いまの ページ」に する
+        const top0 = Math.max(0, document.querySelector(".panel")?.getBoundingClientRect().bottom || 0), y = top0 + (innerHeight - top0) * 0.3;
+        let bi = -1, bd = Infinity;
         pages.forEach((pg2, i) => {
-          const v = vis.get(pg2) || 0;
-          if (v > best + 0.01) { best = v; bi = i; }
+          const r = pg2.getBoundingClientRect(), d = y < r.top ? r.top - y : y > r.bottom ? y - r.bottom : 0;
+          if (d < bd) { bd = d; bi = i; }
         });
-        pagerMark(bi);
+        if (bi >= 0) pagerMark(bi);
       }, { threshold: [0, 0.2, 0.4, 0.6, 0.8, 1] });
       for (const pg2 of pages) pagerIO.observe(pg2);
     }
   }
   $("pager")?.addEventListener("click", (e) => {
-    const b = e.target.closest(".pg, .pg-cap");
-    if (!b) return;
-    const pg2 = el.preview.querySelectorAll("article.sheet")[Number(b.dataset.pg)];
+    const nav = $("pager");
+    const b = e.target.closest(".pg, .pg-cap, .pg-arr");
+    if (!b || b.disabled) return;
+    const pages = el.preview.querySelectorAll("article.sheet");
+    const to = b.classList.contains("pg-arr") ? Math.max(0, Math.min(pages.length - 1, (nav._cur || 0) + Number(b.dataset.dir))) : Number(b.dataset.pg);
+    const pg2 = pages[to];
     if (!pg2) return;
     const top = pg2.getBoundingClientRect().top + window.scrollY - (document.querySelector(".panel")?.getBoundingClientRect().height || 0) - 10;
+    // うごき おわるまで(スクロールが 0.25びょう とまるまで)いまの ページを かえない
+    nav._lock = true;
+    const unlock = () => {
+      clearTimeout(nav._lockT);
+      nav._lockT = setTimeout(() => {
+        nav._lock = false;
+        removeEventListener("scroll", unlock);
+      }, 250);
+    };
+    addEventListener("scroll", unlock, { passive: true });
+    unlock();
     window.scrollTo({ top, behavior: "smooth" });
-    pagerMark(Number(b.dataset.pg));
+    pagerMark(to);
   });
   function render() {
     // プリントの画面が出ていないと、ページ分けや図の大きさがはかれない(図が下に落ちる)ので、先に画面を出す
@@ -60139,6 +60182,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/25", t: "プリント画面の 下の ボタン:← → で 1ページずつ。ページが 多い ときは「もんだい 3/10」の 形に" },
     { d: "26/11/25", t: "まとめて作る:「画面に 出す」を 追加(何ページも 作って、見てから 印刷・保存できる)" },
     { d: "26/11/25", t: "プリント画面の 下の ボタン:「もんだい」「こたえ」の 字を おしても その ページへ とぶように" },
     { d: "26/11/25", t: "とけいを 大きく(場面の 絵は 文の よこへ/せんで むすぶ は 上に とけい・下に カード)", g: 1, unit: "g1-16", sub: 1, kind: "figure" },
