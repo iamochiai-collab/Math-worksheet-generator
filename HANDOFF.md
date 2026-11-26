@@ -132,3 +132,9 @@ node tools/test/render.js build/test.html 単元id 種類 難易度 問題数 �
   - makeSolveQs:いまの 設定で buildSheet(ドリル10問・ほかは5問)→ sheetHtml を #svWork に 出して、ol.items の li(なければ section)を 1問ずつに。.kbox .kv(文章題は「答え」行の .key-line)の 字を svTok で 数と ことばに わけ(「8じ30ぷん」→ ます・じ・ます・ぷん)、数だけを 数字ボタンで 入れる。式・分数・図の 答え(.key-fig)は「こたえを みる」→ じぶんで ○×(keyed で 答えを 見せる)。
   - まちがい:1回目は ×「もう1回」(まちがった ますだけ けす)、2回目は 正しい 答えを 赤で 出して「つぎへ」。さいごに 点数と ○×の ならび、「まちがえた もんだいを もう1回」「ちがう もんだいで もう1回」。キーボード(数字・Backspace・Enter)も OK。
   - オフライン:assets/pwa/sw.js(ネット優先・つながらない ときは キャッシュ)と manifest.webmanifest、icon-192/512 を build.py が docs へ コピー。https か localhost の ときだけ 登録。たしかめ:docs を http.server で 出して playwright の setOffline(true) で ひらける こと。
+- 11/27 あさ(先生「ある・ないも 押したら ○」「線結びも 引っ張れる」「スクロール しない」):
+  - svTargets(pr):答えの 図の 赤い ものが ぜんぶ ○(fill なしの circle)なら type "ring"、ぜんぶ 線で 両はしが 問題の dot なら type "line"(灰色の れいの 線は given)。sheet.sections と DOM の section(data-sec)を あわせて pr を とる。
+  - ring:svg を おすと ○(もう いちど で けす)。正解=答えの ○ ぜんぶに ゆびの ○が あり、ほかに ない。line:点から 点へ ドラッグ(pointer、touch-action:none)。点を おすだけで その 線を けす。れいの 点は つかえない。
+  - 1回目 まちがい:まちがった ○/線を あかく ゆらして けす。2回目:正しい 答えを あかい 点線で。
+  - スクロール しない:solve は 100dvh・overflow hidden、ほかの 要素(help・footer)は かくす、touchmove を とめる。svFit は .sv-wrap の 高さ・はばに あわせて 拡大/縮小(上下 まんなか)。「こたえを みる」は 問題と 入れかえ。
+  - 問題が つくれない ときは 10→5→3問 と へらす。たしかめ:scratchpad の probe/sweep.js(学年ごとに ぜんぶの ボタンで ひらいて、keypad/ring/line/self と スクロールを 数える)。
