@@ -9199,7 +9199,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           key: `fp:${segs.map((s) => `${s.a.join(",")}-${s.b.join(",")}`).join("/")}`,
           text: "{平行|へいこう}（　　　　　　　）[[br]]{垂直|すいちょく}（　　　　　　　）",
           figure: { type: "draw", w: W, h: H, items },
-          answer: { display: `{平行|へいこう} ${pairText(P3)}　{垂直|すいちょく} ${pairText(Q3)}`, value: { par: P3, perp: Q3 } },
+          answer: { display: `{平行|へいこう} ${pairText(P3)}　{垂直|すいちょく} ${pairText(Q3)}`, fills: [pairText(P3), pairText(Q3)], value: { par: P3, perp: Q3 } },
           workspace: { type: "none" },
           meta: { dirs: segs.map((s) => s.d) }
         };
@@ -54426,16 +54426,19 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   };
   var calcHtml = (mm, policy, label, extra = "") => mm ? `<div class="calc${label ? " box" : ""}" style="height:${mm}mm">${label ? `<span class="calc-label">${t(label, policy)}</span>` : ""}${extra}</div>` : "";
   // 答えの欄を自分で持っている(図にかく・○をつける・筆算)問題
-  var OWN_ANSWER = new Set(["g1.bigger", "g1.bigNum", "g1.bigNum120", "g1.ordinalColor", "g1.clockDraw", "g1.clockDrawMinute", "g1.tileMove", "g1.dotCopy", "g3.barDraw", "g4.lgDraw", "g4.lgDrawScale", "g5.congDraw", "g6.symDraw", "g6.scaleGrid"]);
+  var OWN_ANSWER = new Set(["g1.areaTiles", "g1.bigger", "g1.bigNum", "g1.bigNum120", "g1.ordinalColor", "g1.clockDraw", "g1.clockDrawMinute", "g1.tileMove", "g1.dotCopy", "g3.barDraw", "g4.lgDraw", "g4.lgDrawScale", "g5.congDraw", "g6.symDraw", "g6.scaleGrid"]);
   function ansify(p, inst) {
     let s = String(p.text ?? "");
     const display = p.answer?.display ?? "";
     const unitFrac = /分の一|分の1|何分の/.test(plainAns(inst) + plainAns(s));
     // （　　　）や (　　　) の空らん → 四角(空白の長さに合わせる)
     s = s.replace(/[（(]([　 ]{2,}(?:[^　 （）()\[\]]{1,4}[　 ]{2,})*)[）)]/g, (m, inner) => /^[　 ]+$/.test(inner) ? "[[box]]" : inner.split(/([^　 ]+)/).map((seg) => /^[　 ]*$/.test(seg) ? seg ? `[[pbox:${Math.min(60, Math.max(26, [...seg].length * 7))}]]` : "" : seg).join(" "));
-    // 文の中の □(「□に」「□を」は説明なのでそのまま)
-    s = s.replace(/□(?![にを])/g, "[[box]]");
-    const re = /\[\[box\]\](?![にを])/g;
+    // 文の中の □(「□に」「□を」は説明なのでそのまま)。
+    // 「□と○の関係」のように □・○ が 数の かわりの しるしの ときは 四角に しない(変わり方)
+    const varSym = /□/.test(s) && /○(?!を)/.test(s);
+    s = s.replace(/\[\[box\]\]/g, "[[boxG]]");
+    if (!varSym) s = s.replace(/□(?![にを])/g, "[[box]]");
+    const re = /\[\[box\]\](?![にを])|\[\[boxG\]\]/g;
     const n = (s.match(re) || []).length;
     if (n) {
       let parts = String(display).split(/[　、]/).filter(Boolean);
@@ -54446,6 +54449,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       let i = 0;
       s = s.replace(re, () => n === 1 ? boxFor(display, unitFrac) : parts.length === n ? boxFor(parts[i++], unitFrac) : "[[abox:22]]");
     }
+    s = s.replace(/\[\[boxG\]\]/g, "[[box]]");
     let has = n > 0 || /\[\[pbox/.test(s);
     if (!has && /＝\s*$/.test(s)) {
       s = s.replace(/\s*$/, "") + boxFor(display, unitFrac);
@@ -60700,6 +60704,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/27", t: "答えの チェック:まとめテストで 答えが 入らない 四角を なおしました(変わり方の □と○、平行・垂直、整数と小数、ひろさの タイル)" },
     { d: "26/11/27", t: "タブレットで とく:幼児・特別支援の 絵の プリント(かずを かぞえよう・とけい・どちらが おおい など)も、その場で 数を 入れたり ○を つけたり できるように。「こたえを みる」に 答えの 図も 出るように" },
     { d: "26/11/27", t: "タブレットで とく:○を つける 問題は ゆびで おして ○、せんで むすぶ 問題は ゆびで なぞって せん。その場で ○×。画面は スクロール しないように" },
     { d: "26/11/26", t: "「タブレットで とく」モードを 追加:1問ずつ 大きく 出して、数字ボタンで 答えると その場で ○×。ネットが なくても つかえます" },

@@ -139,3 +139,5 @@ node tools/test/render.js build/test.html 単元id 種類 難易度 問題数 �
   - スクロール しない:solve は 100dvh・overflow hidden、ほかの 要素(help・footer)は かくす、touchmove を とめる。svFit は .sv-wrap の 高さ・はばに あわせて 拡大/縮小(上下 まんなか)。「こたえを みる」は 問題と 入れかえ。
   - 問題が つくれない ときは 10→5→3問 と へらす。たしかめ:scratchpad の probe/sweep.js(学年ごとに ぜんぶの ボタンで ひらいて、keypad/ring/line/self と スクロールを 数える)。
   - (07:06)「答えがない」:幼児・特支の 絵の プリントは 答えの 図が 答えページに しか ない(filled)→ q.afig(figureHtml(answer.figure))を 「こたえを みる」で 問題の 図と 入れかえ。答えの 図の 赤い 字が ぜんぶ 数なら type "num":図の 上に .sv-fslot(rect+text)を おいて 数字ボタンで 入れる。○の 当たりは 半径 9 いじょう。
+- 11/27 あさ(先生「答えが 書いてない ところ ない?」):tools/test/answers.js を 追加(build/test.html で ぜんぶの 単元・小単元・種類・★1/★3 を つくり、答えが 1つも ない 問題/答えの 入らない 四角 を さがす。SEED=11 などで たね を かえられる)。2992 ケース × たね 4つ で 0 に した。
+  - なおした:ansify で「□と○」の ような しるしの □ は 四角に しない(変わり方)/生成器が 書いた [[box]] は「を」「に」が つづいても 答えの 四角(g5.intDecShift の「□を10倍すると」)/g4.findParallel に answer.fills/g1.areaTiles は 図の 中に 四角が あるので OWN_ANSWER。
