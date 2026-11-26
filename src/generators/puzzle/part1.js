@@ -35,19 +35,24 @@ var puzzle = (() => {
         const big = Math.max(...top.flatMap((a) => left.map((b) => masuOp(op, a, b))));
         const hs = (n === 5 ? 9 : n === 7 ? 7.5 : 5.6) * (Math.max(...top, ...left) >= 100 ? 0.8 : 1);
         const ks = (n === 5 ? 8 : n === 7 ? 6.6 : 5) * (big >= 1000 ? 0.7 : big >= 100 ? 0.82 : 1);
+        // 左ききの 子むけ:たての 数を 右がわに おく(書く 手で 数が かくれない)
+        const lefty = p.hand === "left", hc = lefty ? n : 0, dc = (c) => lefty ? c : c + 1;
+        const side = lefty ? "{右|みぎ}" : "{左|ひだり}";
         const items = [], keys = [];
-        for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) items.push(rect(x0 + c * C, y0 + r * C, C, C, { w: r === 0 || c === 0 ? 0.5 : 0.3, fill: r === 0 || c === 0 ? "#eef3f7" : "white" }));
+        for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) items.push(rect(x0 + c * C, y0 + r * C, C, C, { w: r === 0 || c === hc ? 0.5 : 0.3, fill: r === 0 || c === hc ? "#eef3f7" : "white" }));
         items.push(rect(x0, y0, W, W, { w: 0.9, fill: "none" }));
-        items.push(line(x0 + C, y0, x0 + C, y0 + W, 0.9), line(x0, y0 + C, x0 + W, y0 + C, 0.9));
-        items.push(txt(x0 + C / 2, y0 + C / 2 + hs * 0.36, op === "-" ? "－" : op === "+" ? "＋" : "×", hs, { bold: true }));
-        top.forEach((a, c) => items.push(txt(x0 + (c + 1.5) * C, y0 + C / 2 + hs * 0.36, a, hs, { bold: true })));
-        left.forEach((b, r) => items.push(txt(x0 + C / 2, y0 + (r + 1.5) * C + hs * 0.36, b, hs, { bold: true })));
-        left.forEach((b, r) => top.forEach((a, c) => keys.push(keyNum(x0 + (c + 1.5) * C, y0 + (r + 1.5) * C + ks * 0.36, masuOp(op, a, b), ks))));
-        const timer = "タイム(　　{分|ふん}　　{秒|びょう})";
+        const vx = x0 + (lefty ? n : 1) * C;
+        items.push(line(vx, y0, vx, y0 + W, 0.9), line(x0, y0 + C, x0 + W, y0 + C, 0.9));
+        items.push(txt(x0 + (hc + 0.5) * C, y0 + C / 2 + hs * 0.36, op === "-" ? "－" : op === "+" ? "＋" : "×", hs, { bold: true }));
+        top.forEach((a, c) => items.push(txt(x0 + (dc(c) + 0.5) * C, y0 + C / 2 + hs * 0.36, a, hs, { bold: true })));
+        left.forEach((b, r) => items.push(txt(x0 + (hc + 0.5) * C, y0 + (r + 1.5) * C + hs * 0.36, b, hs, { bold: true })));
+        left.forEach((b, r) => top.forEach((a, c) => keys.push(keyNum(x0 + (dc(c) + 0.5) * C, y0 + (r + 1.5) * C + ks * 0.36, masuOp(op, a, b), ks))));
+        // タイムと 点数を 書く らん(設定で けせる)
+        const rec = p.rec === "off" ? "" : `　[[nw]]タイム(　　{分|ふん}　　{秒|びょう})[[/nw]]　[[nw]]{点|てん}(　　／${n * n})[[/nw]]`;
         return {
           key: `masu${op}:${n}:${top.join(",")}:${left.join(",")}`,
           softKey: `masu${op}:${top.slice(0, 3).join(",")}`,
-          text: `{上|うえ}の {数|かず}${op === "-" ? "から {左|ひだり}の {数|かず}を ひいた" : op === "+" ? "と {左|ひだり}の {数|かず}を たした" : "と {左|ひだり}の {数|かず}を かけた"} {答|こた}えを {書|か}きましょう。　${timer}`,
+          text: `{上|うえ}の {数|かず}${op === "-" ? `から ${side}の {数|かず}を ひいた` : op === "+" ? `と ${side}の {数|かず}を たした` : `と ${side}の {数|かず}を かけた`} {答|こた}えを {書|か}きましょう。${rec}`,
           wide: true,
           ...figs(W + 4, W + 4, items, keys, n === 10 ? 1.2 : 1.1),
           ...base(p),
@@ -491,13 +496,15 @@ var puzzle = (() => {
 // 「計算・パズル」のまとまり(特別支援の画面の「分野べつ」→ ボタン「計算」= GRADES[30])
 var puzzleStage = (() => {
   const size = { key: "size", label: "マスの 数", num: true, choices: [["auto", "100マス"], ["5", "25マス"], ["7", "49マス"], ["10", "100マス"]] };
+  const hand = { key: "hand", label: "きき手", choices: [["auto", "右きき(数は 左)"], ["left", "左きき(数は 右)"]] };
+  const recOpt = { key: "rec", label: "タイム・点数の らん", choices: [["auto", "あり"], ["off", "なし"]] };
   const nOpt = (lab, ch) => ({ key: "n", label: lab, num: true, choices: [["auto", "★に合わせる"], ...ch] });
   const F = ["figure"], D = ["drill"];
   return {
     key: 30, name: "計算・パズル", ruby: "{計算|けいさん}・パズル", short: "", btn: "計算", part: "分野べつ", styleGrade: 3,
     note: "マス計算(25・49・100マス)、虫くい算、魔方陣、たし算クロス、上の数、数独。くりかえし練習や、考える力をつけるプリント(数は毎回かわります)",
     units: [
-      { name: "マス{計算|けいさん}", domain: "計算", from: [["pz.masuAdd", null, { label: "たし算の マス計算", kinds: F, options: [size] }], ["pz.masuSub", null, { label: "ひき算の マス計算", kinds: F, options: [size] }], ["pz.masuMul", null, { label: "かけ算の マス計算", kinds: F, options: [size] }]], unitProps: {} },
+      { name: "マス{計算|けいさん}", domain: "計算", from: [["pz.masuAdd", null, { label: "たし算の マス計算", kinds: F, options: [size, hand, recOpt] }], ["pz.masuSub", null, { label: "ひき算の マス計算", kinds: F, options: [size, hand, recOpt] }], ["pz.masuMul", null, { label: "かけ算の マス計算", kinds: F, options: [size, hand, recOpt] }]], unitProps: {} },
       { name: "{虫|むし}くい{算|ざん}", domain: "計算", from: [["pz.mushi.add", null, { label: "たし算の 虫くい算", kinds: D }], ["pz.mushi.sub", null, { label: "ひき算の 虫くい算", kinds: D }], ["pz.mushi.mul", null, { label: "かけ算の 虫くい算", kinds: D }]] },
       { name: "{魔方陣|まほうじん}", domain: "パズル", from: [["pz.magic", null, { label: "魔方陣", kinds: F, options: [nOpt("大きさ", [["3", "3×3"], ["4", "4×4"]])] }]] },
       { name: "たし{算|ざん}クロス", domain: "パズル", from: [["pz.cross", null, { label: "たし算クロス", kinds: F, options: [nOpt("大きさ", [["3", "3×3(1〜9)"], ["4", "4×4(1〜16)"]])] }]] },

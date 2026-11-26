@@ -439,12 +439,13 @@ var tokushiStages = [
     units: [
       { name: "10までの かず", domain: "A 数と計算", from: [["y-01"], ["y-03"]] },
       { name: "すうじを かこう", domain: "A 数と計算", from: [["y-02b"]], unitProps: { per: 10, starts: [1], defaultCount: 1 } },
-      { name: "かずの じゅんばん", domain: "A 数と計算", from: [["y-05", { basic: { len: 5, lo: 1, hi: 7, blanks: [1, 2] }, normal: { len: 5, lo: 0, hi: 10, blanks: [1, 2] }, challenge: { len: 6, lo: 0, hi: 10, blanks: [2, 3], down: true } }], ["g1-01:4"]] },
+      { name: "かずの じゅんばん", domain: "A 数と計算", from: [["y-05", { basic: { len: 5, lo: 1, hi: 7, blanks: [1, 2] }, normal: { len: 5, lo: 0, hi: 10, blanks: [1, 2] }, challenge: { len: 6, lo: 0, hi: 10, blanks: [2, 3], down: true } }], ["g1-01:4"], ["pz.numMaze", { basic: { seq: "t10" }, normal: { seq: "t10" }, challenge: { seq: "t20" } }, { label: "かずの めいろ", kinds: ["figure"] }]] },
       { name: "どちらが おおい", domain: "A 数と計算", from: [["y-04"], ["g1-01:2"], ["g1-01:5"]] },
       { name: "いくつと いくつ", domain: "A 数と計算", from: [["y-09"], ["g1-01:3"]] },
       { name: "お金", domain: "A 数と計算", from: [["t.coin", { basic: { values: [1, 10] }, normal: { values: [1, 10, 100] }, challenge: { values: [1, 5, 10] } }, "いくらかな"], ["t.coinSum", { basic: { values: [1], kinds: [1, 1], maxEach: 5, maxTotal: 5 }, normal: { values: [1], kinds: [1, 1], maxEach: 10, maxTotal: 10 }, challenge: { values: [1, 5], kinds: [1, 2], maxEach: 5, maxTotal: 10 } }, "ぜんぶで いくら"]] },
       { name: "かたちの なかま", domain: "B 図形", from: [["y-12"], ["g1-12:1"]] },
       { name: "ながさ・かさ・ひろさくらべ", domain: "C 測定", from: [["y-13"], ["g1-05:1"], ["g1-10:1"], ["g1-15:1"]] },
+      { name: "おもさくらべ(てんびん)", domain: "C 測定", from: [["pz.balance", { basic: { mode: "two", light: false }, normal: { mode: "two", light: false }, challenge: { mode: "two", light: true } }, { label: "どちらが おもい", kinds: ["figure"] }]] },
       { name: "なかまわけと えグラフ", domain: "D データの活用", from: [["t.sort"], ["g1-06"]] }
     ]
   },
@@ -452,8 +453,8 @@ var tokushiStages = [
     key: 23, name: "小学部3段階", ruby: "{小学部|しょうがくぶ}3{段階|だんかい}", short: "3", part: "小学部", styleGrade: 1,
     note: "100までの数、20までのたし算・ひき算、身の回りの形と位置、長さ・広さ・かさ、時刻、絵や図での整理",
     units: [
-      { name: "20までの かず", domain: "A 数と計算", from: [["g1-07"]] },
-      { name: "100までの かず", domain: "A 数と計算", from: [["g1-14"]] },
+      { name: "20までの かず", domain: "A 数と計算", from: [["g1-07"], ["pz.numMaze", { basic: { seq: "t10" }, normal: { seq: "t20" }, challenge: { seq: "s2" } }, { label: "かずの めいろ", kinds: ["figure"] }]] },
+      { name: "100までの かず", domain: "A 数と計算", from: [["g1-14"], ["pz.numMaze", { basic: { seq: "s10" }, normal: { seq: "s5" }, challenge: { seq: "t30" } }, { label: "かずの めいろ(とびとび)", kinds: ["figure"] }]] },
       { name: "たしざん(10まで)", domain: "A 数と計算", from: [["g1-03"]] },
       { name: "ひきざん(10まで)", domain: "A 数と計算", from: [["g1-04"]] },
       { name: "3つの かずの けいさん", domain: "A 数と計算", from: [["g1-09"]] },
@@ -463,6 +464,7 @@ var tokushiStages = [
       { name: "まえ・うしろ・うえ・した", domain: "B 図形", from: [["g1-02"], ["y-08"]] },
       { name: "かたちあそび・かたちづくり", domain: "B 図形", from: [["g1-12"], ["g1-18"]] },
       { name: "ながさ・かさ・ひろさ", domain: "C 測定", from: [["g1-05"], ["g1-10"], ["g1-15"]] },
+      { name: "おもさくらべ(てんびん)", domain: "C 測定", from: [["pz.balance", null, { label: "どちらが おもい", kinds: ["figure"] }]] },
       { name: "とけい", domain: "C 測定", from: [["g1-08"], ["g1-16"]] },
       { name: "えグラフ", domain: "D データの活用", from: [["g1-06"]] }
     ]
