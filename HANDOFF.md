@@ -127,3 +127,8 @@ node tools/test/render.js build/test.html 単元id 種類 難易度 問題数 �
   - puzzle/part3.js:pz.numMaze(数の めいろ。MAZE の seq:t10/t20/t30/s2/s5/s10。道は となりどうしで まがり角 3つ いじょう、まわりの 数は じゅんばんに 入らない 数だけ → 道は 1つ。答えの 線は 数の 下)、pz.bingoAdd/Sub/Mul(6問、答え 4つが 4×4 カードの 1れつに ならぶ。のこり 2つは ほかの マス、まわりは にた 数)、pz.balance(WT の 重さ表で じっさいに 近い じゅん。★1 おもい ほう、★2 おもい/かるい まぜ、★3 てんびん 2つから いちばん おもい もの)。puzzleStage s30-12〜14。特支 s22 かずの じゅんばん・おもさくらべ、s23 20までの かず・100までの かず・おもさくらべ、測定 重さ にも from で。
   - マス計算:hand(left=たての 数を 右に)、rec(タイム・点数 らん。[[nw]]で きれない)。
   - 木曜 18:43 の 定期タスク「算数プリント 毎週の アイデアさがし」(trig_01WQvc5Xogjc8Uqy4rU2DNjL):しらべて 報告だけ。ご要望フォーム(回答)が あれば 1週間ぶんを まとめる。
+- 11/26 しんや:タブレット学習モード と オフライン
+  - ホームの 上に「🖨️ プリントを つくる / 📝 タブレットで とく」(#modeSw、store "mode"、body[data-mode])。タブレットの ときは 単元の ボタンで openSolve() → body[data-view="solve"](#solve)。
+  - makeSolveQs:いまの 設定で buildSheet(ドリル10問・ほかは5問)→ sheetHtml を #svWork に 出して、ol.items の li(なければ section)を 1問ずつに。.kbox .kv(文章題は「答え」行の .key-line)の 字を svTok で 数と ことばに わけ(「8じ30ぷん」→ ます・じ・ます・ぷん)、数だけを 数字ボタンで 入れる。式・分数・図の 答え(.key-fig)は「こたえを みる」→ じぶんで ○×(keyed で 答えを 見せる)。
+  - まちがい:1回目は ×「もう1回」(まちがった ますだけ けす)、2回目は 正しい 答えを 赤で 出して「つぎへ」。さいごに 点数と ○×の ならび、「まちがえた もんだいを もう1回」「ちがう もんだいで もう1回」。キーボード(数字・Backspace・Enter)も OK。
+  - オフライン:assets/pwa/sw.js(ネット優先・つながらない ときは キャッシュ)と manifest.webmanifest、icon-192/512 を build.py が docs へ コピー。https か localhost の ときだけ 登録。たしかめ:docs を http.server で 出して playwright の setOffline(true) で ひらける こと。

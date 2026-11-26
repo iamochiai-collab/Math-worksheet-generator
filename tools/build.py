@@ -78,6 +78,11 @@ assert '{{ILLUST_MAP}}' not in s and '{{CHARA:' not in s and '{{VENDOR:' not in 
 import shutil
 shutil.copyfile(root / 'assets' / 'icon' / 'icon180.png', root / 'docs' / 'apple-touch-icon.png')
 shutil.copyfile(root / 'assets' / 'icon' / 'icon32.png', root / 'docs' / 'favicon.png')
+# オフラインでも ひらける しかけ(サービスワーカー・マニフェスト)と ホーム画面の アイコン
+shutil.copyfile(root / 'assets' / 'icon' / 'icon192.png', root / 'docs' / 'icon-192.png')
+shutil.copyfile(root / 'assets' / 'icon' / 'icon512.png', root / 'docs' / 'icon-512.png')
+shutil.copyfile(root / 'assets' / 'pwa' / 'sw.js', root / 'docs' / 'sw.js')
+shutil.copyfile(root / 'assets' / 'pwa' / 'manifest.webmanifest', root / 'docs' / 'manifest.webmanifest')
 (root / 'docs' / 'index.html').write_text(s, encoding='utf-8')
 hook = '  window.__T = { generators, GRADES, buildSheet, makeRng, topicParams, getGenerator, kanji_default, renderText, makeKanjiPolicy, sheetHtml, paginate, ansify, HINTS, topicRuby, topicKinds, filledSheet, pageFill };\n})();\n\n</script>'
 end = '})();\n\n</script>'

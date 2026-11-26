@@ -11,9 +11,19 @@
 <link rel="icon" type="image/png" sizes="512x512" href="{{ICON:icon512}}">
 <link rel="apple-touch-icon" sizes="180x180" href="{{ICON:icon180}}">
 <meta name="theme-color" content="#0a6aa1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="算数プリント">
 <script>
   // 公開ページ(https)で開いたときは、ホーム画面のアイコンをファイルのほうにする(iPhone・iPad は data URI を使わないことがあるため)
   if (/^https?:/.test(location.protocol)) document.querySelector('link[rel="apple-touch-icon"]').href = "apple-touch-icon.png";
+  // 公開ページでは、オフラインでも ひらけるように する(1回 ひらくと 手もとに ほぞん される)
+  if ((location.protocol === "https:" || location.hostname === "localhost") && "serviceWorker" in navigator) {
+    const mf = document.createElement("link");
+    mf.rel = "manifest"; mf.href = "manifest.webmanifest";
+    document.head.appendChild(mf);
+    addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+  }
 </script>
 <style>
 /* ===== 共通(画面・印刷) ===== */
@@ -175,6 +185,82 @@ body.panel-mini .help { display: none; }
 /* ===== メニュー画面(開いたときの最初の画面) ===== */
 body[data-view="home"] .panel, body[data-view="home"] .preview { display: none; }
 body[data-view="print"] .home { display: none; }
+/* ===== タブレットで とく(プリントとは べつの 学習モード) ===== */
+.solve { display: none; }
+body[data-view="solve"] .home, body[data-view="solve"] .panel, body[data-view="solve"] .preview, body[data-view="solve"] .pager { display: none !important; }
+body[data-view="solve"] { background: #eef6f1; }
+body[data-view="solve"] .solve { display: flex; flex-direction: column; min-height: 100dvh; max-width: 980px; margin: 0 auto; padding: 10px 14px 16px; gap: 10px; }
+.mode-sw { display: flex; gap: 0; margin-top: 12px; background: #e9edf3; border-radius: 14px; padding: 4px; position: relative; }
+.mode-sw button { flex: 1; border: 0; background: transparent; font: inherit; font-weight: bold; font-size: 15px; color: #556; padding: 10px 6px; border-radius: 11px; cursor: pointer; position: relative; z-index: 1; transition: color .25s; }
+.mode-sw button.on { color: #fff; }
+.mode-sw .seg-thumb { background: #2b3a55; }
+body[data-mode="tablet"] .mode-sw .seg-thumb { background: #1f9d6b; }
+.mode-note { margin: 8px 2px 0; font-size: 13.5px; color: #17714d; background: #e3f6ec; border-radius: 10px; padding: 8px 12px; line-height: 1.6; }
+.mode-note[hidden] { display: none; }
+body[data-mode="tablet"] .home-units .uk { border-color: #1f9d6b; background: #e9f8f0; color: #17714d; }
+body[data-mode="tablet"] .home-units .uk::before { content: "📝"; margin-right: 2px; }
+body[data-mode="tablet"] .home-units .usb { border-color: #9fd8bf; }
+.sv-top { display: flex; align-items: center; gap: 10px; }
+.sv-back { flex: none; font: inherit; font-weight: bold; font-size: 15px; border: 1.5px solid #2b3a55; background: #fff; color: #2b3a55; border-radius: 10px; padding: 8px 12px; cursor: pointer; }
+.sv-title { flex: 1; min-width: 0; font-weight: bold; font-size: 16px; color: #17714d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sv-prog { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; font-weight: bold; color: #2b3a55; font-size: 15px; }
+.sv-bar { width: 110px; height: 8px; border-radius: 99px; background: #cfe3d8; overflow: hidden; }
+.sv-bar i { display: block; height: 100%; width: 0; background: #1f9d6b; border-radius: 99px; transition: width .4s; }
+.sv-main { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+.sv-main[hidden] { display: none !important; }
+.sv-stage { background: #fff; border-radius: 18px; box-shadow: 0 3px 14px rgba(0,0,0,.08); padding: 16px 16px 20px; overflow: hidden; position: relative; min-height: 200px; }
+.sv-instr { font-size: 17px; font-weight: bold; color: #2b3a55; line-height: 1.6; margin-bottom: 10px; }
+.sv-sheet { width: auto !important; height: auto !important; min-height: 0 !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; overflow: visible !important; display: block !important; background: transparent !important; }
+.sv-sheet .items { margin: 0 !important; display: block !important; }
+.sv-sheet .item { display: inline-flex; padding: 0 !important; min-height: 0; }
+.sv-sheet .item-no { display: none; }
+.sv-fit { transform-origin: 0 0; display: inline-block; }
+.sv-box { display: inline-flex !important; align-items: center; justify-content: center; gap: 1mm; width: auto !important; min-width: 14mm; padding: 0 1.5mm; }
+.sv-unit { font-size: 5mm; font-weight: bold; color: #2b3a55; }
+.sv-slot { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; font-size: 7mm; color: #1d4ed8; background: #fff; border: 0.5mm dashed #9fb3c8; border-radius: 1.5mm; min-width: 10mm; height: 9mm; padding: 0 1mm; transition: background .2s, box-shadow .2s; }
+.sv-sheet .block-no { display: none; }
+.sv-sheet .block-text { font-size: 5.5mm; line-height: 1.7; }
+.sv-sheet .ws-lines { margin-left: 0; }
+.sv-slot.on { background: #fff7d6; box-shadow: 0 0 0 1.2mm #f5b400 inset; }
+.sv-slot.bad { color: #d7263d; animation: svShake .4s; }
+.sv-slot.show { color: #d7263d; }
+@keyframes svShake { 25% { transform: translateX(-2mm); } 75% { transform: translateX(2mm); } }
+.sv-ctrl { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.sv-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: min(100%, 420px); }
+.sv-pad button, .sv-go, .sv-sbtn { font: inherit; font-weight: bold; border: 0; border-radius: 16px; cursor: pointer; touch-action: manipulation; transition: transform .2s cubic-bezier(.34,1.8,.5,1); }
+.sv-pad button { font-size: 30px; padding: 12px 0; background: #fff; color: #2b3a55; box-shadow: 0 3px 0 #c9d3e0; }
+.sv-pad button:active, .sv-go:active, .sv-sbtn:active { transform: scale(.92); transition-duration: .06s; }
+.sv-pad .sv-del { font-size: 18px; background: #f2f4f8; }
+.sv-go { width: min(100%, 420px); font-size: 22px; padding: 14px 0; background: #1f9d6b; color: #fff; box-shadow: 0 4px 0 #157a52; }
+.sv-go:disabled { opacity: .45; }
+.sv-self { display: flex; gap: 12px; width: min(100%, 520px); }
+.sv-sbtn { flex: 1; font-size: 20px; padding: 14px 6px; background: #fff; color: #2b3a55; box-shadow: 0 3px 0 #c9d3e0; }
+.sv-sbtn.ok { background: #ffeef0; color: #d7263d; box-shadow: 0 3px 0 #f2b8c0; }
+.sv-sbtn.ng { background: #eef2ff; color: #3b5bdb; box-shadow: 0 3px 0 #bcc8f5; }
+.sv-help { font-size: 14px; color: #667; text-align: center; }
+.sv-ans { margin-top: 12px; border-top: 2px dashed #f2b8c0; padding-top: 10px; }
+.sv-ans-tag { display: inline-block; background: #d7263d; color: #fff; font-weight: bold; font-size: 13px; border-radius: 99px; padding: 2px 12px; margin-bottom: 6px; }
+.sv-fx { position: fixed; inset: 0; display: grid; place-items: center; pointer-events: none; z-index: 50; }
+.sv-fx .mk { font-size: min(52vw, 340px); line-height: 1; font-weight: bold; animation: svPop .9s cubic-bezier(.34,1.6,.5,1) forwards; text-shadow: 0 6px 20px rgba(0,0,0,.12); }
+.sv-fx .mk.ok { color: rgba(215,38,61,.88); }
+.sv-fx .mk.ng { color: rgba(59,91,219,.85); }
+.sv-fx .say { position: absolute; bottom: 18vh; font-size: 28px; font-weight: bold; background: #fff; border-radius: 99px; padding: 8px 24px; box-shadow: 0 4px 14px rgba(0,0,0,.15); animation: svPop .9s cubic-bezier(.34,1.6,.5,1) forwards; }
+@keyframes svPop { 0% { transform: scale(.3); opacity: 0; } 30% { transform: scale(1.08); opacity: 1; } 75% { transform: scale(1); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
+.sv-end { background: #fff; border-radius: 22px; box-shadow: 0 3px 14px rgba(0,0,0,.08); padding: 24px 18px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.sv-end[hidden] { display: none; }
+.sv-end .chara { width: 150px; height: 170px; }
+.sv-end h2 { margin: 0; font-size: 28px; color: #17714d; }
+.sv-end .sv-score { font-size: 20px; font-weight: bold; color: #2b3a55; }
+.sv-end .sv-marks { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; font-size: 22px; font-weight: bold; }
+.sv-end .sv-marks span { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; background: #f4f6f9; }
+.sv-end .sv-marks .o { color: #d7263d; } .sv-end .sv-marks .x { color: #3b5bdb; }
+.sv-end .sv-btns { display: flex; flex-direction: column; gap: 10px; width: min(100%, 420px); }
+.sv-end .sv-btns button { font: inherit; font-weight: bold; font-size: 18px; padding: 13px; border-radius: 14px; border: 1.5px solid #2b3a55; background: #fff; color: #2b3a55; cursor: pointer; }
+.sv-end .sv-btns button.main { background: #1f9d6b; border-color: #1f9d6b; color: #fff; }
+.sv-work { position: absolute; left: -99999px; top: 0; width: 210mm; visibility: hidden; }
+@media (min-width: 900px) and (min-height: 600px) { .sv-main { flex-direction: row; align-items: flex-start; } .sv-stage { flex: 1; } .sv-ctrl { width: 400px; flex: none; } }
+@media (max-width: 600px) { .sv-pad { gap: 7px; } .sv-pad button { padding: 7px 0; font-size: 26px; } .sv-go { padding: 11px 0; font-size: 20px; } body[data-view="solve"] .solve { padding: 8px 10px 12px; gap: 8px; } .sv-stage { padding: 12px; } }
+@media print { .solve { display: none !important; } }
 .g0 { --gc: #c9457f; } .g7 { --gc: #3d6f8f; } .g8 { --gc: #5a5f9e; } .g9 { --gc: #7a4f6e; } .g1 { --gc: #c8453b; } .g2 { --gc: #c9731e; } .g3 { --gc: #3b8a4c; }
 .g4 { --gc: #23837f; } .g5 { --gc: #2f67b1; } .g6 { --gc: #7150a6; }
 .g21, .g22, .g23 { --gc: #b0476b; } .g24, .g25 { --gc: #3b7d5a; } .g26, .g27 { --gc: #4a5fa0; } .g28 { --gc: #b8641c; } .g29 { --gc: #2f8a96; } .g30 { --gc: #7a4fa3; }
@@ -849,6 +935,11 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   <div class="home-search"><input type="search" id="homeQ" autocomplete="off" enterkeyhint="search" aria-label="単元・小単元をさがす"><button type="button" class="hs-clear" id="homeQClear" hidden>× けす</button><button type="button" class="hn-btn" id="homeNewsBtn" aria-expanded="false"><img src="{{UI:new}}" alt="">あたらしく<b id="homeNewsN"></b></button></div>
   </div>
   <div class="home-found" id="homeFound" hidden></div>
+  <div class="mode-sw" id="modeSw" role="tablist" aria-label="つかいかた">
+    <button type="button" role="tab" data-mode="print">🖨️ プリントを つくる</button>
+    <button type="button" role="tab" data-mode="tablet">📝 タブレットで とく</button>
+  </div>
+  <p class="mode-note" id="modeNote" hidden>タブレット学習モード:単元の ボタンを おすと、画面で 1問ずつ とけます(○×も その場で)。ネットが なくても つかえます。</p>
   <div class="home-favs" id="homeFavs" hidden></div>
   <div class="home-tabs" id="homeTabs" role="tablist" aria-label="えらび方"></div>
   <button type="button" class="tk-banner" id="tkBanner" hidden></button>
@@ -867,6 +958,20 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   <div class="home-units-head"><div class="chara chara-think" aria-hidden="true"></div><h2 id="homeUnitsTitle"></h2><span id="homeHint">単元の「計算ドリル」「文章題」などをおすと作れます</span></div>
   <div class="home-units" id="homeUnits"></div>
   <div class="home-cheer" aria-hidden="true"><div class="chara chara-cheer"></div><span>まいにち すこしずつ、いっしょに がんばろう！</span></div>
+</section>
+<section class="solve" id="solve" aria-label="タブレットで とく">
+  <div class="sv-top">
+    <button type="button" class="sv-back" id="svBack">← もどる</button>
+    <div class="sv-title" id="svTitle"></div>
+    <div class="sv-prog"><span id="svProg"></span><div class="sv-bar"><i id="svBar"></i></div></div>
+  </div>
+  <div class="sv-main" id="svMain">
+    <div class="sv-stage" id="svStage"></div>
+    <div class="sv-ctrl" id="svCtrl"></div>
+  </div>
+  <div class="sv-end" id="svEnd" hidden></div>
+  <div class="sv-fx" id="svFx" aria-live="polite"></div>
+  <div class="sv-work" id="svWork" aria-hidden="true"></div>
 </section>
 <form class="panel" id="panel" onsubmit="return false;">
   <div class="title-row">
@@ -41037,6 +41142,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/26", t: "「タブレットで とく」モードを 追加:1問ずつ 大きく 出して、数字ボタンで 答えると その場で ○×。ネットが なくても つかえます" },
     { d: "26/11/26", t: "計算・パズル:「数の めいろ」(1〜10・1〜20・2とび など)を 追加。特別支援の 2・3段階にも", g: 30, unit: "s30-12", kind: "figure" },
     { d: "26/11/26", t: "計算・パズル:「計算ビンゴ」(答えに ○を つけると ビンゴに なる)を 追加", g: 30, unit: "s30-13", kind: "figure" },
     { d: "26/11/26", t: "「てんびん(おもさくらべ)」を 追加。特別支援の 2・3段階、測定の 重さにも", g: 30, unit: "s30-14", kind: "figure" },
@@ -41152,7 +41258,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   }
   // 画面の 大きさが かわったり、ホームに もどったり したときは、うごかさずに おきなおす
   function reSeg() {
-    for (const box of [$("homeLevels"), $("homeTabs")]) {
+    for (const box of [$("homeLevels"), $("homeTabs"), $("modeSw")]) {
       if (!box) continue;
       box.querySelector(".seg-thumb")?.remove();
       box._seg = null;
@@ -41292,6 +41398,263 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     if (v === "home") reSeg();
     window.scrollTo(0, 0);
   }
+  // ===== タブレットで とく(プリントとは べつの 学習モード) =====
+  // プリントと おなじ 問題を 1問ずつ 大きく 出す。答えの 四角が 数なら 数字ボタンで 入れて その場で ○×。
+  // 数で ない 答え(図・ことば など)は「こたえを みる」→ じぶんで ○× を つける。ネットが なくても うごく
+  var appMode = store.get("mode") === "tablet" ? "tablet" : "print";
+  function setMode(m) {
+    appMode = m;
+    store.set("mode", m);
+    document.body.dataset.mode = m;
+    const sw = $("modeSw");
+    for (const b of sw.querySelectorAll("button")) b.classList.toggle("on", b.dataset.mode === m);
+    sw.querySelector(".seg-thumb")?.remove();
+    segSlide(sw);
+    $("modeNote").hidden = m !== "tablet";
+  }
+  $("modeSw")?.addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-mode]");
+    if (!b || b.dataset.mode === appMode) return;
+    setMode(b.dataset.mode);
+    mascot(...(appMode === "tablet" ? ["idea", "タブレットで<br>とく モードだよ！"] : ["guide", "プリントを<br>つくる モードだよ"]));
+  });
+  var SV = { qs: [], i: 0, res: [], tries: 0, slot: 0, ctx: null, busy: false };
+  var svNorm = (x) => String(x ?? "").replace(/[０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0)).replace(/[．]/g, ".").replace(/[－−]/g, "-").replace(/[\s,，　]/g, "");
+  var svNum = (x) => /^-?\d+(\.\d+)?$/.test(svNorm(x));
+  // 答えの 字を「数」と「ことば」に わける(れい「8じ30ぷん」→ 8・じ・30・ぷん)。式や 分数は あつかわない
+  function svTok(x) {
+    const s0 = String(x ?? "").replace(/[０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0)).replace(/[．]/g, ".").replace(/[\s　]/g, "");
+    if (!s0 || s0.length > 16 || /[＋+×÷＝=／/()（）:：]/.test(s0) || /,\d/.test(s0)) return null;
+    const parts = s0.split(/(\d+(?:\.\d+)?)/).filter((p, i) => p !== "" || i % 2);
+    const nums = parts.filter((p) => /^\d/.test(p));
+    if (!nums.length || nums.length > 3) return null;
+    return parts.map((p) => (/^\d/.test(p) ? { n: p } : { t: p }));
+  }
+  function openSolve(unitId, kind, sub = 0) {
+    el.grade.value = String(homeGrade);
+    refreshUnits();
+    el.unit.value = unitId;
+    refreshKinds();
+    if (!el.subWrap.hidden) {
+      el.subunit.value = String(sub || 0);
+      refreshSubKinds();
+    }
+    el.kind.value = kind;
+    refreshCounts();
+    el.level.value = homeLevel;
+    SV.ctx = { unitId, kind, sub };
+    document.body.dataset.view = "solve";
+    window.scrollTo(0, 0);
+    if (location.hash !== "#solve") location.hash = "solve";
+    startSolve();
+  }
+  // 問題を つくって、1問ずつの データに する
+  function makeSolveQs() {
+    el.seed.value = randomSeed();
+    const spec = currentSpec(), kind = spec.kind;
+    if (!spec.gradeData || !spec.unitId) throw new Error("この 単元は まだ とけません");
+    if (["drill", "word", "figure", "yoji"].includes(kind)) spec.count = kind === "drill" ? 10 : 5;
+    const sheet = buildSheet(spec);
+    const policy = makeKanjiPolicy(kanji_default, spec.gradeData?.grade ?? spec.grade, { excludeCurrentGrade: el.excludeCurrent.checked, furigana: el.furigana.checked });
+    const work = $("svWork");
+    work.innerHTML = sheetHtml(sheet, { policy, withAnswers: true, gradeLabel: "", hints: false, answerMode: "key", trace: false });
+    // 1問ずつに わける:ふつうは ol.items の li 1つが 1問。文章題は section 1つが 1問
+    const qs = [];
+    const plain = (node) => { const c = node.cloneNode(true); c.querySelectorAll("rt, rp").forEach((x) => x.remove()); return c.textContent.trim(); };
+    for (const sec of work.querySelectorAll("article.sheet section.block")) {
+      const lis = [...sec.querySelectorAll(":scope ol.items > li")];
+      if (lis.length) {
+        lis.forEach((li, k) => {
+          if (sec.dataset.example === "1" && k === 0) return; // れい は とばす
+          const toks = [...li.querySelectorAll(".kbox")].map((kb) => kb.querySelector(".kv") ? svTok(plain(kb.querySelector(".kv"))) : null);
+          const ok = toks.length > 0 && toks.every(Boolean) && !li.querySelector(".key-fig");
+          qs.push({ instr: sec.querySelector(".block-text")?.innerHTML || "", html: li.outerHTML, word: false, toks: ok ? toks : null });
+        });
+      } else {
+        // 1つの section が 1問(文章題・図の 問題):文章題は「答え」の 行だけを 数字で 入れる(しきは ノートに)
+        const line = [...sec.querySelectorAll(".ws-line")].find((l) => /答|こた/.test(l.querySelector(".ws-label")?.textContent || ""));
+        const kl = line?.querySelector(".key-line"), tk = kl ? svTok(plain(kl)) : null;
+        const kbs = line ? [] : [...sec.querySelectorAll(".kbox")].map((kb) => kb.querySelector(".kv") ? svTok(plain(kb.querySelector(".kv"))) : null);
+        const toks = tk ? [tk] : kbs.length && kbs.every(Boolean) && !sec.querySelector(".key-fig") ? kbs : null;
+        qs.push({ instr: "", html: sec.outerHTML, word: true, line: !!tk, toks });
+      }
+    }
+    $("svTitle").innerHTML = `${t(sheet.unitTitle ?? sheet.title, policy)}<span style="color:#b8860b;margin-left:8px">${"★".repeat({ basic: 1, normal: 2, challenge: 3 }[spec.level] || 1)}</span>`;
+    work.innerHTML = "";
+    return qs;
+  }
+  function startSolve(list) {
+    $("svEnd").hidden = true;
+    $("svMain").hidden = false;
+    try {
+      SV.qs = list ? list.map((q) => ({ ...q })) : makeSolveQs();
+    } catch (e) {
+      SV.qs = [];
+      $("svStage").innerHTML = `<p class="sv-instr">${esc2(e.message)}</p>`;
+      $("svCtrl").innerHTML = "";
+      return;
+    }
+    if (!SV.qs.length) {
+      $("svStage").innerHTML = '<p class="sv-instr">この プリントは タブレットでは とけません。</p>';
+      $("svCtrl").innerHTML = "";
+      return;
+    }
+    SV.i = 0;
+    SV.res = [];
+    showQ();
+  }
+  // 問題の 大きさを 画面の はばに あわせる
+  function svFit(box) {
+    const fit = box.querySelector(".sv-fit");
+    if (!fit) return;
+    fit.style.transform = "";
+    const w = fit.scrollWidth || fit.getBoundingClientRect().width, h = fit.scrollHeight;
+    const k = Math.max(0.4, Math.min(fit.querySelector(".block-text") ? 1 : 3.2, (box.clientWidth - 8) / Math.max(1, w), (innerHeight * (matchMedia("(min-width: 900px) and (min-height: 600px)").matches ? 0.68 : innerWidth < 600 ? 0.36 : 0.42)) / Math.max(1, h)));
+    fit.style.transform = `scale(${k})`;
+    fit.parentElement.style.height = `${h * k}px`;
+  }
+  function svSheet(html, keyed, word) {
+    return `<div class="sv-wrap"><div class="sv-fit"><article class="sheet sv-sheet${keyed ? " answers keyed" : ""}">${word ? html : `<ol class="items">${html}</ol>`}</article></div></div>`;
+  }
+  function showQ() {
+    const q = SV.qs[SV.i];
+    SV.tries = 0;
+    SV.slot = 0;
+    SV.busy = false;
+    $("svProg").textContent = `${SV.i + 1} / ${SV.qs.length}`;
+    $("svBar").style.width = `${SV.i / SV.qs.length * 100}%`;
+    const st = $("svStage");
+    st.innerHTML = (q.instr ? `<div class="sv-instr">${q.instr}</div>` : "") + svSheet(q.html, false, q.word);
+    // 答えの 四角を、数字ボタンで 入れる「ます」に かえる
+    let n = 0;
+    q.keys = null;
+    if (q.toks) {
+      const holders = q.word && q.line ? (() => {
+        const line = [...st.querySelectorAll(".ws-line")].find((l) => /答|こた/.test(l.querySelector(".ws-label")?.textContent || ""));
+        st.querySelectorAll(".ws-line").forEach((l) => { if (l !== line) l.remove(); });
+        const r = line.querySelector(".ws-rule");
+        r.innerHTML = '<span class="abox ans"></span>';
+        return [r.firstChild];
+      })() : [...st.querySelectorAll(".kbox")].map((kb) => kb.querySelector(".abox, .box, .aline") || kb);
+      q.keys = [];
+      holders.forEach((h, j) => {
+        h.innerHTML = q.toks[j].map((p) => p.n != null ? (q.keys.push(p.n), `<span class="sv-slot" data-i="${n++}"></span>`) : `<span class="sv-unit">${esc2(p.t)}</span>`).join("");
+        h.classList.add("sv-box");
+      });
+    }
+    st.querySelectorAll(".key").forEach((k) => k.remove());
+    const ctrl = $("svCtrl");
+    if (q.keys) {
+      ctrl.innerHTML = `<div class="sv-pad">${[7, 8, 9, 4, 5, 6, 1, 2, 3].map((n) => `<button type="button" data-k="${n}">${n}</button>`).join("")}<button type="button" class="sv-del" data-k="del">けす</button><button type="button" data-k="0">0</button><button type="button" data-k=".">.</button></div><button type="button" class="sv-go" id="svGo">こたえあわせ</button>${q.keys.length > 1 ? '<div class="sv-help">四角を おすと、入れる ところを かえられます</div>' : ""}`;
+      svSelect(0);
+    } else {
+      ctrl.innerHTML = `<button type="button" class="sv-go" id="svShow">こたえを みる</button><div class="sv-help">ノートや 紙に といてから、こたえを みよう</div>`;
+    }
+    requestAnimationFrame(() => svFit(st));
+  }
+  function svSelect(j) {
+    SV.slot = j;
+    $("svStage").querySelectorAll(".sv-slot").forEach((b) => b.classList.toggle("on", Number(b.dataset.i) === j));
+  }
+  function svType(k) {
+    const q = SV.qs[SV.i];
+    if (!q?.keys || SV.busy) return;
+    const b = $("svStage").querySelector(`.sv-slot[data-i="${SV.slot}"]`);
+    if (!b) return;
+    b.classList.remove("bad", "show");
+    let v = b.textContent;
+    if (k === "del") v = v.slice(0, -1);
+    else if (v.length < 7 && !(k === "." && v.includes("."))) v += k;
+    b.textContent = v;
+    requestAnimationFrame(() => svFit($("svStage")));
+  }
+  function svFx(ok, say) {
+    const fx = $("svFx");
+    fx.innerHTML = `<div class="mk ${ok ? "ok" : "ng"}">${ok ? "○" : "×"}</div>${say ? `<div class="say">${say}</div>` : ""}`;
+    setTimeout(() => { if (fx.firstChild) fx.innerHTML = ""; }, 950);
+  }
+  function svNext(ok) {
+    SV.res[SV.i] = ok;
+    SV.busy = true;
+    setTimeout(() => {
+      SV.i++;
+      if (SV.i >= SV.qs.length) svEnd(); else showQ();
+    }, ok ? 1000 : 300);
+  }
+  function svCheck() {
+    const q = SV.qs[SV.i];
+    if (!q?.keys || SV.busy) return;
+    const bs = [...$("svStage").querySelectorAll(".sv-slot")];
+    if (bs.some((b) => !b.textContent)) {
+      const e = bs.find((b) => !b.textContent);
+      svSelect(Number(e.dataset.i));
+      return;
+    }
+    const good = bs.map((b, j) => Number(svNorm(b.textContent)) === Number(q.keys[j]) && svNorm(b.textContent) !== "");
+    if (good.every(Boolean)) {
+      svFx(true, SV.tries ? "できたね！" : ["せいかい！", "すごい！", "やったね！"][SV.i % 3]);
+      svNext(true);
+      return;
+    }
+    SV.tries++;
+    if (SV.tries < 2) {
+      svFx(false, "おしい！ もう1回");
+      bs.forEach((b, j) => { if (!good[j]) { b.classList.add("bad"); setTimeout(() => { b.textContent = ""; b.classList.remove("bad"); }, 450); } });
+      svSelect(good.indexOf(false));
+      return;
+    }
+    // 2回 まちがえたら、正しい 答えを 見せる
+    svFx(false, "こたえを みてみよう");
+    bs.forEach((b, j) => { if (!good[j]) { b.textContent = q.keys[j]; b.classList.add("show"); } });
+    SV.res[SV.i] = false;
+    SV.busy = true;
+    $("svCtrl").innerHTML = '<button type="button" class="sv-go" id="svNextBtn">つぎへ ›</button>';
+  }
+  function svShowAns() {
+    const q = SV.qs[SV.i];
+    const st = $("svStage");
+    st.insertAdjacentHTML("beforeend", `<div class="sv-ans"><span class="sv-ans-tag">こたえ</span>${svSheet(q.html, true, q.word)}</div>`);
+    const ans = st.querySelector(".sv-ans");
+    requestAnimationFrame(() => { svFit(ans); ans.scrollIntoView({ behavior: "smooth", block: "nearest" }); });
+    $("svCtrl").innerHTML = '<div class="sv-help">あっていたかな？</div><div class="sv-self"><button type="button" class="sv-sbtn ok" data-self="1">○ できた</button><button type="button" class="sv-sbtn ng" data-self="0">× ちがった</button></div>';
+  }
+  function svEnd() {
+    $("svBar").style.width = "100%";
+    const n = SV.qs.length, ok = SV.res.filter(Boolean).length, r = ok / n;
+    const end = $("svEnd");
+    $("svMain").hidden = true;
+    end.hidden = false;
+    const wrong = SV.qs.filter((_, i) => !SV.res[i]);
+    end.innerHTML = `<div class="chara chara-${r >= 0.8 ? "banzai" : r >= 0.5 ? "maru" : "cheer"}" aria-hidden="true"></div>
+      <h2>${r === 1 ? "ぜんぶ せいかい！" : r >= 0.8 ? "よく できました！" : r >= 0.5 ? "がんばったね！" : "つぎも がんばろう！"}</h2>
+      <div class="sv-score">${n}もん中 ${ok}もん せいかい</div>
+      <div class="sv-marks">${SV.res.map((x) => `<span class="${x ? "o" : "x"}">${x ? "○" : "×"}</span>`).join("")}</div>
+      <div class="sv-btns">${wrong.length ? '<button type="button" class="main" data-end="wrong">まちがえた もんだいを もう1回</button>' : ""}<button type="button"${wrong.length ? "" : ' class="main"'} data-end="again">ちがう もんだいで もう1回</button><button type="button" data-end="home">メニューへ もどる</button></div>`;
+    SV.wrong = wrong;
+  }
+  $("solve")?.addEventListener("click", (e) => {
+    const b = e.target.closest("button, .sv-slot");
+    if (!b) return;
+    if (b.classList.contains("sv-slot")) return svSelect(Number(b.dataset.i));
+    if (b.dataset.k) return svType(b.dataset.k);
+    if (b.id === "svGo") return svCheck();
+    if (b.id === "svShow") return svShowAns();
+    if (b.id === "svNextBtn") { SV.busy = false; SV.i++; return SV.i >= SV.qs.length ? svEnd() : showQ(); }
+    if (b.dataset.self) { svFx(b.dataset.self === "1", b.dataset.self === "1" ? "やったね！" : ""); return svNext(b.dataset.self === "1"); }
+    if (b.dataset.end === "wrong") return startSolve(SV.wrong);
+    if (b.dataset.end === "again") return startSolve();
+    if (b.dataset.end === "home" || b.id === "svBack") return showView("home");
+  });
+  // パソコンの キーボードでも 入れられる
+  addEventListener("keydown", (e) => {
+    if (document.body.dataset.view !== "solve" || e.target.closest?.("input, textarea, select")) return;
+    if (/^[0-9.]$/.test(e.key)) svType(e.key);
+    else if (e.key === "Backspace") svType("del");
+    else if (e.key === "Enter") ($("svGo") || $("svNextBtn"))?.click();
+    else return;
+    e.preventDefault();
+  });
+  addEventListener("resize", () => { if (document.body.dataset.view === "solve") { svFit($("svStage")); const a = $("svStage").querySelector(".sv-ans"); if (a) svFit(a); } });
   function openPrint(unitId, kind, sub = 0, opts = null, count = null) {
     el.grade.value = String(homeGrade);
     refreshUnits();
@@ -41637,6 +42000,11 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       mascot(...LEVEL_SAY[homeLevel]);
     } else if (b.dataset.unit) {
       if (b.dataset.g) homeGrade = Number(b.dataset.g); // さがした結果から(ほかの学年の単元)
+      if (appMode === "tablet") {
+        mascot("maru", "OK！<br>がめんで とこう");
+        openSolve(b.dataset.unit, b.dataset.kind, Number(b.dataset.sub) || 0);
+        return;
+      }
       mascot("maru", "OK！<br>プリントを 作るよ");
       openPrint(b.dataset.unit, b.dataset.kind, Number(b.dataset.sub) || 0);
     }
@@ -41697,18 +42065,22 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   $("btnHome").addEventListener("click", () => {
     location.hash = "menu";
   });
-  window.addEventListener("hashchange", () => showView(location.hash === "#print" ? "print" : "home"));
+  window.addEventListener("hashchange", () => {
+    if (location.hash === "#solve" && document.body.dataset.view === "solve") return;
+    showView(location.hash === "#print" ? "print" : "home");
+  });
   renderHome();
   if (q.get("unit")) {
     // 先に画面を出してから作る(かくれたままだと、ページ分けの大きさがはかれない)
     showView("print");
     render();
   } else {
-    if (location.hash === "#print") {
+    if (location.hash === "#print" || location.hash === "#solve") {
       try { history.replaceState(null, "", location.pathname + location.search); } catch {}
     }
     showView("home");
   }
+  setMode(appMode);
 })();
 
 </script>
