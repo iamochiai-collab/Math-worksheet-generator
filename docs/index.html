@@ -226,6 +226,12 @@ svg.sv-touch .bad { animation: svShake .4s; }
 .sv-ctrl { flex: none; }
 .sv-box { display: inline-flex !important; align-items: center; justify-content: center; gap: 1mm; width: auto !important; min-width: 14mm; padding: 0 1.5mm; }
 .sv-unit { font-size: 5mm; font-weight: bold; color: #2b3a55; }
+.sv-fslot { cursor: pointer; }
+.sv-fslot rect { fill: rgba(255,255,255,.85); stroke: #9fb3c8; stroke-width: 0.4; stroke-dasharray: 1.2 0.8; }
+.sv-fslot.on rect { fill: #fff7d6; stroke: #f5b400; stroke-width: 0.8; stroke-dasharray: none; }
+.sv-fslot text { fill: #1d4ed8; font-weight: bold; }
+.sv-fslot.show text, .sv-fslot.bad text { fill: #d7263d; }
+.sv-fslot.bad { animation: svShake .4s; }
 .sv-slot { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; font-size: 7mm; color: #1d4ed8; background: #fff; border: 0.5mm dashed #9fb3c8; border-radius: 1.5mm; min-width: 10mm; height: 9mm; padding: 0 1mm; transition: background .2s, box-shadow .2s; }
 .sv-sheet .block-no { display: none; }
 .sv-sheet .block-text { font-size: 5.5mm; line-height: 1.7; }
@@ -60694,6 +60700,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/27", t: "タブレットで とく:幼児・特別支援の 絵の プリント(かずを かぞえよう・とけい・どちらが おおい など)も、その場で 数を 入れたり ○を つけたり できるように。「こたえを みる」に 答えの 図も 出るように" },
     { d: "26/11/27", t: "タブレットで とく:○を つける 問題は ゆびで おして ○、せんで むすぶ 問題は ゆびで なぞって せん。その場で ○×。画面は スクロール しないように" },
     { d: "26/11/26", t: "「タブレットで とく」モードを 追加:1問ずつ 大きく 出して、数字ボタンで 答えると その場で ○×。ネットが なくても つかえます" },
     { d: "26/11/26", t: "計算・パズル:「数の めいろ」(1〜10・1〜20・2とび など)を 追加。特別支援の 2・3段階にも", g: 30, unit: "s30-12", kind: "figure" },
@@ -61009,6 +61016,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     if (!A || !F || A.type !== "draw" || F.type !== "draw") return null;
     const reds = A.items.filter((it) => SV_RED.test(it.color || "") || SV_RED.test(it.fill || ""));
     if (!reds.length) return null;
+    // 図の 中の 四角に 数を 書く 問題(かずを かぞえよう など):数字ボタンで 入れる
+    const texts = reds.filter((it) => it.t === "text");
+    if (texts.length === reds.length && texts.length <= 12 && texts.every((it) => /^\d{1,3}$/.test(String(it.s).trim()))) return { type: "num", slots: texts.map((it) => ({ x: it.x, y: it.y, size: it.size || 4.2, v: String(it.s).trim(), anchor: it.anchor || "middle" })) };
     const rings = reds.filter((it) => it.t === "circle" && (!it.fill || it.fill === "none"));
     if (rings.length === reds.length) return { type: "ring", rings: rings.map((r) => ({ x: r.cx, y: r.cy, r: r.r })) };
     const lines = reds.filter((it) => it.t === "line");
@@ -61045,7 +61055,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           if ((sec.dataset.example === "1" && k === 0) || pr?.example) return; // れい は とばす
           const toks = [...li.querySelectorAll(".kbox")].map((kb) => kb.querySelector(".kv") ? svTok(plain(kb.querySelector(".kv"))) : null);
           const ok = toks.length > 0 && toks.every(Boolean) && !li.querySelector(".key-fig");
-          qs.push({ instr: sec.querySelector(".block-text")?.innerHTML || "", html: li.outerHTML, word: false, toks: ok ? toks : null, tg: ok ? null : svTargets(pr) });
+          qs.push({ instr: sec.querySelector(".block-text")?.innerHTML || "", html: li.outerHTML, word: false, toks: ok ? toks : null, tg: ok ? null : svTargets(pr), afig: pr?.answer?.figure ? figureHtml(pr.answer.figure, policy) : null });
         });
       } else {
         const pr = S0?.problems[0];
@@ -61055,7 +61065,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         const kl = line?.querySelector(".key-line"), tk = kl ? svTok(plain(kl)) : null;
         const kbs = line ? [] : [...sec.querySelectorAll(".kbox")].map((kb) => kb.querySelector(".kv") ? svTok(plain(kb.querySelector(".kv"))) : null);
         const toks = tk ? [tk] : kbs.length && kbs.every(Boolean) && !sec.querySelector(".key-fig") ? kbs : null;
-        qs.push({ instr: "", html: sec.outerHTML, word: true, line: !!tk, toks, tg: toks ? null : svTargets(pr) });
+        qs.push({ instr: "", html: sec.outerHTML, word: true, line: !!tk, toks, tg: toks ? null : svTargets(pr), afig: pr?.answer?.figure ? figureHtml(pr.answer.figure, policy) : null });
       }
     }
     $("svTitle").innerHTML = `${t(sheet.unitTitle ?? sheet.title, policy)}<span style="color:#b8860b;margin-left:8px">${"★".repeat({ basic: 1, normal: 2, challenge: 3 }[spec.level] || 1)}</span>`;
@@ -61131,6 +61141,16 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     st.querySelectorAll(".key").forEach((k) => k.remove());
     const ctrl = $("svCtrl");
     if (q.keys) {
+      ctrl.innerHTML = `${svPad()}<button type="button" class="sv-go" id="svGo">こたえあわせ</button>${q.keys.length > 1 ? '<div class="sv-help">四角を おすと、入れる ところを かえられます</div>' : ""}`;
+      svSelect(0);
+    } else if (q.tg?.type === "num") {
+      // 図の 中の 四角に 数字ボタンで 数を 入れる
+      const svg = st.querySelector(".sv-fit svg.draw");
+      q.keys = q.tg.slots.map((sl) => sl.v);
+      if (svg) svg.insertAdjacentHTML("beforeend", `<g class="sv-fslots">${q.tg.slots.map((sl, i) => {
+        const w = Math.max(sl.size * 1.3, sl.size * 0.62 * Math.max(1, sl.v.length) + 2.4), x0 = sl.anchor === "start" ? sl.x - 1 : sl.anchor === "end" ? sl.x - w + 1 : sl.x - w / 2;
+        return `<g class="sv-fslot" data-i="${i}"><rect x="${x0}" y="${sl.y - sl.size * 0.95}" width="${w}" height="${sl.size * 1.25}" rx="1.2"/><text x="${x0 + w / 2}" y="${sl.y}" font-size="${sl.size}" text-anchor="middle"></text></g>`;
+      }).join("")}</g>`);
       ctrl.innerHTML = `${svPad()}<button type="button" class="sv-go" id="svGo">こたえあわせ</button>${q.keys.length > 1 ? '<div class="sv-help">四角を おすと、入れる ところを かえられます</div>' : ""}`;
       svSelect(0);
     } else if (q.tg) {
@@ -61223,8 +61243,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     const q = SV.qs[SV.i], tg = q.tg;
     let good, wrongIdx;
     if (tg.type === "ring") {
-      const inT = (m) => tg.rings.some((r) => Math.hypot(r.x - m.x, r.y - m.y) <= r.r * 0.95);
-      const covered = tg.rings.every((r) => SV.marks.some((m) => Math.hypot(r.x - m.x, r.y - m.y) <= r.r * 0.95));
+      const R2 = (r) => Math.max(r.r * 0.95, 9);
+      const inT = (m) => tg.rings.some((r) => Math.hypot(r.x - m.x, r.y - m.y) <= R2(r));
+      const covered = tg.rings.every((r) => SV.marks.some((m) => Math.hypot(r.x - m.x, r.y - m.y) <= R2(r)));
       wrongIdx = SV.marks.map((m, i) => inT(m) ? -1 : i).filter((i) => i >= 0);
       good = covered && !wrongIdx.length;
     } else {
@@ -61262,18 +61283,21 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   }
   function svSelect(j) {
     SV.slot = j;
-    $("svStage").querySelectorAll(".sv-slot").forEach((b) => b.classList.toggle("on", Number(b.dataset.i) === j));
+    $("svStage").querySelectorAll(".sv-slot, .sv-fslot").forEach((b) => b.classList.toggle("on", Number(b.dataset.i) === j));
   }
+  // ます(HTML の 四角 か 図の 中の 四角)の 字を よむ・書く
+  const svGet = (b) => (b.classList.contains("sv-fslot") ? b.querySelector("text").textContent : b.textContent);
+  const svSet = (b, v) => { if (b.classList.contains("sv-fslot")) b.querySelector("text").textContent = v; else b.textContent = v; };
   function svType(k) {
     const q = SV.qs[SV.i];
     if (!q?.keys || SV.busy) return;
-    const b = $("svStage").querySelector(`.sv-slot[data-i="${SV.slot}"]`);
+    const b = $("svStage").querySelector(`.sv-slot[data-i="${SV.slot}"], .sv-fslot[data-i="${SV.slot}"]`);
     if (!b) return;
     b.classList.remove("bad", "show");
-    let v = b.textContent;
+    let v = svGet(b);
     if (k === "del") v = v.slice(0, -1);
     else if (v.length < 7 && !(k === "." && v.includes("."))) v += k;
-    b.textContent = v;
+    svSet(b, v);
     requestAnimationFrame(() => svFit($("svStage")));
   }
   function svFx(ok, say) {
@@ -61293,13 +61317,13 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     const q = SV.qs[SV.i];
     if (SV.busy) return;
     if (!q?.keys) return q?.tg ? svCheckFig() : undefined;
-    const bs = [...$("svStage").querySelectorAll(".sv-slot")];
-    if (bs.some((b) => !b.textContent)) {
-      const e = bs.find((b) => !b.textContent);
+    const bs = [...$("svStage").querySelectorAll(".sv-slot, .sv-fslot")].sort((a, b2) => a.dataset.i - b2.dataset.i);
+    if (bs.some((b) => !svGet(b))) {
+      const e = bs.find((b) => !svGet(b));
       svSelect(Number(e.dataset.i));
       return;
     }
-    const good = bs.map((b, j) => Number(svNorm(b.textContent)) === Number(q.keys[j]) && svNorm(b.textContent) !== "");
+    const good = bs.map((b, j) => Number(svNorm(svGet(b))) === Number(q.keys[j]) && svNorm(svGet(b)) !== "");
     if (good.every(Boolean)) {
       svFx(true, SV.tries ? "できたね！" : ["せいかい！", "すごい！", "やったね！"][SV.i % 3]);
       svNext(true);
@@ -61308,13 +61332,13 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     SV.tries++;
     if (SV.tries < 2) {
       svFx(false, "おしい！ もう1回");
-      bs.forEach((b, j) => { if (!good[j]) { b.classList.add("bad"); setTimeout(() => { b.textContent = ""; b.classList.remove("bad"); }, 450); } });
+      bs.forEach((b, j) => { if (!good[j]) { b.classList.add("bad"); setTimeout(() => { svSet(b, ""); b.classList.remove("bad"); }, 450); } });
       svSelect(good.indexOf(false));
       return;
     }
     // 2回 まちがえたら、正しい 答えを 見せる
     svFx(false, "こたえを みてみよう");
-    bs.forEach((b, j) => { if (!good[j]) { b.textContent = q.keys[j]; b.classList.add("show"); } });
+    bs.forEach((b, j) => { if (!good[j]) { svSet(b, q.keys[j]); b.classList.add("show"); } });
     SV.res[SV.i] = false;
     SV.busy = true;
     $("svCtrl").innerHTML = '<button type="button" class="sv-go" id="svNextBtn">つぎへ ›</button>';
@@ -61324,6 +61348,14 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     const q = SV.qs[SV.i];
     const st = $("svStage");
     st.innerHTML = `<div class="sv-instr"><span class="sv-ans-tag">こたえ</span></div>${svSheet(q.html, true, q.word)}`;
+    // 答えの 図(○や 線が 入った 図)が あれば、問題の 図と 入れかえる
+    const f0 = st.querySelector(".sv-sheet .figure");
+    if (q.afig && f0) {
+      const tmp = document.createElement("div");
+      tmp.innerHTML = q.afig;
+      const nf = tmp.querySelector(".figure") || tmp.firstElementChild;
+      if (nf) (f0.closest(".fig-wrap") || f0).replaceWith(nf);
+    }
     requestAnimationFrame(() => svFit(st));
     $("svCtrl").innerHTML = '<div class="sv-help big">あっていたかな？</div><div class="sv-self"><button type="button" class="sv-sbtn ok" data-self="1">○ できた</button><button type="button" class="sv-sbtn ng" data-self="0">× ちがった</button></div>';
   }
@@ -61342,9 +61374,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     SV.wrong = wrong;
   }
   $("solve")?.addEventListener("click", (e) => {
-    const b = e.target.closest("button, .sv-slot");
+    const b = e.target.closest("button, .sv-slot, .sv-fslot");
     if (!b) return;
-    if (b.classList.contains("sv-slot")) return svSelect(Number(b.dataset.i));
+    if (b.classList.contains("sv-slot") || b.classList.contains("sv-fslot")) return svSelect(Number(b.dataset.i));
     if (b.dataset.k) return svType(b.dataset.k);
     if (b.id === "svGo") return svCheck();
     if (b.id === "svShow") return svShowAns();

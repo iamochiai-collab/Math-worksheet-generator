@@ -138,3 +138,4 @@ node tools/test/render.js build/test.html 単元id 種類 難易度 問題数 �
   - 1回目 まちがい:まちがった ○/線を あかく ゆらして けす。2回目:正しい 答えを あかい 点線で。
   - スクロール しない:solve は 100dvh・overflow hidden、ほかの 要素(help・footer)は かくす、touchmove を とめる。svFit は .sv-wrap の 高さ・はばに あわせて 拡大/縮小(上下 まんなか)。「こたえを みる」は 問題と 入れかえ。
   - 問題が つくれない ときは 10→5→3問 と へらす。たしかめ:scratchpad の probe/sweep.js(学年ごとに ぜんぶの ボタンで ひらいて、keypad/ring/line/self と スクロールを 数える)。
+  - (07:06)「答えがない」:幼児・特支の 絵の プリントは 答えの 図が 答えページに しか ない(filled)→ q.afig(figureHtml(answer.figure))を 「こたえを みる」で 問題の 図と 入れかえ。答えの 図の 赤い 字が ぜんぶ 数なら type "num":図の 上に .sv-fslot(rect+text)を おいて 数字ボタンで 入れる。○の 当たりは 半径 9 いじょう。
