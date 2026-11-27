@@ -200,7 +200,7 @@ body[data-mode="tablet"] .mode-sw .seg-thumb { background: #1f9d6b; }
 .mode-note { margin: 8px 2px 0; font-size: 13.5px; color: #17714d; background: #e3f6ec; border-radius: 10px; padding: 8px 12px; line-height: 1.6; }
 .mode-note[hidden] { display: none; }
 body[data-mode="tablet"] .home-units .uk { border-color: #1f9d6b; background: #e9f8f0; color: #17714d; }
-body[data-mode="tablet"] .home-units .uk::before { content: "📝"; margin-right: 2px; }
+body[data-mode="tablet"] .home-units .uk::before { content: ""; display: inline-block; width: 1.2em; height: 1.2em; margin-right: 3px; vertical-align: -0.25em; background: url({{UI:ic_tablet}}) center / contain no-repeat; }
 body[data-mode="tablet"] .home-units .usb { border-color: #9fd8bf; }
 .sv-top { display: flex; align-items: center; gap: 10px; }
 .sv-back { flex: none; font: inherit; font-weight: bold; font-size: 15px; border: 1.5px solid #2b3a55; background: #fff; color: #2b3a55; border-radius: 10px; padding: 8px 12px; cursor: pointer; }
@@ -258,6 +258,13 @@ svg.sv-touch .bad { animation: svShake .4s; }
 .sv-fx { position: fixed; inset: 0; display: grid; place-items: center; pointer-events: none; z-index: 50; }
 .sv-fx .mk { font-size: min(52vw, 340px); line-height: 1; font-weight: bold; animation: svPop .9s cubic-bezier(.34,1.6,.5,1) forwards; text-shadow: 0 6px 20px rgba(0,0,0,.12); }
 .sv-fx .mk.ok { color: rgba(215,38,61,.88); }
+.sv-fx .mk img { display: block; width: min(48vw, 300px); height: auto; filter: drop-shadow(0 6px 14px rgba(0,0,0,.15)); }
+.sv-fx .mk.ng img { width: min(30vw, 180px); opacity: .8; }
+.ic { display: inline-block; width: 1.3em; height: 1.3em; object-fit: contain; vertical-align: -0.3em; margin-right: 6px; }
+.sv-go .ic { margin: 0 0 0 8px; background: #fff; border-radius: 50%; padding: 4px; width: 1.25em; height: 1.25em; vertical-align: -0.35em; }
+.sv-pad .sv-del .ic { display: block; margin: 0 auto 2px; width: 1.5em; height: 1.5em; }
+.sv-end .sv-top { display: flex; align-items: flex-end; justify-content: center; gap: 6px; }
+.sv-end .sv-medal { width: 84px; height: auto; margin-bottom: 8px; animation: svPop .9s cubic-bezier(.34,1.6,.5,1) both; }
 .sv-fx .mk.ng { color: rgba(59,91,219,.85); }
 .sv-fx .say { position: absolute; bottom: 18vh; font-size: 28px; font-weight: bold; background: #fff; border-radius: 99px; padding: 8px 24px; box-shadow: 0 4px 14px rgba(0,0,0,.15); animation: svPop .9s cubic-bezier(.34,1.6,.5,1) forwards; }
 @keyframes svPop { 0% { transform: scale(.3); opacity: 0; } 30% { transform: scale(1.08); opacity: 1; } 75% { transform: scale(1); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
@@ -952,8 +959,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   </div>
   <div class="home-found" id="homeFound" hidden></div>
   <div class="mode-sw" id="modeSw" role="tablist" aria-label="つかいかた">
-    <button type="button" role="tab" data-mode="print">🖨️ プリントを つくる</button>
-    <button type="button" role="tab" data-mode="tablet">📝 タブレットで とく</button>
+    <button type="button" role="tab" data-mode="print"><img class="ic" src="{{UI:ic_print}}" alt="">プリントを つくる</button>
+    <button type="button" role="tab" data-mode="tablet"><img class="ic" src="{{UI:ic_tablet}}" alt="">タブレットで とく</button>
   </div>
   <p class="mode-note" id="modeNote" hidden>タブレット学習モード:単元の ボタンを おすと、画面で 1問ずつ とけます(○×も その場で)。ネットが なくても つかえます。</p>
   <div class="home-favs" id="homeFavs" hidden></div>
@@ -41293,6 +41300,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/27", t: "絵:ボタンの 絵文字(プリント・タブレット・PDF)と、タブレットの ○×・こたえを みる・けす・つぎへ を 新しい 絵に しました。さいごまで できたら メダルも 出ます" },
     { d: "26/11/27", t: "まとめて作る:2まいめ からも 1まいめと おなじ ならび(問題の 数・れつ)の プリントに なるように しました" },
     { d: "26/11/27", t: "問題数:「作成」を なんども おすと 問題が 1つずつ ふえて いき、おなじ 番号でも ちがう 問題に なる ことが あったのを なおしました" },
     { d: "26/11/27", t: "図の 大きさ:まとめて作った ときや 2まい いじょうの プリントで、おなじ 問題の 図(ブロック・かさ・ぼう・テープ・ひょう など)が ページごとに 大きく なったり 小さく なったり しないように そろえました" },
@@ -41450,7 +41458,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     $("homeAges").classList.toggle("stage-note", stageMode);
     // くらしの数学:まとめの PDF(62ページ・答えつき)をひらくリンク
     const pdf = tab === "stage" && GRADES[homeGrade]?.pdf;
-    if (pdf) $("homeAges").insertAdjacentHTML("beforeend", `<a class="home-pdf" href="${esc2(pdf.href)}" target="_blank" rel="noopener">📄 ${esc2(pdf.label)}</a>`);
+    if (pdf) $("homeAges").insertAdjacentHTML("beforeend", `<a class="home-pdf" href="${esc2(pdf.href)}" target="_blank" rel="noopener"><img class="ic" src="{{UI:ic_pdf}}" alt="">${esc2(pdf.label)}</a>`);
     $("homeLevels").innerHTML = Object.entries(LEVELS).map(([k, v]) => `<button type="button" class="hl${k === homeLevel ? " on" : ""}" data-level="${k}" aria-pressed="${k === homeLevel}">${v.label}</button>`).join("");
     segSlide($("homeLevels"));
     segSlide($("homeTabs"));
@@ -41707,7 +41715,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   function svSheet(html, keyed, word) {
     return `<div class="sv-wrap"><div class="sv-fit"><article class="sheet sv-sheet${keyed ? " answers keyed" : ""}">${word ? html : `<ol class="items">${html}</ol>`}</article></div></div>`;
   }
-  const svPad = () => `<div class="sv-pad">${[7, 8, 9, 4, 5, 6, 1, 2, 3].map((n) => `<button type="button" data-k="${n}">${n}</button>`).join("")}<button type="button" class="sv-del" data-k="del">けす</button><button type="button" data-k="0">0</button><button type="button" data-k=".">.</button></div>`;
+  const svPad = () => `<div class="sv-pad">${[7, 8, 9, 4, 5, 6, 1, 2, 3].map((n) => `<button type="button" data-k="${n}">${n}</button>`).join("")}<button type="button" class="sv-del" data-k="del"><img class="ic" src="{{UI:ic_erase}}" alt="">けす</button><button type="button" data-k="0">0</button><button type="button" data-k=".">.</button></div>`;
   function showQ() {
     const q = SV.qs[SV.i];
     SV.tries = 0;
@@ -41762,7 +41770,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       }
       ctrl.innerHTML = `<div class="sv-help big">${q.tg.type === "ring" ? "○を つける ところを ゆびで おそう。<br>もう いちど おすと けせるよ。" : "点から 点へ ゆびで なぞって、せんで むすぼう。"}</div><button type="button" class="sv-go" id="svGo">こたえあわせ</button>`;
     } else {
-      ctrl.innerHTML = `<button type="button" class="sv-go" id="svShow">こたえを みる</button><div class="sv-help">ノートや 紙に といてから、こたえを みよう</div>`;
+      ctrl.innerHTML = `<button type="button" class="sv-go" id="svShow"><img class="ic" src="{{UI:ic_look}}" alt="" style="margin:0 8px 0 0">こたえを みる</button><div class="sv-help">ノートや 紙に といてから、こたえを みよう</div>`;
     }
     requestAnimationFrame(() => svFit(st));
   }
@@ -41872,12 +41880,12 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       return;
     }
     // 2回 まちがえたら、正しい 答えを 赤で 見せる
-    svFx(false, "こたえを みてみよう");
+    svFx(false, "こたえを みてみよう", "look");
     const D = tg.dots;
     svDrawUser(tg.type === "ring" ? tg.rings.map((r) => `<circle cx="${r.x}" cy="${r.y}" r="${r.r}" fill="none" stroke="#d7263d" stroke-width="1.1" stroke-dasharray="2.4 1.4"/>`).join("") : tg.pairs.map(([i, j]) => `<line x1="${D[i].x}" y1="${D[i].y}" x2="${D[j].x}" y2="${D[j].y}" stroke="#d7263d" stroke-width="1" stroke-dasharray="2.4 1.4"/>`).join(""));
     SV.res[SV.i] = false;
     SV.busy = true;
-    $("svCtrl").innerHTML = '<div class="sv-help">あかい ところが こたえだよ</div><button type="button" class="sv-go" id="svNextBtn">つぎへ ›</button>';
+    $("svCtrl").innerHTML = '<div class="sv-help">あかい ところが こたえだよ</div><button type="button" class="sv-go" id="svNextBtn">つぎへ<img class="ic" src="{{UI:ic_next}}" alt=""></button>';
   }
   function svSelect(j) {
     SV.slot = j;
@@ -41898,9 +41906,11 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     svSet(b, v);
     requestAnimationFrame(() => svFit($("svStage")));
   }
-  function svFx(ok, say) {
+  // ○:はなまる、×:もう1回(くるっと やじるし)、2回 まちがえた ときは 虫めがね(こたえを みよう)
+  var SV_FX = { ok: "{{UI:ic_maru}}", ng: "{{UI:ic_retry}}", look: "{{UI:ic_look}}" };
+  function svFx(ok, say, pic) {
     const fx = $("svFx");
-    fx.innerHTML = `<div class="mk ${ok ? "ok" : "ng"}">${ok ? "○" : "×"}</div>${say ? `<div class="say">${say}</div>` : ""}`;
+    fx.innerHTML = `<div class="mk ${ok ? "ok" : "ng"}"><img src="${SV_FX[pic || (ok ? "ok" : "ng")]}" alt="${ok ? "○" : "×"}"></div>${say ? `<div class="say">${say}</div>` : ""}`;
     setTimeout(() => { if (fx.firstChild) fx.innerHTML = ""; }, 950);
   }
   function svNext(ok) {
@@ -41935,11 +41945,11 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       return;
     }
     // 2回 まちがえたら、正しい 答えを 見せる
-    svFx(false, "こたえを みてみよう");
+    svFx(false, "こたえを みてみよう", "look");
     bs.forEach((b, j) => { if (!good[j]) { svSet(b, q.keys[j]); b.classList.add("show"); } });
     SV.res[SV.i] = false;
     SV.busy = true;
-    $("svCtrl").innerHTML = '<button type="button" class="sv-go" id="svNextBtn">つぎへ ›</button>';
+    $("svCtrl").innerHTML = '<button type="button" class="sv-go" id="svNextBtn">つぎへ<img class="ic" src="{{UI:ic_next}}" alt=""></button>';
   }
   // こたえを みる:問題の かわりに 答えの 入った 図を 出す(スクロール しない)
   function svShowAns() {
@@ -41964,7 +41974,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     $("svMain").hidden = true;
     end.hidden = false;
     const wrong = SV.qs.filter((_, i) => !SV.res[i]);
-    end.innerHTML = `<div class="chara chara-${r >= 0.8 ? "banzai" : r >= 0.5 ? "maru" : "cheer"}" aria-hidden="true"></div>
+    end.innerHTML = `<div class="sv-top"><div class="chara chara-${r >= 0.8 ? "banzai" : r >= 0.5 ? "maru" : "cheer"}" aria-hidden="true"></div><img class="sv-medal" src="{{UI:ic_medal}}" alt="さいごまで できたね"></div>
       <h2>${r === 1 ? "ぜんぶ せいかい！" : r >= 0.8 ? "よく できました！" : r >= 0.5 ? "がんばったね！" : "つぎも がんばろう！"}</h2>
       <div class="sv-score">${n}もん中 ${ok}もん せいかい</div>
       <div class="sv-marks">${SV.res.map((x) => `<span class="${x ? "o" : "x"}">${x ? "○" : "×"}</span>`).join("")}</div>
