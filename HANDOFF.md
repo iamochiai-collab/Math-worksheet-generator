@@ -149,3 +149,8 @@ node tools/test/render.js build/test.html 単元id 種類 難易度 問題数 �
   - 角・三角形・四角形・立体・面積の 形 など(FIG_SHAPE の 正規表現)は 1問ごとに 形が ちがうので、1マスの 大きさ では なく ページの zoom だけ そろえる(figsize.js も おなじ 正規表現で のぞく)。
   - runBatch の pdf/jpg は、ページを ぜんぶ 作って stage に ならべ、unifyFigs してから 1まいずつ capture(toCap)。print/view は fitPreview の あとで unifyFigs。
   - けっか:figsize 146 → 0、layout(1,3,4,5)・overlap(1〜5,22〜26)・generators・answers・firstopen すべて 0。
+- 11/27 よる2(先生「ほか、バグ ありそうな ことは?」):あたらしく けんさ。
+  - 番号(たね):tools/test/seed.js を 追加。おなじ 番号で 2かい 作ると ちがう 問題に なる ものが 14 あった。原因:render で「下が あいたので ふやした」数が ふつうの らん(5問 など)と おなじ ときは その らんを えらんで いたので、つぎの 作成で そこから また ふえて(4→5→6…)いた。なおし:countBase()(dataset.base が あれば それ)を currentSpec・まえの 数・お気に入り・履歴 で つかう。render では まえの「ふやした」らんを けして、ふえた ときは いつも「○問(ふやした)」らんを 足して えらぶ。→ 0。
+  - いんさつの ページ数:scratchpad の probe/printcount.js(page.pdf の ページ数 と 画面の article 数)863 ケース ちがい 0。
+  - 答えの ページ:probe/anskey.js。ページから はみ出す・答えどうし かさなる は 0。答えが 線や 四角より 長い もの(高校の 長い 答え、4年 漢数字、5年 帯分数の 答え)は 41 ケース あるが、読める(見た目だけ)。
+  - スマホ(iPhone SE・Pixel 7・iPad mini):よこ スクロール なし、エラー なし。

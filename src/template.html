@@ -40477,7 +40477,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       return;
     }
     el.count.disabled = false;
-    const prev = el.count.value;
+    const prev = countBase();
     // すうじを かこう: 「はじめの かず」と「まいすう」を選ぶ(100まで)
     const unit = GRADES[el.grade.value]?.units.find((u2) => u2.id === el.unit.value);
     el.fromWrap.hidden = !unit?.starts;
@@ -40512,6 +40512,10 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     fill2(el.count, counts.map((c) => ({ value: c, label: label(c) })));
     el.count.value = counts.includes(Number(prev)) ? prev : def;
   }
+  // 問題数(「○問(ふやした)」の ときは もとの 数)
+  function countBase() {
+    return el.count.selectedOptions[0]?.dataset.base || el.count.value;
+  }
   function currentSpec() {
     const grade = Number(el.grade.value);
     return {
@@ -40520,7 +40524,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       unitId: el.unit.value,
       kind: el.kind.value,
       level: el.level.value,
-      count: el.count.disabled ? null : Number(el.count.selectedOptions[0]?.dataset.base || el.count.value),
+      count: el.count.disabled ? null : Number(countBase()),
       seed: Number(el.seed.value) || 1,
       from: el.fromWrap.hidden ? 0 : Number(el.from.value) || 0,
       topicNo: el.subWrap.hidden ? 0 : Number(el.subunit.value) || 0,
@@ -40755,15 +40759,17 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       });
       // 問題をふやしたときは、問題数のらんも合わせる
       // (ない数のときは「○問(ふやした)」を たして えらぶ)
-      if (sheet.filledCount && !el.count.disabled) {
-        if (![...el.count.options].some((o) => Number(o.value) === sheet.filledCount)) {
-          const o = new Option(`${sheet.filledCount}問(下が あいたので ふやした)`, String(sheet.filledCount));
-          // つぎに 作るときは もとの 数から ふやしなおす(★を かえると その数は 作れないことが あるため)
-          o.dataset.base = String(spec.count);
-          const after = [...el.count.options].find((x) => Number(x.value) > sheet.filledCount);
-          el.count.add(o, after || null);
-        }
-        el.count.value = String(sheet.filledCount);
+      // まえに ふやした ときの「○問(ふやした)」は けす(もとの 数は spec.count に 入っている)
+      for (const o of [...el.count.options]) if (o.dataset.base) o.remove();
+      if (!el.count.disabled && spec.count != null && [...el.count.options].some((o) => o.value === String(spec.count))) el.count.value = String(spec.count);
+      if (sheet.filledCount && sheet.filledCount !== spec.count && !el.count.disabled) {
+        // いつも「ふやした」の らんに する(ふつうの 5問 などを えらぶと、つぎに 作るとき そこから また ふえて、
+        // おなじ 番号でも 問題が かわって しまう)。つぎに 作るときは もとの 数から ふやしなおす
+        const o = new Option(`${sheet.filledCount}問(下が あいたので ふやした)`, String(sheet.filledCount));
+        o.dataset.base = String(spec.count);
+        const after = [...el.count.options].find((x) => Number(x.value) > sheet.filledCount);
+        el.count.add(o, after || null);
+        o.selected = true;
       }
       el.preview.innerHTML = sheetHtml(sheet, { policy, withAnswers: el.withAnswers.checked, gradeLabel: `${spec.grade}年`, hints: el.hints.checked, answerMode: el.ansStyle.value, trace: el.trace.checked });
       paginate(el.preview);
@@ -41249,6 +41255,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/27", t: "問題数:「作成」を なんども おすと 問題が 1つずつ ふえて いき、おなじ 番号でも ちがう 問題に なる ことが あったのを なおしました" },
     { d: "26/11/27", t: "図の 大きさ:まとめて作った ときや 2まい いじょうの プリントで、おなじ 問題の 図(ブロック・かさ・ぼう・テープ・ひょう など)が ページごとに 大きく なったり 小さく なったり しないように そろえました" },
     { d: "26/11/27", t: "筆算:まとめて作った ときに 筆算の 大きさが ページごとに かわらないように(3けたの たし算は 1れつ 2問)", g: 3, unit: "g3-04", kind: "drill" },
     { d: "26/11/27", t: "答えの チェック:まとめテストで 答えが 入らない 四角を なおしました(変わり方の □と○、平行・垂直、整数と小数、ひろさの タイル)" },
@@ -41991,7 +41998,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   }
   var favSave = (a) => store.set("favs", JSON.stringify(a.slice(0, FAV_MAX)));
   var favKey = (f) => [f.g, f.unit, f.sub || 0, f.kind, f.level].join("|");
-  var favCurrent = () => ({ g: Number(el.grade.value), unit: el.unit.value, sub: el.subWrap.hidden ? 0 : Number(el.subunit.value) || 0, kind: el.kind.value, level: el.level.value, count: el.count.value, opts: currentOpts() });
+  var favCurrent = () => ({ g: Number(el.grade.value), unit: el.unit.value, sub: el.subWrap.hidden ? 0 : Number(el.subunit.value) || 0, kind: el.kind.value, level: el.level.value, count: countBase(), opts: currentOpts() });
   function favSync() {
     const b = $("btnFav");
     if (!b) return;
@@ -42087,7 +42094,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   var HOV_K = 0.4;
   // プリント画面の 設定を いったん おぼえて、見本を 作ったあとに もどす
   function formSnap() {
-    return { g: el.grade.value, u: el.unit.value, s: el.subunit.value, k: el.kind.value, c: el.count.value, l: el.level.value, o: currentOpts() };
+    return { g: el.grade.value, u: el.unit.value, s: el.subunit.value, k: el.kind.value, c: countBase(), l: el.level.value, o: currentOpts() };
   }
   function formRestore(f) {
     try {
