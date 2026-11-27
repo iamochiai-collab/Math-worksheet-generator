@@ -40926,38 +40926,76 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     try {
       const n = opt.n;
       let made = 0;
+      // 1まいめの プリントの ならび(ページごとの 問題の 数・れつの 数)を おぼえて、2まいめ からも おなじ ならびに なる 問題を えらぶ
+      const sigOf = (pages) => pages.map((a) => [...a.querySelectorAll(".body > .block")].map((b) => {
+        const ol = b.querySelector("ol.items");
+        const cols = ol ? getComputedStyle(ol).gridTemplateColumns.split(" ").filter(Boolean).length : 0;
+        return `${b.dataset.sec}:${b.querySelectorAll("li.item").length}:${cols}`;
+      }).join("|"));
+      let tpl = null, tplCount = null, seedNext = spec0.seed;
       for (let i = 0; made < n && i < n * 4; i++) {
         if (batchCancel) break;
-        const spec = { ...spec0, seed: spec0.seed + i };
-        // すうじを かこう は、つぎの プリントへ じゅんばんに つづける
-        if (unit.per) {
-          spec.from = (spec0.from || 1) + i * spec0.count * unit.per;
-          if (spec.from > 100) break;
-        }
+        const room = n - made;
         const render = (sh) => {
           stage.innerHTML = sheetHtml(sh, { policy, withAnswers: opt.answers !== "none", hints: el.hints.checked, answerMode: el.ansStyle.value, trace: el.trace.checked });
           paginate(stage);
           const arts = [...stage.querySelectorAll("article.sheet")];
           return [arts.filter((a) => !a.classList.contains("answers")), arts.filter((a) => a.classList.contains("answers"))];
         };
-        let sheet = filledSheet(spec, (sh) => render(sh)[0]);
-        if (!title) title = fileName(renderText(sheet.title, policy));
-        let [probs, ans] = render(sheet);
-        // ページ数をこえるときは、のこりのページに入る問題だけにする
-        const room = n - made;
-        for (let t = 0; probs.length > room && t < 30; t++) {
-          const cut = trimSheet(sheet, probs, room);
-          if (!cut.problemCount) break;
-          // まだ入らないときは、最後の問題を1つずつへらす
-          if (t > 0) {
-            const last = cut.sections[cut.sections.length - 1];
-            last.problems.pop();
-            if (!last.problems.length) cut.sections.pop();
+        const makeOne = (spec, fixed) => {
+          let sheet = fixed ? buildSheet(spec) : filledSheet(spec, (sh) => render(sh)[0]);
+          if (fixed && spec.gradeData?.fill) sheet.fill = true;
+          let [probs, ans] = render(sheet);
+          // ページ数をこえるときは、のこりのページに入る問題だけにする
+          for (let t = 0; probs.length > room && t < 30; t++) {
+            const cut = trimSheet(sheet, probs, room);
+            if (!cut.problemCount) break;
+            // まだ入らないときは、最後の問題を1つずつへらす
+            if (t > 0) {
+              const last = cut.sections[cut.sections.length - 1];
+              last.problems.pop();
+              if (!last.problems.length) cut.sections.pop();
+            }
+            sheet = cut;
+            [probs, ans] = render(sheet);
           }
-          sheet = cut;
-          [probs, ans] = render(sheet);
+          if (probs.length > room) probs = probs.slice(0, room);
+          const sig = sigOf(probs);
+          // 1まいめと おなじ ページは いくつ あるか(ページ数が ちがえば へらす)
+          const score = tpl ? sig.reduce((a, x, j) => a + (x === tpl[j] ? 1 : 0), 0) - Math.abs(sig.length - Math.min(tpl.length, room)) : 0;
+          const same = tpl ? sig.length === Math.min(tpl.length, room) && sig.every((x, j) => x === tpl[j]) : true;
+          return { sheet, probs, ans, sig, score, same };
+        };
+        let best = null;
+        if (unit.per) {
+          // すうじを かこう は、つぎの プリントへ じゅんばんに つづける
+          const spec = { ...spec0, seed: spec0.seed + i, from: (spec0.from || 1) + i * spec0.count * unit.per };
+          if (spec.from > 100) break;
+          best = makeOne(spec, false);
+        } else {
+          // ためすのは 40回まで・1まいに つき 1.5びょう まで(おそく ならない ように)
+          const tries = tpl ? 40 : 1, t0 = performance.now();
+          for (let t = 0; t < tries && (t === 0 || performance.now() - t0 < 1500); t++) {
+            const spec = { ...spec0, seed: seedNext++ };
+            // 2回に 1回は 1まいめと おなじ 問題数で 作って みる(下を うめる ときの ふえかたが ちがう ことが あるため)
+            const fixed = t % 2 === 1 && tplCount != null && spec.kind !== "matome" && spec.kind !== "test" && spec.kind !== "record";
+            let c;
+            try {
+              c = makeOne(fixed ? { ...spec, count: tplCount } : spec, fixed);
+            } catch (e) {
+              if (!best && t === tries - 1) throw e;
+              continue;
+            }
+            if (!best || c.score > best.score) best = c;
+            if (c.same) break;
+          }
         }
-        if (probs.length > room) probs = probs.slice(0, room);
+        if (!tpl) {
+          tpl = best.sig;
+          tplCount = best.sheet.filledCount || spec0.count || null;
+        }
+        let { sheet, probs, ans } = best;
+        if (!title) title = fileName(renderText(sheet.title, policy));
         // 答えを書きこむ形のときは、答えのページも問題のページと 1まいずつ対応する
         if (ans[0]?.classList.contains("keyed")) ans = ans.slice(0, probs.length);
         // 星の番号は、まとめて作ったページの通し番号にする
@@ -41255,6 +41293,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/27", t: "まとめて作る:2まいめ からも 1まいめと おなじ ならび(問題の 数・れつ)の プリントに なるように しました" },
     { d: "26/11/27", t: "問題数:「作成」を なんども おすと 問題が 1つずつ ふえて いき、おなじ 番号でも ちがう 問題に なる ことが あったのを なおしました" },
     { d: "26/11/27", t: "図の 大きさ:まとめて作った ときや 2まい いじょうの プリントで、おなじ 問題の 図(ブロック・かさ・ぼう・テープ・ひょう など)が ページごとに 大きく なったり 小さく なったり しないように そろえました" },
     { d: "26/11/27", t: "筆算:まとめて作った ときに 筆算の 大きさが ページごとに かわらないように(3けたの たし算は 1れつ 2問)", g: 3, unit: "g3-04", kind: "drill" },
