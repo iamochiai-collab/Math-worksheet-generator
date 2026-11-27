@@ -4556,7 +4556,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     const cols = d + 1;
     return {
       figure: { type: "hissan", rows: rows.map(String), op, digits: d, work, places, cell: cols <= 5 ? 9 : 8.5 },
-      cols: cols <= 5 ? 3 : 2
+      // 5マス(3けたの たし算 など)は 3れつだと はばが たりず ちぢんで しまうので 2れつ(どの ページも 同じ 大きさに)
+      cols: cols <= 4 ? 3 : 2
     };
   }
   function hissanGrid(rows, op, opts = {}) {
@@ -13177,7 +13178,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           key: `das:${A}${op}${B}`,
           text: `${A}${op}${B}＝`,
           figure: { type: "hissan", rows: [A, B], op, digits, work: 0, places, cell: digits + 1 <= 5 ? 9 : 8.5 },
-          cols: digits + 1 <= 5 ? 3 : 2,
+          cols: digits + 1 <= 4 ? 3 : 2,
           answer: { display: D8(r, 3), value: D8(r, 3) },
           workspace: { type: "none" },
           meta: { op }
@@ -14843,7 +14844,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           key: `ha:${a}+${b}`,
           text: `${a}＋${b}＝`,
           figure: hissanFig(a, b, "＋", digits),
-          cols: digits + 1 <= 5 ? 3 : 2,
+          cols: digits + 1 <= 4 ? 3 : 2,
           answer: { display: String(s), value: s },
           workspace: { type: "none" },
           meta: { carry: want }
@@ -14895,7 +14896,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           key: `hs:${a}-${b}`,
           text: `${a}－${b}＝`,
           figure: hissanFig(a, b, "－", digits),
-          cols: digits + 1 <= 5 ? 3 : 2,
+          cols: digits + 1 <= 4 ? 3 : 2,
           answer: { display: String(d), value: d },
           workspace: { type: "none" },
           meta: { borrow: want }
@@ -55111,7 +55112,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       const pages = fillPages(first, !isAns);
       if (!isAns) {
         balanceTail(pages);
-        pages.forEach(stretchPage);
+        // 図を 大きくする ときは、どの ページも 同じ わりあいに する(ページごとに 大きさが かわらないように)
+        if (growOn()) unifyGrow(pages);
+        pages.forEach((pg2) => stretchPage(pg2, true));
         order = renumber(pages);
       }
       pages.forEach((p, i) => {
@@ -55354,9 +55357,36 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   }
   var growHold = false;
   var growOn = () => !growHold && !(typeof el !== "undefined" && el.autoFit && !el.autoFit.checked);
-  function stretchPage(page) {
+  // ページ ぜんぶで 同じ わりあいだけ 図を 大きくする(いちばん せまい ページに あわせる)
+  function unifyGrow(pages) {
+    const P = pages.map((p) => {
+      const body = p.querySelector(".body");
+      return { p, body, figs: [...body.querySelectorAll(".figure")].filter((f13) => !f13.parentElement.closest(".figure")) };
+    }).filter((x) => x.figs.length);
+    if (!P.length) return;
+    // 下が あまり あいていない ページが あれば 大きくしない(いままでと おなじ めやす)
+    if (P.some((x) => x.body.clientHeight - usedH(x.body) <= x.body.clientHeight * 0.18)) return;
+    for (const x of P) x.base = x.figs.map((f13) => Number(f13.style.zoom) || 1);
+    const fitsP = (x) => usedH(x.body) <= x.body.clientHeight * 0.93 && !overflows(x.p) && x.body.scrollWidth <= x.body.clientWidth + 1 && x.figs.every((f13) => {
+      const box = f13.closest("li") || f13.parentElement;
+      return box.scrollWidth <= box.clientWidth + 1;
+    });
+    const setZ = (x, z) => x.figs.forEach((f13, i) => f13.style.zoom = z > 1 || x.base[i] !== 1 ? (x.base[i] * z).toFixed(3) : "");
+    let g = GROW_MAX;
+    for (const x of P) {
+      let best = 1;
+      for (let z = 1.05; z <= g + 1e-9; z += 0.05) {
+        setZ(x, z);
+        if (!fitsP(x)) break;
+        best = z;
+      }
+      g = Math.min(g, best);
+    }
+    for (const x of P) setZ(x, g);
+  }
+  function stretchPage(page, noGrow) {
     const body = page.querySelector(".body");
-    if (growOn() && body.clientHeight - usedH(body) > body.clientHeight * 0.18) growFigures(page);
+    if (!noGrow && growOn() && body.clientHeight - usedH(body) > body.clientHeight * 0.18) growFigures(page);
     const free = body.clientHeight - usedH(body) - 6;
     if (free < 12) return;
     const blocks = [...body.querySelectorAll(":scope > .block")];
@@ -60069,6 +60099,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     };
     // くらしの数学 いがい:ページは ふやさずに、さいごのページの 下が あいている ぶんだけ 問題を ふやす(はかるときは 図を 大きくしない)
     if (!spec.gradeData?.fill) {
+      const hold0 = growHold;
       growHold = true;
       try {
         let cur = m(sheet);
@@ -60087,7 +60118,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           sheet.filledCount = c;
         }
       } finally {
-        growHold = false;
+        growHold = hold0;
       }
       return sheet;
     }
@@ -60388,6 +60419,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       const total = secs.reduce((a, sec) => a + sec.problems.reduce((b, p) => b + (p.points || 0), 0), 0);
       return { ...sheet, sections: secs, totalPoints: sheet.totalPoints ? total : null, problemCount: secs.reduce((a, sec) => a + sec.problems.length, 0) };
     };
+    // まとめて 作る ときは 図(筆算など)を 大きくしない。1まいごとに 大きさが かわらないように
+    const hold0 = growHold;
+    growHold = true;
     try {
       const n = opt.n;
       let made = 0;
@@ -60478,6 +60512,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       const total = pageNo || printPages.length + answerLater.length;
       return batchCancel ? "とちゅうで やめました" : `できました(問題 ${made}ページ${opt.answers !== "none" ? `＋答え ${total - made}ページ` : ""})`;
     } finally {
+      growHold = hold0;
       stage.remove();
     }
   }
@@ -60704,6 +60739,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/27", t: "筆算:まとめて作った ときに 筆算の 大きさが ページごとに かわらないように(3けたの たし算は 1れつ 2問)", g: 3, unit: "g3-04", kind: "drill" },
     { d: "26/11/27", t: "答えの チェック:まとめテストで 答えが 入らない 四角を なおしました(変わり方の □と○、平行・垂直、整数と小数、ひろさの タイル)" },
     { d: "26/11/27", t: "タブレットで とく:幼児・特別支援の 絵の プリント(かずを かぞえよう・とけい・どちらが おおい など)も、その場で 数を 入れたり ○を つけたり できるように。「こたえを みる」に 答えの 図も 出るように" },
     { d: "26/11/27", t: "タブレットで とく:○を つける 問題は ゆびで おして ○、せんで むすぶ 問題は ゆびで なぞって せん。その場で ○×。画面は スクロール しないように" },
