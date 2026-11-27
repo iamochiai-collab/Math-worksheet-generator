@@ -144,3 +144,8 @@ node tools/test/render.js build/test.html 単元id 種類 難易度 問題数 �
 - 11/27 ゆうがた(先生「3けたの 筆算、まとめて出すと 大きさが かわる」):
   - 原因:3けたの たし算は くり上がりの マスで 5マス(53.5mm)、ひき算は 4マス(43mm)。3れつだと 1れつ 47mm しか なく、5マスは ちぢんで 字が 小さく なっていた。さらに ページごとに「下が あいたら 図を 大きく」が ちがう わりあいで かかっていた。
   - なおし:5マスの 筆算は 2れつ(cols: マス<=4 ? 3 : 2。g3 hissan()・小数の 筆算・14846/14898)。図を 大きくする のは unifyGrow(pages) で ページ ぜんぶ 同じ わりあい(下が 18% いじょう あいた ページ だけの ときに)。まとめて作る(runBatch)の あいだは growHold で 大きく しない。filledSheet の growHold は もとの 値に もどす。
+- 11/27 よる(先生「ほかにも 同じ バグ ない?」):tools/test/figsize.js を 追加(まとめて 3まい 作って、おなじ data-gen+svg class の 図の「viewBox 1 あたりの px」を くらべる。8% いじょう ちがうと 出す)。さいしょ 146 件。
+  - なおし:unifyFigs(pages)(paginate の さいご と runBatch の ぜんぶの ページで)。おなじ 問題の 図は いちばん 小さい 図に あわせて zoom を 下げる だけ(大きく しない)。はばが 入りきらない 図は zoom を 下げても そのまま ちぢまないので、はかりなおして 8回まで くりかえす。
+  - 角・三角形・四角形・立体・面積の 形 など(FIG_SHAPE の 正規表現)は 1問ごとに 形が ちがうので、1マスの 大きさ では なく ページの zoom だけ そろえる(figsize.js も おなじ 正規表現で のぞく)。
+  - runBatch の pdf/jpg は、ページを ぜんぶ 作って stage に ならべ、unifyFigs してから 1まいずつ capture(toCap)。print/view は fitPreview の あとで unifyFigs。
+  - けっか:figsize 146 → 0、layout(1,3,4,5)・overlap(1〜5,22〜26)・generators・answers・firstopen すべて 0。

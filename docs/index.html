@@ -55114,6 +55114,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         balanceTail(pages);
         // 図を 大きくする ときは、どの ページも 同じ わりあいに する(ページごとに 大きさが かわらないように)
         if (growOn()) unifyGrow(pages);
+        unifyFigs(pages);
         pages.forEach((pg2) => stretchPage(pg2, true));
         order = renumber(pages);
       }
@@ -55357,6 +55358,42 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   }
   var growHold = false;
   var growOn = () => !growHold && !(typeof el !== "undefined" && el.autoFit && !el.autoFit.checked);
+  // おなじ 問題(data-gen)の 図は、どの ページでも おなじ 大きさに そろえる(いちばん 小さい 図に あわせる)。
+  //  ・マス・テープ・目もり・ブロック などは「1マスの 大きさ」を そろえる(はばが 入りきらず ちぢんだ 図に あわせる)
+  //  ・角・三角形・立体 などの 形の 図は、形が ちがうので ページの 拡大・縮小の わりあい だけを そろえる
+  var FIG_SHAPE = /angle|Angle|tri[A-Z]|triClassify|quad|Quad|poly|Poly|area\.figure|areaComposite|prism|Prism|cuboid|Cuboid|cong|Cong|circle\.|proof|Proof|trig|setSquare|diagonal|volFigure|solid|Solid|boxFaces|route|approx|Sym|sym|scale|Scale/;
+  function unifyFigs(pages) {
+    // はばが 入りきらない 図は zoom を 下げても そのまま ちぢまないので、はかりなおして 数回 そろえる
+    for (let it = 0; it < 8; it++) if (!unifyFigs1(pages)) break;
+  }
+  function unifyFigs1(pages) {
+    const groups = new Map();
+    for (const p of pages) for (const svg of p.querySelectorAll(".body svg[viewBox]")) {
+      if (svg.closest(".key, .key-fig")) continue;
+      let f13 = svg.closest(".figure");
+      while (f13 && f13.parentElement?.closest(".figure")) f13 = f13.parentElement.closest(".figure");
+      const gen = svg.closest("[data-gen]")?.dataset.gen;
+      if (!f13 || !gen) continue;
+      const vbw = Number(svg.getAttribute("viewBox").split(/[\s,]+/)[2]), w = svg.getBoundingClientRect().width;
+      if (!(vbw > 0) || w < 4) continue;
+      const key = `${gen}:${svg.getAttribute("class") || ""}`;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push({ f: f13, s: w / vbw, z: Number(f13.style.zoom) || 1 });
+    }
+    const want = new Map();
+    for (const [key, a] of groups) {
+      if (a.length < 2) continue;
+      if (FIG_SHAPE.test(key)) {
+        const zmin = Math.min(...a.map((x) => x.z));
+        for (const x of a) if (x.z > zmin * 1.01) want.set(x.f, Math.min(want.get(x.f) ?? Infinity, zmin));
+      } else {
+        const smin = Math.min(...a.map((x) => x.s));
+        for (const x of a) if (x.s > smin * 1.02) want.set(x.f, Math.min(want.get(x.f) ?? Infinity, x.z * smin / x.s));
+      }
+    }
+    for (const [f13, z] of want) f13.style.zoom = z.toFixed(3);
+    return want.size > 0;
+  }
   // ページ ぜんぶで 同じ わりあいだけ 図を 大きくする(いちばん せまい ページに あわせる)
   function unifyGrow(pages) {
     const P = pages.map((p) => {
@@ -60368,7 +60405,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     const stage = document.createElement("div");
     stage.className = "preview batch-stage";
     document.body.appendChild(stage);
-    const printPages = [], answerLater = [];
+    const printPages = [], answerLater = [], toCap = [];
     let pdf = null, zip = null, pageNo = 0, title = "", files = [];
     if (opt.out !== "print" && opt.out !== "view") {
       loadLibs();
@@ -60468,8 +60505,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
           if (opt.answers === "each") printPages.push(...ans);
           else answerLater.push(...ans);
         } else {
-          for (const a of probs) await capture(a, false);
-          if (opt.answers === "each") for (const a of ans) await capture(a, true);
+          // うつすのは あとで まとめて(図の 大きさを ぜんぶの ページで そろえてから)
+          for (const a of probs) toCap.push([a, false]);
+          if (opt.answers === "each") for (const a of ans) toCap.push([a, true]);
           else answerLater.push(...ans);
         }
         prog(made, n + (answerLater.length && opt.out !== "print" && opt.out !== "view" ? 1 : 0), `${made} / ${n} ページ つくりました`);
@@ -60478,7 +60516,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
       if (opt.out === "print" || opt.out === "view") {
         el.preview.innerHTML = "";
         for (const a of [...printPages, ...answerLater]) el.preview.appendChild(a);
+        // まとめて 作った ぜんぶの ページで、おなじ 問題の 図の 大きさを そろえる
         fitPreview();
+        unifyFigs([...printPages, ...answerLater]);
         document.title = `${title}_${n}ページ`;
         if (opt.out === "view") {
           // 画面に 出すだけ(国語プリントと おなじ)。見てから「印刷」ボタンや 保存が できる
@@ -60494,6 +60534,18 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
         await sleep(300);
         window.print();
       } else {
+        stage.innerHTML = "";
+        for (const [a] of toCap) stage.appendChild(a);
+        for (const a of answerLater) stage.appendChild(a);
+        unifyFigs([...toCap.map((x) => x[0]), ...answerLater]);
+        for (const [j, [a, isA]] of toCap.entries()) {
+          if (batchCancel) break;
+          stage.innerHTML = "";
+          stage.appendChild(a);
+          await capture(a, isA);
+          prog(j + 1, toCap.length, `ページを 画像に しています ${j + 1} / ${toCap.length}`);
+          await sleep(0);
+        }
         for (const [j, a] of answerLater.entries()) {
           if (batchCancel) break;
           stage.innerHTML = "";
@@ -60739,6 +60791,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/27", t: "図の 大きさ:まとめて作った ときや 2まい いじょうの プリントで、おなじ 問題の 図(ブロック・かさ・ぼう・テープ・ひょう など)が ページごとに 大きく なったり 小さく なったり しないように そろえました" },
     { d: "26/11/27", t: "筆算:まとめて作った ときに 筆算の 大きさが ページごとに かわらないように(3けたの たし算は 1れつ 2問)", g: 3, unit: "g3-04", kind: "drill" },
     { d: "26/11/27", t: "答えの チェック:まとめテストで 答えが 入らない 四角を なおしました(変わり方の □と○、平行・垂直、整数と小数、ひろさの タイル)" },
     { d: "26/11/27", t: "タブレットで とく:幼児・特別支援の 絵の プリント(かずを かぞえよう・とけい・どちらが おおい など)も、その場で 数を 入れたり ○を つけたり できるように。「こたえを みる」に 答えの 図も 出るように" },
