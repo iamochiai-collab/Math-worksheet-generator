@@ -258,7 +258,7 @@ svg.sv-touch .bad { animation: svShake .4s; }
 .sv-fx { position: fixed; inset: 0; display: grid; place-items: center; pointer-events: none; z-index: 50; }
 .sv-fx .mk { font-size: min(52vw, 340px); line-height: 1; font-weight: bold; animation: svPop .9s cubic-bezier(.34,1.6,.5,1) forwards; text-shadow: 0 6px 20px rgba(0,0,0,.12); }
 .sv-fx .mk.ok { color: rgba(215,38,61,.88); }
-.sv-fx .mk img { display: block; width: min(48vw, 300px); height: auto; filter: drop-shadow(0 6px 14px rgba(0,0,0,.15)); }
+.sv-fx .mk img { display: block; width: min(48vw, 300px, 60vh); height: auto; filter: drop-shadow(0 6px 14px rgba(0,0,0,.15)); }
 .sv-fx .mk.ng img { width: min(30vw, 180px); opacity: .8; }
 .ic { display: inline-block; width: 1.3em; height: 1.3em; object-fit: contain; vertical-align: -0.3em; margin-right: 6px; }
 .sv-go .ic { margin: 0 0 0 8px; background: #fff; border-radius: 50%; padding: 4px; width: 1.25em; height: 1.25em; vertical-align: -0.35em; }
@@ -266,7 +266,7 @@ svg.sv-touch .bad { animation: svShake .4s; }
 .sv-end .sv-top { display: flex; align-items: flex-end; justify-content: center; gap: 6px; }
 .sv-end .sv-medal { width: 84px; height: auto; margin-bottom: 8px; animation: svPop .9s cubic-bezier(.34,1.6,.5,1) both; }
 .sv-fx .mk.ng { color: rgba(59,91,219,.85); }
-.sv-fx .say { position: absolute; bottom: 18vh; font-size: 28px; font-weight: bold; background: #fff; border-radius: 99px; padding: 8px 24px; box-shadow: 0 4px 14px rgba(0,0,0,.15); animation: svPop .9s cubic-bezier(.34,1.6,.5,1) forwards; }
+.sv-fx .say { position: absolute; bottom: 10%; font-size: 28px; font-weight: bold; background: #fff; border-radius: 99px; padding: 8px 24px; box-shadow: 0 4px 14px rgba(0,0,0,.15); animation: svPop .9s cubic-bezier(.34,1.6,.5,1) forwards; }
 @keyframes svPop { 0% { transform: scale(.3); opacity: 0; } 30% { transform: scale(1.08); opacity: 1; } 75% { transform: scale(1); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
 .sv-end { flex: 1; min-height: 0; overflow: auto; background: #fff; border-radius: 22px; box-shadow: 0 3px 14px rgba(0,0,0,.08); padding: 24px 18px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .sv-end[hidden] { display: none; }
@@ -41300,6 +41300,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/28", t: "タブレットで とく:大きい数(1おく など 8けた いじょう)が とちゅうまでしか 入らず、正しくても ○に ならなかったのを なおしました。○×の 絵は 問題の カードの まん中に 出るように しました" },
     { d: "26/11/27", t: "絵:ボタンの 絵文字(プリント・タブレット・PDF)と、タブレットの ○×・こたえを みる・けす・つぎへ を 新しい 絵に しました。さいごまで できたら メダルも 出ます" },
     { d: "26/11/27", t: "まとめて作る:2まいめ からも 1まいめと おなじ ならび(問題の 数・れつ)の プリントに なるように しました" },
     { d: "26/11/27", t: "問題数:「作成」を なんども おすと 問題が 1つずつ ふえて いき、おなじ 番号でも ちがう 問題に なる ことが あったのを なおしました" },
@@ -41902,7 +41903,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     b.classList.remove("bad", "show");
     let v = svGet(b);
     if (k === "del") v = v.slice(0, -1);
-    else if (v.length < 7 && !(k === "." && v.includes("."))) v += k;
+    // 大きい数(1おく など)も 入れられるように、答えの けた数 +3 まで(すくなくとも 7けた)
+    else if (v.length < Math.max(7, String(q.keys[SV.slot] ?? "").length + 3) && !(k === "." && v.includes("."))) v += k;
     svSet(b, v);
     requestAnimationFrame(() => svFit($("svStage")));
   }
@@ -41910,6 +41912,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   var SV_FX = { ok: "{{UI:ic_maru}}", ng: "{{UI:ic_retry}}", look: "{{UI:ic_look}}" };
   function svFx(ok, say, pic) {
     const fx = $("svFx");
+    // ○× は 問題の カード(左/上)の まん中に 出す(数字ボタンに かぶらない ように)
+    const r = $("svStage").getBoundingClientRect();
+    if (r.width > 40) fx.style.inset = `${r.top}px ${innerWidth - r.right}px ${innerHeight - r.bottom}px ${r.left}px`;
     fx.innerHTML = `<div class="mk ${ok ? "ok" : "ng"}"><img src="${SV_FX[pic || (ok ? "ok" : "ng")]}" alt="${ok ? "○" : "×"}"></div>${say ? `<div class="say">${say}</div>` : ""}`;
     setTimeout(() => { if (fx.firstChild) fx.innerHTML = ""; }, 950);
   }
