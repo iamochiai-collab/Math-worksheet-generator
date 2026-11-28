@@ -165,3 +165,4 @@ node tools/test/render.js build/test.html 単元id 種類 難易度 問題数 �
 - 11/28 ひる(先生の スクショ:小学部2段階「10までの かず」6/10 で、もう 赤い 線が ついている):
   - 原因:makeSolveQs が work の「article.sheet section.block」を ぜんぶ 問題に して いた。えの プリント(yoji・filled)は 答えの ページ(article.answers)が べつに 作られるので、5問 + 答え 5問 = 10問 に なり、6問めから 答えの 図が 出ていた。→「article.sheet:not(.answers)」。えの プリントは 10問 作る(ドリルと おなじ)。
   - tools/test/tablet.js に「問題が 出た とき 赤い もの・答えの 字が 見えて いないか(LEAK)」を 足した。
+- 11/28 よる(先生「サイト ひらいた しゅんかん タブレットモードに なるから プリントの 方で」):appMode は store("mode") を つかわず、いつも print。URL に ?mode=tablet が あれば タブレット から。
