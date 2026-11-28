@@ -1,7 +1,8 @@
-// タブレットで とく の けんさ:正しい 答えを 入れたら ちゃんと ○(せいかい)に なるか(ぜんぶの 単元・ぜんぶの 問題)
-// 使い方: node tools/test/tablet.js docs/index.html 1 2 3 …(学年の 番号。21〜26 は ステージ)
-//  - 数字ボタン(四角・図の 中の 四角)は 答えを 1けたずつ おして 入れる。○を つける・せんで むすぶ は 答えの ばしょを おす
-//  - 2026/11:大きい数(9けた)が 7けたまでしか 入らず、ぜったい ○に ならない バグを この けんさで 見つけた
+// タブレットで とく の けんさ:
+//  1) 正しい 答えを 入れたら ちゃんと ○(せいかい)に なるか(ぜんぶの 単元・ぜんぶの 問題)
+//  2) 問題が 出た とき、もう 答え(赤い 線・○・数、答えの 字)が 見えて いないか(LEAK と 出る)
+// 使い方: node tools/test/tablet.js docs/index.html 1 2 3 …(学年の 番号。0 は ようじ、21〜26 は ステージ)
+//  - 2026/11:大きい数(9けた)が 7けたまでしか 入らない バグ と、えの プリントの 6問めから 答えの ページが 出て いた バグを この けんさで 見つけた
 //  - アプリの SV を 見るため、window.__SV を 足した コピーを 作って ひらく
 // タブレットで とく:正しい 答えを 入れたら ちゃんと ○に なるか(ぜんぶの 単元・ぜんぶの 問題)
 const { chromium } = require('playwright');
@@ -34,6 +35,8 @@ const { chromium } = require('playwright');
           const SV = window.__SV; if (!document.getElementById('svEnd').hidden || !SV.qs.length) return { end: true };
           const idx = SV.i, q = SV.qs[idx], st = document.getElementById('svStage');
           const text = st.innerText.replace(/\s+/g, ' ').slice(0, 60);
+          const redq = [...st.querySelectorAll('svg *')].filter((e) => /d7263d|215,\s*38,\s*61/i.test((e.getAttribute('stroke')||'') + (e.getAttribute('fill')||'') + getComputedStyle(e).stroke + getComputedStyle(e).fill) && e.getBoundingClientRect().width > 0).length + [...st.querySelectorAll('.key, .key-fig, .kv, .key-line')].filter((e) => e.getBoundingClientRect().width > 0).length;
+          if (redq) window.__leak = (window.__leak || []).concat([`${idx}:${redq}:${text.slice(0,30)}`]);
           const click = (el) => el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
           let mode;
           if (q.keys) {
@@ -72,6 +75,8 @@ const { chromium } = require('playwright');
         await pg.waitForTimeout(40);
         await pg.evaluate(() => document.getElementById('svNextBtn')?.dispatchEvent(new MouseEvent('click', { bubbles: true })));
       }
+      const lk = await pg.evaluate(() => { const l = window.__leak || []; window.__leak = []; return l; });
+      if (lk.length) { bad.push(`LEAK ${g}/${u}/${sub}/${k} 「${label}」 ${lk.join(' | ')}`); }
       await pg.evaluate(() => document.getElementById('svBack')?.click());
     }
     console.error('grade', g, JSON.stringify(stat), bad.length);

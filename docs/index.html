@@ -60842,6 +60842,7 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
   // ===== あたらしく なったこと(ホームの上)。あたらしい ものを 上に 足していく。ボタンで その プリントへ とぶ =====
   // { d:日づけ, t:文, g:学年/段階, unit, sub:小単元(0=単元のまま), kind, opts:{設定}, domain:分野べつを ひらく }
   var CHANGES = [
+    { d: "26/11/28", t: "タブレットで とく:えの プリント(10までの かず など)で、6問めから さいしょに 答えの 線や ○が 見えて いたのを なおしました。えの プリントも 10問 とけます" },
     { d: "26/11/28", t: "タブレットで とく:大きい数(1おく など 8けた いじょう)が とちゅうまでしか 入らず、正しくても ○に ならなかったのを なおしました。○×の 絵は 問題の カードの まん中に 出るように しました" },
     { d: "26/11/27", t: "絵:ボタンの 絵文字(プリント・タブレット・PDF)と、タブレットの ○×・こたえを みる・けす・つぎへ を 新しい 絵に しました。さいごまで できたら メダルも 出ます" },
     { d: "26/11/27", t: "まとめて作る:2まいめ からも 1まいめと おなじ ならび(問題の 数・れつ)の プリントに なるように しました" },
@@ -61183,9 +61184,9 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     el.seed.value = randomSeed();
     const spec = currentSpec(), kind = spec.kind;
     if (!spec.gradeData || !spec.unitId) throw new Error("この 単元は まだ とけません");
-    // 問題数:ドリルは 10問、ほかは 5問(つくれない ときは へらす)
+    // 問題数:ドリル・えの プリントは 10問、ほかは 5問(つくれない ときは へらす)
     let sheet = null, err = null;
-    for (const c of ["drill", "word", "figure", "yoji"].includes(kind) ? [kind === "drill" ? 10 : 5, 5, 3, spec.count] : [spec.count]) {
+    for (const c of ["drill", "word", "figure", "yoji"].includes(kind) ? [kind === "drill" || kind === "yoji" ? 10 : 5, 5, 3, spec.count] : [spec.count]) {
       try { sheet = buildSheet({ ...spec, count: c }); break; } catch (e) { err = e; }
     }
     if (!sheet) throw err;
@@ -61195,7 +61196,8 @@ a.xsite-a:focus-visible { outline: 3px solid var(--xc); outline-offset: 2px; }
     // 1問ずつに わける:ふつうは ol.items の li 1つが 1問。文章題・絵の 問題は section 1つが 1問
     const qs = [];
     const plain = (node) => { const c = node.cloneNode(true); c.querySelectorAll("rt, rp").forEach((x) => x.remove()); return c.textContent.trim(); };
-    for (const sec of work.querySelectorAll("article.sheet section.block")) {
+    // 答えの ページ(article.answers)は 問題に しない(えの プリントは 答えの ページが べつに あり、6問めから 答えが 見えていた)
+    for (const sec of work.querySelectorAll("article.sheet:not(.answers) section.block")) {
       const S0 = sheet.sections.find((x) => String(x.no) === sec.dataset.sec);
       const lis = [...sec.querySelectorAll(":scope ol.items > li")];
       if (lis.length) {
